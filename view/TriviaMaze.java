@@ -43,5 +43,7 @@ public  final class TriviaMaze {
         // and layouts of its subcomponents.
         myWindow.pack();
 
+        mazeview.startGameThread();
+
     }
 }
