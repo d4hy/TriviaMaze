@@ -1,6 +1,9 @@
 
 package view;
 
+
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 
 /**
@@ -35,6 +38,7 @@ public  final class TriviaMaze {
         // it wil be displayed in the center.
         myWindow.setLocationRelativeTo(null);
         myWindow.setVisible(true);
+        myWindow.addKeyListener(new ControlKeyListener());
     }
     private static void addMazeView() {
         final MazeView mazeview = new MazeView();
@@ -46,4 +50,56 @@ public  final class TriviaMaze {
         mazeview.startGameThread();
 
     }
+    /**
+     * ControlKeyListener is responsible to read key input from the
+     * user and move the tetris piece according to the key pressed.
+     */
+    static class ControlKeyListener extends KeyAdapter {
+        @Override
+        public void keyPressed(final KeyEvent theEvent) {
+            switch (theEvent.getKeyCode()) {
+                case KeyEvent.VK_W, KeyEvent.VK_UP -> handleUpKey();
+                case KeyEvent.VK_S, KeyEvent.VK_DOWN -> handleDownKey();
+                case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
+                case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
+                case KeyEvent.VK_SPACE -> handleSpaceKey();
+
+                default -> {
+                }
+            }
+        }
+
+        private void handleUpKey() {
+            System.out.println("Pressed Up");
+
+        }
+
+        private void handleDownKey() {
+            System.out.println("Pressed Down");
+
+
+        }
+
+        private void handleLeftKey() {
+
+            System.out.println("Pressed Left");
+
+        }
+
+        private void handleRightKey() {
+            System.out.println("Pressed Right");
+
+        }
+
+        private void handleSpaceKey() {
+            System.out.println("Pressed Space");
+
+        }
+
+
+
+
+
+    }
+
 }

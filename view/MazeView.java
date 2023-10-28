@@ -95,7 +95,7 @@ public class MazeView extends JPanel implements Runnable {
     public void run() {
         //Game will loop as long as the thread exists.
         while (myGameThread != null) {
-            System.out.println("The game is running");
+            //System.out.println("The game is running");
             update();
 
             //This method will call paintComponent to repaint.
