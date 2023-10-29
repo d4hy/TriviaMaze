@@ -4,6 +4,8 @@ package view;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.JFrame;
 
 /**
@@ -11,22 +13,23 @@ import javax.swing.JFrame;
  * @author David Hoang, Faith Capito
  * @version Fall 2023
  */
-public  final class TriviaMaze {
+public  final class TriviaMaze implements PropertyChangeListener {
 
     /**
      * Static variable used to contain the gui components.
      */
     private static JFrame myWindow;
 
-     // So there can't be a constructor for this driver class.
-    private TriviaMaze() {
-        throw new UnsupportedOperationException();
-    }
-    public static void main(final String[] theArgs) {
+    /**
+     * Constructs the JFrame where everything will be contained and displays
+     * the game.
+     */
+    public TriviaMaze() {
         myWindow = new JFrame();
         setUp();
         addMazeView();
     }
+
 
     private static void setUp() {
 
@@ -50,6 +53,12 @@ public  final class TriviaMaze {
         mazeview.startGameThread();
 
     }
+
+    @Override
+    public void propertyChange(final PropertyChangeEvent theEvt) {
+
+    }
+
     /**
      * ControlKeyListener is responsible to read key input from the
      * user and move the tetris piece according to the key pressed.
