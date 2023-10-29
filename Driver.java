@@ -5,7 +5,7 @@ import view.TriviaMaze;
  * @version Fall 2023
  *
  */
-public class Driver {
+public final class Driver {
 
     /**
      * Private empty constructor to avoid accidental instantiation.
