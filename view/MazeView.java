@@ -8,7 +8,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import javax.swing.JPanel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
 
 
 /**
@@ -55,6 +57,13 @@ public class MazeView extends JPanel implements Runnable {
     private static final int MY_SCREEN_HEIGHT = MY_TILE_SIZE * MY_MAX_SCREEN_COL;
     // 576 pixels.
 
+    private static final int TIMER_DELAY = 1000;
+
+    /**
+     * Timer that will be used for game and question functionality.
+     */
+    private static Timer myTimer;
+
     /**
      * This object will be used to let the game loop and update.
      */
@@ -76,6 +85,23 @@ public class MazeView extends JPanel implements Runnable {
 
         //will improve game's rendering performance.
         this.setDoubleBuffered(true);
+
+    }
+
+    /**
+     * Sets initial timer that will be used to track user input in the game.
+     */
+    private void setTimer() {
+        myTimer = new Timer(TIMER_DELAY, null);
+        myTimer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent theEvent) {
+                if (myTimer.isRunning()) {
+                    // depending on implementation, show the timer during the game
+                    // or only use to calculate time limit for user to answer questions.
+                }
+            }
+        });
     }
 
     /**
