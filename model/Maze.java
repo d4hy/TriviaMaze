@@ -4,6 +4,10 @@
  */
 package model;
 
+import controller.MazeControls;
+
+import java.beans.PropertyChangeSupport;
+
 /**
  * Maze class contains data that will be responsible for current data of game.
  *
@@ -11,7 +15,9 @@ package model;
  * @author David Hoang
  * @version Fall 2023
  */
-public class Maze {
+public class Maze implements MazeControls {
+
+    private static final String PROPERTY_MOVE_DOWN = "Character has moved DOWN.";
 
     /**
      * The room that Character is currently in.
@@ -24,24 +30,45 @@ public class Maze {
     private Room[][] myRooms;
 
     /**
+     * Width of Maze rooms.
+     */
+    private int myWidth;
+
+    /**
+     * Height of Maze rooms.
+     */
+    private int myHeight;
+
+    /**
      * Number of correct answers that the current Character has answered.
      */
-
     private static int myCorrectAnswers;
 
     /**
      * Character that is in Maze.
      */
-
     private Character myCharacter;
+
+    /**
+     * Signals change in the model to the view.
+     */
+    private PropertyChangeSupport myPcs;
 
     /**
      * Constructor for new game of Maze, creating starting point of a Character and Rooms.
      */
-    Maze() {
-
+    public Maze(final int theWidth, final int theHeight) {
+        super();
         // arbitrary values for a new Character with starting position.
-        myCharacter = new Character(0, 0, 10, 10);
+        myCharacter = new Character(0, 0, theWidth, theHeight);
+
+        myWidth = theWidth;
+        myHeight = theHeight;
+
+        myCorrectAnswers = 0;
+        myRooms = new Room[theWidth][theHeight];
+        myCurrentRoom = myRooms[0][0];
+        myPcs = new PropertyChangeSupport(this);
 
     }
 
@@ -80,6 +107,8 @@ public class Maze {
      */
     public boolean canMove() {
 
+        // TODO: Evaluate nearby cells to see if traversable.
+
         boolean move = false;
 
         return move;
@@ -102,4 +131,52 @@ public class Maze {
         return game;
     }
 
+    @Override
+    public void newGame() {
+
+        myCorrectAnswers = 0;
+
+    }
+
+    @Override
+    public void moveDown() {
+
+        if (canMove() == true) {
+            myCurrentRoom = myRooms[myWidth][myHeight + 1];
+            myPcs.firePropertyChange(PROPERTY_MOVE_DOWN, null, myCurrentRoom);
+        }
+
+    }
+
+    @Override
+    public void moveUp() {
+
+        if (canMove() == true) {
+            myCurrentRoom = myRooms[myWidth][myHeight - 1];
+        }
+
+    }
+
+    @Override
+    public void moveLeft() {
+
+        if (canMove() == true) {
+            myCurrentRoom = myRooms[myWidth - 1][myHeight];
+        }
+
+    }
+
+    @Override
+    public void moveRight() {
+
+        if (canMove() == true) {
+            myCurrentRoom = myRooms[myWidth + 1][myHeight];
+        }
+
+    }
+
+    @Override
+    public void pauseGame() {
+
+    }
 }
