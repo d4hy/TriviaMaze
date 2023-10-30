@@ -10,7 +10,8 @@ import javax.swing.JFrame;
 
 /**
  * This class will serve as the container class where everything will be displayed and ran.
- * @author David Hoang, Faith Capito
+ * @author David Hoang
+ * @author Faith Capito
  * @version Fall 2023
  */
 public  final class TriviaMaze implements PropertyChangeListener {

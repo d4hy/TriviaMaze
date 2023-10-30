@@ -15,7 +15,8 @@ import javax.swing.*;
 
 /**
  *  This class serves as a screen class that displays the game.
- * @author David Hoang, Faith Capito.
+ * @author David Hoang,
+ * @author Faith Capito.
  * @version Fall 2023
  */
 public class MazeView extends JPanel implements Runnable {

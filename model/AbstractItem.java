@@ -6,6 +6,7 @@ import java.util.Locale;
  * This program is a  parent class to be reused
  * for item child classes.
  * @author David Hoang
+ * @author Faith Capito
  * @version fall 2023
  *
  */

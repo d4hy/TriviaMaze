@@ -8,7 +8,8 @@ import java.util.ArrayList;
 /**
  * This class will represent the controllable character
  * that the user will operate.
- * @author David Hoang, Faith Capito.
+ * @author David Hoang
+ * @author Faith Capito.
  * @version Fall 2023.
  */
 
