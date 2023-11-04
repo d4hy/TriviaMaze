@@ -17,7 +17,25 @@ import java.beans.PropertyChangeSupport;
  */
 public class Maze implements MazeControls {
 
+    /**
+     * Fires property change that character has moved downwards.
+     */
     private static final String PROPERTY_MOVE_DOWN = "Character has moved DOWN.";
+
+    /**
+     * Fires property change that character has moved upwards.
+     */
+    private static final String PROPERTY_MOVE_UP = "Character has moved UP.";
+
+    /**
+     * Fires property change that character has moved left.
+     */
+    private static final String PROPERTY_MOVE_LEFT = "Character has moved LEFT.";
+
+    /**
+     * Fires property change that character has moved right.
+     */
+    private static final String PROPERTY_MOVE_RIGHT = "Character has moved RIGHT.";
 
     /**
      * The room that Character is currently in.
@@ -47,10 +65,10 @@ public class Maze implements MazeControls {
     /**
      * Character that is in Maze.
      */
-    private Character myCharacter;
+    protected Character myCharacter; // reference changed to protected
 
     /**
-     * Signals change in the model to the view.
+     * Signals change from the model to the view.
      */
     private PropertyChangeSupport myPcs;
 
@@ -135,6 +153,7 @@ public class Maze implements MazeControls {
     public void newGame() {
 
         myCorrectAnswers = 0;
+        myCurrentRoom = myRooms[0][0];
 
     }
 
@@ -142,8 +161,8 @@ public class Maze implements MazeControls {
     public void moveDown() {
 
         if (canMove() == true) {
-            myCurrentRoom = myRooms[myWidth][myHeight + 1];
-            myPcs.firePropertyChange(PROPERTY_MOVE_DOWN, null, myCurrentRoom);
+            myCharacter.moveDown();
+            myPcs.firePropertyChange(PROPERTY_MOVE_DOWN, null, myCharacter.getCurrentPosition());
         }
 
     }
@@ -152,7 +171,8 @@ public class Maze implements MazeControls {
     public void moveUp() {
 
         if (canMove() == true) {
-            myCurrentRoom = myRooms[myWidth][myHeight - 1];
+            myCharacter.moveUp();
+            myPcs.firePropertyChange(PROPERTY_MOVE_UP, null, myCharacter.getCurrentPosition());
         }
 
     }
@@ -161,7 +181,8 @@ public class Maze implements MazeControls {
     public void moveLeft() {
 
         if (canMove() == true) {
-            myCurrentRoom = myRooms[myWidth - 1][myHeight];
+            myCharacter.moveLeft();
+            myPcs.firePropertyChange(PROPERTY_MOVE_LEFT, null, myCharacter.getCurrentPosition());
         }
 
     }
@@ -170,7 +191,8 @@ public class Maze implements MazeControls {
     public void moveRight() {
 
         if (canMove() == true) {
-            myCurrentRoom = myRooms[myWidth + 1][myHeight];
+            myCharacter.moveRight();
+            myPcs.firePropertyChange(PROPERTY_MOVE_RIGHT, null, myCharacter.getCurrentPosition());
         }
 
     }
