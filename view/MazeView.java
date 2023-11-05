@@ -54,6 +54,7 @@ public class MazeView extends JPanel implements PropertyChangeListener {
 
     MazeView() {
         setUp();
+        myMaze.addPropertyChangeListener(this);
         myMaze.newGame();
 
     }
