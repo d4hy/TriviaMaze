@@ -1,7 +1,7 @@
 
 
 package model;
-
+import controller.MazeControls;
 import java.awt.Point;
 import java.util.ArrayList;
 
@@ -62,11 +62,10 @@ public class Character {
      * Moves the user up if it is  within the boundaries.
       */
     public void moveUp() {
-        if (myCurrentPosition.getY() < 0 && myMobility) {
-            myCurrentPosition.setLocation(myCurrentPosition.getX(),
-                    myCurrentPosition.getY() + 1);
-        } else if (myCurrentPosition.getY() > 0) {
-            System.out.println("Cannot move up. Already at the top boundary.");
+        if (myCurrentPosition.getY() > 0 && myMobility) {
+            myCurrentPosition.setLocation(myCurrentPosition.getX(), myCurrentPosition.getY() - MazeControls.MY_TILE_SIZE);
+        } else {
+            System.out.println("Cannot move up. Already at the top boundary or mobility is restricted.");
         }
     }
 
@@ -75,9 +74,9 @@ public class Character {
      * Method to move the user down if it is within the boundaries.
      */
     public void moveDown() {
-        if (myCurrentPosition.getY() > myMaxCols && myMobility) {
+        if (myCurrentPosition.getY() < myMaxCols && myMobility) {
             myCurrentPosition.setLocation(myCurrentPosition.getX(),
-                    myCurrentPosition.getY() - 1);
+                    myCurrentPosition.getY() + MazeControls.MY_TILE_SIZE);
         } else if (myCurrentPosition.getY() < myMaxCols) {
             System.out.println("Cannot move down. Already at the bottom boundary.");
         }
@@ -88,7 +87,7 @@ public class Character {
      */
     public void moveRight() {
         if (myCurrentPosition.getX() < myMaxRows && myMobility) {
-            myCurrentPosition.setLocation(myCurrentPosition.getX() + 1,
+            myCurrentPosition.setLocation(myCurrentPosition.getX() + MazeControls.MY_TILE_SIZE,
                     myCurrentPosition.getY());
         } else if (myCurrentPosition.getX() > myMaxRows) {
             System.out.println("Cannot move right. Already at the right boundary.");
@@ -100,7 +99,7 @@ public class Character {
      */
     public void moveLeft() {
         if (myCurrentPosition.getX() > 0  && myMobility) {
-            myCurrentPosition.setLocation(myCurrentPosition.getX() - 1,
+            myCurrentPosition.setLocation(myCurrentPosition.getX() - MazeControls.MY_TILE_SIZE,
                     myCurrentPosition.getY());
         } else if (myCurrentPosition.getX() < 0) {
             System.out.println("Cannot move left. Already at the left boundary.");
