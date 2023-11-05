@@ -4,8 +4,9 @@
  */
 package model;
 
-import controller.MazeControls;
 
+import controller.PropertyChangedEnabledMazeControls;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
@@ -15,27 +16,9 @@ import java.beans.PropertyChangeSupport;
  * @author David Hoang
  * @version Fall 2023
  */
-public class Maze implements MazeControls {
+public class Maze implements PropertyChangedEnabledMazeControls {
 
-    /**
-     * Fires property change that character has moved downwards.
-     */
-    private static final String PROPERTY_MOVE_DOWN = "Character has moved DOWN.";
 
-    /**
-     * Fires property change that character has moved upwards.
-     */
-    private static final String PROPERTY_MOVE_UP = "Character has moved UP.";
-
-    /**
-     * Fires property change that character has moved left.
-     */
-    private static final String PROPERTY_MOVE_LEFT = "Character has moved LEFT.";
-
-    /**
-     * Fires property change that character has moved right.
-     */
-    private static final String PROPERTY_MOVE_RIGHT = "Character has moved RIGHT.";
 
     /**
      * The room that Character is currently in.
@@ -65,7 +48,7 @@ public class Maze implements MazeControls {
     /**
      * Character that is in Maze.
      */
-    protected Character myCharacter; // reference changed to protected
+    private Character myCharacter; // reference changed to private
 
     /**
      * Signals change from the model to the view.
@@ -160,9 +143,10 @@ public class Maze implements MazeControls {
     @Override
     public void moveDown() {
 
-        if (canMove() == true) {
+        if (canMove()) {
             myCharacter.moveDown();
-            myPcs.firePropertyChange(PROPERTY_MOVE_DOWN, null, myCharacter.getCurrentPosition());
+            myPcs.firePropertyChange(PROPERTY_MOVE_DOWN,
+                    null, myCharacter.getCurrentPosition());
         }
 
     }
@@ -170,7 +154,7 @@ public class Maze implements MazeControls {
     @Override
     public void moveUp() {
 
-        if (canMove() == true) {
+        if (canMove()) {
             myCharacter.moveUp();
             myPcs.firePropertyChange(PROPERTY_MOVE_UP, null, myCharacter.getCurrentPosition());
         }
@@ -180,9 +164,10 @@ public class Maze implements MazeControls {
     @Override
     public void moveLeft() {
 
-        if (canMove() == true) {
+        if (canMove()) {
             myCharacter.moveLeft();
-            myPcs.firePropertyChange(PROPERTY_MOVE_LEFT, null, myCharacter.getCurrentPosition());
+            myPcs.firePropertyChange(PROPERTY_MOVE_LEFT,
+                    null, myCharacter.getCurrentPosition());
         }
 
     }
@@ -190,15 +175,55 @@ public class Maze implements MazeControls {
     @Override
     public void moveRight() {
 
-        if (canMove() == true) {
+        if (canMove()) {
             myCharacter.moveRight();
-            myPcs.firePropertyChange(PROPERTY_MOVE_RIGHT, null, myCharacter.getCurrentPosition());
+            myPcs.firePropertyChange(PROPERTY_MOVE_RIGHT,
+                    null, myCharacter.getCurrentPosition());
         }
 
     }
 
     @Override
     public void pauseGame() {
+
+    }
+    /**
+     * adds an object as a listener to the propertyChangeSupport object.
+     * @param theListener The PropertyChangeListener to be added
+     */
+    @Override
+    public void addPropertyChangeListener(final PropertyChangeListener theListener) {
+
+    }
+
+    /**
+     * adds an object as a listener to the propertyChangeSupport object.
+     * @param thePropertyName The name of the property to listen on.
+     * @param theListener The PropertyChangeListener to be added
+     */
+    @Override
+    public void addPropertyChangeListener(final String thePropertyName,
+                                          final PropertyChangeListener theListener) {
+
+    }
+
+    /**
+     * removes an object as a listener to the propertyChangeSupport object.
+     * @param theListener The PropertyChangeListener to be removed
+     */
+    @Override
+    public void removePropertyChangeListener(final PropertyChangeListener theListener) {
+
+    }
+
+    /**
+     * removes an object as a listener to the propertyChangeSupport object.
+     * @param thePropertyName The name of the property that was listened on.
+     * @param theListener The PropertyChangeListener to be removed
+     */
+    @Override
+    public void removePropertyChangeListener(final String thePropertyName,
+                                             final PropertyChangeListener theListener) {
 
     }
 }

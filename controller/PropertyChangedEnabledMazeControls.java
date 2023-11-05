@@ -27,6 +27,25 @@ public interface PropertyChangedEnabledMazeControls extends MazeControls {
     String PROPERTY_CHARACTER_MOVE = "CHAR_MOVED";
 
     /**
+     * Fires property change that character has moved downwards.
+     */
+     String PROPERTY_MOVE_DOWN = "Character has moved DOWN.";
+
+    /**
+     * Fires property change that character has moved upwards.
+     */
+     String PROPERTY_MOVE_UP = "Character has moved UP.";
+
+    /**
+     * Fires property change that character has moved left.
+     */
+     String PROPERTY_MOVE_LEFT = "Character has moved LEFT.";
+
+    /**
+     * Fires property change that character has moved right.
+     */
+     String PROPERTY_MOVE_RIGHT = "Character has moved RIGHT.";
+    /**
      * Add a PropertyChangeListener to the listener list. The listener is registered for
      * all properties. The same listener object may be added more than once, and will be
      * called as many times as it is added. If listener is null, no exception is thrown and
