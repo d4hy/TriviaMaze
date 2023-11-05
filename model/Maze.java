@@ -74,26 +74,34 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         myWidth = theWidth;
         myHeight = theHeight;
-
-        myCorrectAnswers = 0;
-        myRooms = new Room[theWidth][theHeight];
-        createRooms();
-        myCurrentRoom = myRooms[0][0];
+        createMaze();
         myPcs = new PropertyChangeSupport(this);
 
     }
 
     /**
-     * Create door objects in myRooms to reference different directional
-     * doors that the Character traverses through.
+     * Fills the maze with Rooms and sets initial game values.
      */
-    public void createRooms() {
+    public void createMaze() {
+
+        myCorrectAnswers = 0;
+        myRooms = new Room[myWidth][myHeight];
 
         for (int i = 0; i < myWidth; i++) {
             for (int j = 0; j < myHeight; j++) {
                 myRooms[i][j] = new Room();
             }
         }
+
+        assignDoors();
+        myCurrentRoom = myRooms[0][0];
+    }
+
+    /**
+     * Create door objects in myRooms to reference different directional
+     * doors that the Character traverses through.
+     */
+    public void assignDoors() {
 
         final Door leftDoor = new Door("Left Door.");
         final Door rightDoor = new Door("Right Door.");
