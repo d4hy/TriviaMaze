@@ -200,7 +200,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     @Override
     public void addPropertyChangeListener(final PropertyChangeListener theListener) {
-
+        myPcs.addPropertyChangeListener(theListener);
     }
 
     /**
@@ -211,7 +211,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     @Override
     public void addPropertyChangeListener(final String thePropertyName,
                                           final PropertyChangeListener theListener) {
-
+        myPcs.addPropertyChangeListener(thePropertyName, theListener);
     }
 
     /**
@@ -220,7 +220,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     @Override
     public void removePropertyChangeListener(final PropertyChangeListener theListener) {
-
+        myPcs.removePropertyChangeListener(theListener);
     }
 
     /**
@@ -231,6 +231,6 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     @Override
     public void removePropertyChangeListener(final String thePropertyName,
                                              final PropertyChangeListener theListener) {
-
+        myPcs.removePropertyChangeListener(thePropertyName, theListener);
     }
 }
