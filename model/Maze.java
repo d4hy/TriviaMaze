@@ -153,7 +153,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         if (canMove()) {
             myCharacter.moveDown();
             myPcs.firePropertyChange(PROPERTY_MOVE_DOWN,
-                    null, myCharacter.getCurrentPosition());
+                    null, myCharacter);
         }
 
     }
@@ -163,7 +163,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         if (canMove()) {
             myCharacter.moveUp();
-            myPcs.firePropertyChange(PROPERTY_MOVE_UP, null, myCharacter.getCurrentPosition());
+            myPcs.firePropertyChange(PROPERTY_MOVE_UP, null, myCharacter);
         }
 
     }
@@ -174,7 +174,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         if (canMove()) {
             myCharacter.moveLeft();
             myPcs.firePropertyChange(PROPERTY_MOVE_LEFT,
-                    null, myCharacter.getCurrentPosition());
+                    null, myCharacter);
         }
 
     }
@@ -185,7 +185,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         if (canMove()) {
             myCharacter.moveRight();
             myPcs.firePropertyChange(PROPERTY_MOVE_RIGHT,
-                    null, myCharacter.getCurrentPosition());
+                    null, myCharacter);
         }
 
     }
