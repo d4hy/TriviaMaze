@@ -4,7 +4,7 @@
  */
 package model;
 
-
+import controller.MazeControls;
 import controller.PropertyChangedEnabledMazeControls;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -60,8 +60,15 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     public Maze(final int theWidth, final int theHeight) {
         super();
-        // arbitrary values for a new Character with starting position.
-        myCharacter = new Character(0, 0, theWidth, theHeight);
+
+        // Calculate the initial position for the Character to be in the middle of the screen.
+        // since it is represented within the top left corner of a pixel, you have to subtract the tile size.
+        int startX = (MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE) / 2;
+        int startY = (MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE) / 2;
+
+        // Instantiate the Character with the calculated initial position.
+        myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH, MazeControls.MY_SCREEN_HEIGHT);
+
 
         myWidth = theWidth;
         myHeight = theHeight;

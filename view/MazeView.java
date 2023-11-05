@@ -14,7 +14,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import model.Character;
 import model.Maze;
+
 
 
 
@@ -102,11 +104,11 @@ public class MazeView extends JPanel implements PropertyChangeListener {
 
         g2.setColor(Color.white);
 
-        //a rectangle that will represent the character for now.
-        g2.fillRect((getWidth() - MazeControls.MY_TILE_SIZE) / 2,
-                (getHeight() - MazeControls.MY_TILE_SIZE) / 2,
-                MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE);
-
+        if (myCharacter != null) {
+            //a rectangle that will represent the character for now.
+            g2.fillRect(myCharacter.getCurrentPosition().x, myCharacter.getCurrentPosition().y,
+                    MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE);
+        }
         //good practice to save memory, release any system resources it's using
         // after it is done drawing.
         g2.dispose();
