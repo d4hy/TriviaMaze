@@ -65,9 +65,6 @@ public  final class TriviaMaze implements PropertyChangeListener {
         //Window will be sized to fit the preferred size
         // and layouts of its subcomponents.
         myWindow.pack();
-
-        mazeview.startGameThread();
-
     }
 
     /**
