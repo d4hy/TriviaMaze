@@ -77,8 +77,64 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         myCorrectAnswers = 0;
         myRooms = new Room[theWidth][theHeight];
+        createRooms();
         myCurrentRoom = myRooms[0][0];
         myPcs = new PropertyChangeSupport(this);
+
+    }
+
+    /**
+     * Create door objects in myRooms to reference different directional
+     * doors that the Character traverses through.
+     */
+    public void createRooms() {
+
+        for (int i = 0; i < myWidth; i++) {
+            for (int j = 0; j < myHeight; j++) {
+                myRooms[i][j] = new Room();
+            }
+        }
+
+        final Door leftDoor = new Door("Left Door.");
+        final Door rightDoor = new Door("Right Door.");
+        final Door topDoor = new Door("Top Door.");
+        final Door bottomDoor = new Door("Bottom Door.");
+
+        for (int i = 0; i < myWidth; i++) {
+            for (int j = 0; j < myHeight; j++) {
+
+                final Door left;
+                final Door right;
+                final Door top;
+                final Door bottom;
+
+                if (j > 0 && i > 0) {
+                    left = myRooms[i - 1][j].getRightDoor();
+                } else {
+                    left = leftDoor;
+                }
+
+                if (j < myHeight - 1 && i < myWidth - 1) {
+                    right = myRooms[i + 1][j].getLeftDoor();
+                } else {
+                    right = rightDoor;
+                }
+
+                if (i > 0 && j > 0) {
+                    top = myRooms[i][j - 1].getBottomDoor();
+                } else {
+                    top = topDoor;
+                }
+
+                if (i < myWidth - 1 && j < myHeight - 1) {
+                    bottom = myRooms[i][j + 1].getTopDoor();
+                } else {
+                    bottom = bottomDoor;
+                }
+
+                myRooms[i][j] = new Room(left, right, top, bottom);
+            }
+        }
 
     }
 
@@ -119,7 +175,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         // TODO: Evaluate nearby cells to see if traversable.
 
-        boolean move = true;
+        final boolean move = true;
 
         return move;
     }
@@ -136,7 +192,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     public boolean isGameLost() {
 
-        boolean game = true;
+        final boolean game = true;
 
         return game;
     }
@@ -144,12 +200,14 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     @Override
     public void newGame() {
         // Calculate the initial position for the Character to be in the middle of the screen.
-        // since it is represented within the top left corner of a pixel, you have to subtract the tile size.
-        int startX = (MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE) / 2;
-        int startY = (MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE) / 2;
+        // since it is represented within the top left corner of a pixel, you have to subtract
+        // the tile size.
+        final int startX = (MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE) / 2;
+        final int startY = (MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE) / 2;
 
         // Instantiate the Character with the calculated initial position.
-        myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH, MazeControls.MY_SCREEN_HEIGHT);
+        myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH,
+                MazeControls.MY_SCREEN_HEIGHT);
 
         myCorrectAnswers = 0;
         myCurrentRoom = myRooms[0][0];
