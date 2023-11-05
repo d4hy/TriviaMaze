@@ -49,6 +49,7 @@ public interface MazeControls {
      * The up-scaled amount of tiles that will be represented as the height of the screen.
      */
     int MY_SCREEN_HEIGHT = MY_TILE_SIZE * MY_MAX_SCREEN_COL;
+    // 576 pixels.
     /**
      * Resets the maze for a new game.
      * This method must be called before the first game
