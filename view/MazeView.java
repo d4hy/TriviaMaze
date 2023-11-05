@@ -3,7 +3,7 @@ package view;
 
 
 
-
+import controller.MazeControls;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,6 +18,8 @@ import javax.swing.Timer;
 import model.Maze;
 
 
+
+
 /**
  *  This class serves as a screen class that displays the game.
  * @author David Hoang,
@@ -26,42 +28,7 @@ import model.Maze;
  */
 public class MazeView extends JPanel implements PropertyChangeListener {
 
-    //Screen settings.
-    /**
-     *  16x 16 tiles, will represent size of characters,and parts of the map.
-     */
-    private static final int MY_ORIGINAL_TILE_SIZE = 16;
-    /**
-     *  This variable will be used to upscale the tile size otherwise it's too small to see.
-     */
-    private static final int MY_SCALE = 3;
 
-    /**
-     * The tile size up-scaled to fit on the screen.
-     */
-    private static final int MY_TILE_SIZE = MY_ORIGINAL_TILE_SIZE * MY_SCALE;
-
-    /**
-     *The amount of tiles that will be represented as the rows of the screen.
-     *
-     */
-    private static final int MY_MAX_SCREEN_ROW = 16;
-    /**
-     *The amount of tiles that will be represented as the columns of the screen.
-     *
-     */
-    private static final int MY_MAX_SCREEN_COL = 12;
-
-    /**
-     * The up-scaled amount of tiles that will be represented as the width of the screen.
-     */
-    private static final int MY_SCREEN_WIDTH = MY_TILE_SIZE  * MY_MAX_SCREEN_ROW; //768 pixels.
-
-    /**
-     * The up-scaled amount of tiles that will be represented as the height of the screen.
-     */
-    private static final int MY_SCREEN_HEIGHT = MY_TILE_SIZE * MY_MAX_SCREEN_COL;
-    // 576 pixels.
     /**
      * The initial delay that the timer has.
      */
@@ -95,7 +62,7 @@ public class MazeView extends JPanel implements PropertyChangeListener {
      */
     public void setUp() {
         //sets the size of the jPanel.
-        this.setPreferredSize(new Dimension(MY_SCREEN_WIDTH, MY_SCREEN_HEIGHT));
+        this.setPreferredSize(new Dimension(MazeControls.MY_SCREEN_WIDTH, MazeControls.MY_SCREEN_HEIGHT));
         this.setBackground(Color.black);
 
         //will improve game's rendering performance.
@@ -136,7 +103,7 @@ public class MazeView extends JPanel implements PropertyChangeListener {
         g2.setColor(Color.white);
 
         //a rectangle that will represent the character for now.
-        g2.fillRect(100, 100, MY_TILE_SIZE, MY_TILE_SIZE);
+        g2.fillRect(100, 100,MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE);
 
         //good practice to save memory, release any system resources it's using
         // after it is done drawing.

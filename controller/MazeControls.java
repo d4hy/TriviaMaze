@@ -14,6 +14,41 @@ package controller;
  */
 public interface MazeControls {
 
+    //Screen settings.
+    /**
+     *  16x 16 tiles, will represent size of characters,and parts of the map.
+     */
+    int MY_ORIGINAL_TILE_SIZE = 16;
+    /**
+     *  This variable will be used to upscale the tile size otherwise it's too small to see.
+     */
+    int MY_SCALE = 3;
+
+    /**
+     * The tile size up-scaled to fit on the screen.
+     */
+    int MY_TILE_SIZE = MY_ORIGINAL_TILE_SIZE * MY_SCALE;
+
+    /**
+     *The amount of tiles that will be represented as the rows of the screen.
+     *
+     */
+    int MY_MAX_SCREEN_ROW = 16;
+    /**
+     *The amount of tiles that will be represented as the columns of the screen.
+     *
+     */
+    int MY_MAX_SCREEN_COL = 12;
+
+    /**
+     * The up-scaled amount of tiles that will be represented as the width of the screen.
+     */
+    int MY_SCREEN_WIDTH = MY_TILE_SIZE  * MY_MAX_SCREEN_ROW; //768 pixels.
+
+    /**
+     * The up-scaled amount of tiles that will be represented as the height of the screen.
+     */
+    int MY_SCREEN_HEIGHT = MY_TILE_SIZE * MY_MAX_SCREEN_COL;
     /**
      * Resets the maze for a new game.
      * This method must be called before the first game
