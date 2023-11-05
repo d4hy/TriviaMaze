@@ -43,6 +43,18 @@ public class Character {
     private boolean myMobility;
 
     /**
+     * The starting X coordinate of where the user spawned within the room.
+     */
+
+    private int myStartX;
+
+    /**
+     * The starting Y coordinate of where the user spawned within the room.
+     */
+
+    private int myStartY;
+
+    /**
      * This method initializes the start position.
      * @param theStartX coordinate
      * @param theStartY coordinate
@@ -51,6 +63,8 @@ public class Character {
      */
     public Character(final int theStartX, final int theStartY,
                      final int theMaxRows, final int theMaxCols) {
+        myStartX = theStartX;
+        myStartY = theStartY;
         myCurrentPosition = new Point(theStartX, theStartY);
         myMobility = true;
         myMaxRows = theMaxRows;
@@ -58,14 +72,23 @@ public class Character {
 
     }
 
+
+    /**
+     * Resets the character's position to where they spawned.
+     */
+    public void resetToMiddle() {
+        myCurrentPosition = new Point(myStartX,  myStartX);
+    }
     /**
      * Moves the user up if it is  within the boundaries.
       */
     public void moveUp() {
         if (myCurrentPosition.getY() > 0 && myMobility) {
-            myCurrentPosition.setLocation(myCurrentPosition.getX(), myCurrentPosition.getY() - MazeControls.MY_TILE_SIZE);
+            myCurrentPosition.setLocation(myCurrentPosition.getX(),
+                    myCurrentPosition.getY() - MazeControls.MY_TILE_SIZE);
         } else {
-            System.out.println("Cannot move up. Already at the top boundary or mobility is restricted.");
+            System.out.println("Cannot move up. "
+                    + "Already at the top boundary or mobility is restricted.");
         }
     }
 
