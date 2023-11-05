@@ -54,7 +54,7 @@ public class MazeView extends JPanel implements PropertyChangeListener {
 
     MazeView() {
         setUp();
-
+        myMaze.newGame();
 
     }
 
@@ -121,7 +121,7 @@ public class MazeView extends JPanel implements PropertyChangeListener {
 
         final String propertyName = theEvt.getPropertyName();
 
-        if (propertyName.equals(propertyName.equals(Maze.PROPERTY_CHARACTER_MOVE))) {
+        if (propertyName.equals(myMaze.PROPERTY_CHARACTER_MOVE)) {
             myCharacter = (Character) theEvt.getNewValue();
             repaint();
         }

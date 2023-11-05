@@ -62,12 +62,14 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         super();
 
         // Calculate the initial position for the Character to be in the middle of the screen.
-        // since it is represented within the top left corner of a pixel, you have to subtract the tile size.
-        int startX = (MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE) / 2;
-        int startY = (MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE) / 2;
+        // since it is represented within the top left corner of a pixel, you have to subtract
+        // the tile size.
+        final int startX = (MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE) / 2;
+        final int startY = (MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE) / 2;
 
         // Instantiate the Character with the calculated initial position.
-        myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH, MazeControls.MY_SCREEN_HEIGHT);
+        myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH,
+                MazeControls.MY_SCREEN_HEIGHT);
 
 
         myWidth = theWidth;
@@ -94,7 +96,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     public String getCurrentRoomInfo() {
 
-        String info = "This is information";
+        final String info = "This is information";
 
         return info;
     }
@@ -104,7 +106,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     public boolean answerQuestion(final String theInput) {
 
-        boolean validity = false;
+        final boolean validity = false;
 
         return validity;
     }
@@ -117,7 +119,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         // TODO: Evaluate nearby cells to see if traversable.
 
-        boolean move = false;
+        boolean move = true;
 
         return move;
     }
@@ -134,16 +136,24 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     public boolean isGameLost() {
 
-        boolean game = false;
+        boolean game = true;
 
         return game;
     }
 
     @Override
     public void newGame() {
+        // Calculate the initial position for the Character to be in the middle of the screen.
+        // since it is represented within the top left corner of a pixel, you have to subtract the tile size.
+        int startX = (MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE) / 2;
+        int startY = (MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE) / 2;
+
+        // Instantiate the Character with the calculated initial position.
+        myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH, MazeControls.MY_SCREEN_HEIGHT);
 
         myCorrectAnswers = 0;
         myCurrentRoom = myRooms[0][0];
+        myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
 
     }
 
@@ -152,7 +162,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         if (canMove()) {
             myCharacter.moveDown();
-            myPcs.firePropertyChange(PROPERTY_MOVE_DOWN,
+            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE,
                     null, myCharacter);
         }
 
@@ -163,7 +173,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         if (canMove()) {
             myCharacter.moveUp();
-            myPcs.firePropertyChange(PROPERTY_MOVE_UP, null, myCharacter);
+            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         }
 
     }
@@ -173,7 +183,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         if (canMove()) {
             myCharacter.moveLeft();
-            myPcs.firePropertyChange(PROPERTY_MOVE_LEFT,
+            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE,
                     null, myCharacter);
         }
 
@@ -184,7 +194,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         if (canMove()) {
             myCharacter.moveRight();
-            myPcs.firePropertyChange(PROPERTY_MOVE_RIGHT,
+            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE,
                     null, myCharacter);
         }
 
