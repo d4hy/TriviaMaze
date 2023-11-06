@@ -4,8 +4,6 @@ package view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -53,7 +51,7 @@ public  final class TriviaMaze implements PropertyChangeListener {
         // it wil be displayed in the center.
         myWindow.setLocationRelativeTo(null);
         myWindow.setVisible(true);
-        myWindow.addKeyListener(new ControlKeyListener());
+
     }
 
     /**
@@ -61,10 +59,16 @@ public  final class TriviaMaze implements PropertyChangeListener {
      */
     private static void addMazeView() {
         final MazeView mazeview = new MazeView();
+
+        //adds the maze view as a key listener.
+        mazeview.addKeyListener(mazeview);
+        mazeview.setFocusable(true);
         myWindow.add(mazeview);
         //Window will be sized to fit the preferred size
         // and layouts of its subcomponents.
         myWindow.pack();
+        // Request focus on the MazeView
+        mazeview.requestFocusInWindow();
     }
 
     /**
@@ -150,56 +154,12 @@ public  final class TriviaMaze implements PropertyChangeListener {
 
     }
 
-    /**
-     * ControlKeyListener is responsible to read key input from the
-     * user and move the tetris piece according to the key pressed.
-     */
-    static class ControlKeyListener extends KeyAdapter {
-        @Override
-        public void keyPressed(final KeyEvent theEvent) {
-            switch (theEvent.getKeyCode()) {
-                case KeyEvent.VK_W, KeyEvent.VK_UP -> handleUpKey();
-                case KeyEvent.VK_S, KeyEvent.VK_DOWN -> handleDownKey();
-                case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
-                case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
-                case KeyEvent.VK_SPACE -> handleSpaceKey();
-
-                default -> {
-                }
-            }
-        }
-
-        private void handleUpKey() {
-            System.out.println("Pressed Up");
-
-        }
-
-        private void handleDownKey() {
-            System.out.println("Pressed Down");
-
-
-        }
-
-        private void handleLeftKey() {
-
-            System.out.println("Pressed Left");
-
-        }
-
-        private void handleRightKey() {
-            System.out.println("Pressed Right");
-
-        }
-
-        private void handleSpaceKey() {
-            System.out.println("Pressed Space");
-
-        }
 
 
 
 
 
-    }
+
+
 
 }
