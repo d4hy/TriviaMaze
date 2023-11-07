@@ -1,7 +1,6 @@
-
-
 package model;
 import controller.MazeControls;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 
@@ -28,12 +27,12 @@ public class Character {
     /**
      * This field will be the bounds for which rows the user can enter.
      */
-    private int myMaxRows;
+    private final int myMaxRows;
     /**
      * This field will be the bounds for which columns the user can enter.
      *
      */
-    private int myMaxCols;
+    private final  int myMaxCols;
 
 
     /**
@@ -46,13 +45,13 @@ public class Character {
      * The starting X coordinate of where the user spawned within the room.
      */
 
-    private int myStartX;
+    private final int myStartX;
 
     /**
      * The starting Y coordinate of where the user spawned within the room.
      */
 
-    private int myStartY;
+    private final int myStartY;
 
     /**
      * This method initializes the start position.
@@ -69,39 +68,56 @@ public class Character {
         myMobility = true;
         myMaxRows = theMaxRows;
         myMaxCols = theMaxCols;
-
+        myInventory = new ArrayList<>(); // Add this line to initialize myInventory
     }
 
+    /**
+     * Draw the characters, based on their current position.
+     */
+    public void draw(final Graphics2D g2) {
+        int x = getCurrentPosition().x;
+        int y = getCurrentPosition().y;
 
+        // Ensure the rectangle is within the panel's boundaries
+        x = Math.max(0, Math.min(x, myMaxRows - MazeControls.MY_TILE_SIZE));
+        y = Math.max(0, Math.min(y, myMaxCols - MazeControls.MY_TILE_SIZE));
+
+        // Draw the rectangle
+        g2.fillRect(x, y, MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE);
+    }
     /**
      * Resets the character's position to where they spawned.
      */
     public void resetToMiddle() {
-        myCurrentPosition = new Point(myStartX,  myStartX);
-    }
-    /**
-     * Moves the user up if it is  within the boundaries.
-      */
-    public void moveUp() {
-        if (myCurrentPosition.getY() > 0 && myMobility) {
-            myCurrentPosition.setLocation(myCurrentPosition.getX(),
-                    myCurrentPosition.getY() - MazeControls.MY_TILE_SIZE);
-        } else {
-            System.out.println("Cannot move up. "
-                    + "Already at the top boundary or mobility is restricted.");
-        }
+        myCurrentPosition = new Point(myStartX,  myStartY);
     }
 
+    /**
+     * Moves the user up if it is within the boundaries.
+     */
+    public void moveUp() {
+        final double newY = myCurrentPosition.getY() - MazeControls.MY_TILE_SIZE;
+        // Check if the new Y-coordinate is above the top boundary
+        if (newY >= 0) {
+            myCurrentPosition.setLocation(myCurrentPosition.getX(), newY);
+        } else {
+            // If already at or above the top boundary, set Y-coordinate to 0
+            myCurrentPosition.setLocation(myCurrentPosition.getX(), 0);
+        }
+    }
 
     /**
      * Method to move the user down if it is within the boundaries.
      */
     public void moveDown() {
-        if (myCurrentPosition.getY() < myMaxCols && myMobility) {
+        final double newY = myCurrentPosition.getY() + MazeControls.MY_TILE_SIZE;
+        // Check if the new Y-coordinate is below the bottom boundary
+        if (newY < myMaxCols - MazeControls.MY_TILE_SIZE) {
+            myCurrentPosition.setLocation(myCurrentPosition.getX(), newY);
+        } else {
+            // If already at or below the bottom boundary, set Y-coordinate to bottom boundary
             myCurrentPosition.setLocation(myCurrentPosition.getX(),
-                    myCurrentPosition.getY() + MazeControls.MY_TILE_SIZE);
-        } else if (myCurrentPosition.getY() < myMaxCols) {
-            System.out.println("Cannot move down. Already at the bottom boundary.");
+                    myMaxCols - MazeControls.MY_TILE_SIZE);
         }
     }
 
@@ -109,11 +125,14 @@ public class Character {
      * Method to move the user right if it is within the boundaries.
      */
     public void moveRight() {
-        if (myCurrentPosition.getX() < myMaxRows && myMobility) {
-            myCurrentPosition.setLocation(myCurrentPosition.getX() + MazeControls.MY_TILE_SIZE,
+        final double newX = myCurrentPosition.getX() + MazeControls.MY_TILE_SIZE;
+        // Check if the new X-coordinate is beyond the right boundary
+        if (newX < myMaxRows - MazeControls.MY_TILE_SIZE) {
+            myCurrentPosition.setLocation(newX, myCurrentPosition.getY());
+        } else {
+            // If already at or beyond the right boundary, set X-coordinate to right boundary
+            myCurrentPosition.setLocation(myMaxRows - MazeControls.MY_TILE_SIZE,
                     myCurrentPosition.getY());
-        } else if (myCurrentPosition.getX() > myMaxRows) {
-            System.out.println("Cannot move right. Already at the right boundary.");
         }
     }
 
@@ -121,13 +140,16 @@ public class Character {
      * Method to move the user left if it is within the boundaries.
      */
     public void moveLeft() {
-        if (myCurrentPosition.getX() > 0  && myMobility) {
-            myCurrentPosition.setLocation(myCurrentPosition.getX() - MazeControls.MY_TILE_SIZE,
-                    myCurrentPosition.getY());
-        } else if (myCurrentPosition.getX() < 0) {
-            System.out.println("Cannot move left. Already at the left boundary.");
+        final double newX = myCurrentPosition.getX() - MazeControls.MY_TILE_SIZE;
+        // Check if the new X-coordinate is beyond the left boundary
+        if (newX >= 0) {
+            myCurrentPosition.setLocation(newX, myCurrentPosition.getY());
+        } else {
+            // If already at or beyond the left boundary, set X-coordinate to 0
+            myCurrentPosition.setLocation(0, myCurrentPosition.getY());
         }
     }
+
 
 
 
