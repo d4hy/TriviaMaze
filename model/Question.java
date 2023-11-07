@@ -47,7 +47,7 @@ public class Question {
      */
     public String getAnswer() {
 
-        String myAnswer = "This is the answer.";
+        myAnswer = "This is the answer.";
 
         return myAnswer;
     }
@@ -58,8 +58,30 @@ public class Question {
      */
     public String getType() {
 
-        String type = "This is the type of question.";
+        return "This is the type of question.";
+    }
 
-        return type;
+    /**
+     * Dummy question to use for testing purposes.
+     * @return String of explicit question.
+     */
+    public String getDummyQuestion() {
+        return "Who is Beabadoobee?";
+    }
+
+    /**
+     * Dummy answer to use for testing purposes.
+     * @return String of explicit answer.
+     */
+    public String getDummyAnswer() {
+        return "UK Indie Rock Artist";
+    }
+
+    /**
+     * Dummy question type to use for testing purposes.
+     * @return String type of question.
+     */
+    public String getDummyType() {
+        return "Short Answer";
     }
 }
