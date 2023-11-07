@@ -57,7 +57,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      */
     public void setUp() {
         // sets the size of the jPanel.
-        this.setPreferredSize(new Dimension(MazeControls.MY_SCREEN_WIDTH, MazeControls.MY_SCREEN_HEIGHT));
+        this.setPreferredSize(new Dimension(MazeControls.MY_SCREEN_WIDTH,
+                MazeControls.MY_SCREEN_HEIGHT));
         this.setBackground(Color.black);
 
         // will improve game's rendering performance.
@@ -94,10 +95,14 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         g2.setColor(Color.white);
 
         if (myCharacter != null) {
-            // a rectangle that will represent the character for now.
-            g2.fillRect(myCharacter.getCurrentPosition().x, myCharacter.getCurrentPosition().y,
-                    MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE);
+            // Calculate the correct coordinates for drawing the rectangle
+
+
+
+            myCharacter.draw(g2);
+
         }
+
         // good practice to save memory, release any system resources it's using
         // after it is done drawing.
         g2.dispose();
@@ -119,13 +124,13 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     // Implementing KeyListener methods
 
     @Override
-    public void keyPressed(KeyEvent theEvent) {
+    public void keyPressed(final KeyEvent theEvent) {
         switch (theEvent.getKeyCode()) {
-            case KeyEvent.VK_W, KeyEvent.VK_UP -> myMaze.moveUp();
-            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> System.out.println("Pressed Down");
-            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> System.out.println("Pressed Left");
-            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> System.out.println("Pressed Right");
-            case KeyEvent.VK_SPACE -> System.out.println("Pressed Space");
+            case KeyEvent.VK_W, KeyEvent.VK_UP -> handleUpKey();
+            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> handleDownKey();
+            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
+            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
+            case KeyEvent.VK_SPACE -> handleSpaceKey();
             default -> {}
         }
     }
@@ -138,5 +143,34 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     @Override
     public void keyReleased(KeyEvent e) {
         // Not needed for this example
+    }
+    private void handleUpKey() {
+        myMaze.moveUp();
+
+
+    }
+
+    private void handleDownKey() {
+        myMaze.moveDown();
+
+
+
+    }
+
+    private void handleLeftKey() {
+        myMaze.moveLeft();
+
+
+    }
+
+    private void handleRightKey() {
+        myMaze.moveRight();
+
+
+    }
+
+    private void handleSpaceKey() {
+        System.out.println("Pressed Space");
+
     }
 }
