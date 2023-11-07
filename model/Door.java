@@ -14,6 +14,11 @@ package model;
 public class Door {
 
     /**
+     * Description of directional door in a room.
+     */
+    private String myDoorDescription;
+
+    /**
      * Whether Door is locked or not.
      */
     private boolean myLockedStatus;
@@ -26,7 +31,11 @@ public class Door {
     /**
      * Constructor for Door
      */
-    public Door() {}
+    public Door(final String theDoorDescription) {
+
+        myDoorDescription = theDoorDescription;
+
+    }
 
     /**
      * Unlocks Door if associated Question is answered correctly.

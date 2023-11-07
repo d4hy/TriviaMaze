@@ -5,7 +5,8 @@
 package model;
 
 import controller.MazeControls;
-
+import controller.PropertyChangedEnabledMazeControls;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
@@ -15,9 +16,9 @@ import java.beans.PropertyChangeSupport;
  * @author David Hoang
  * @version Fall 2023
  */
-public class Maze implements MazeControls {
+public class Maze implements PropertyChangedEnabledMazeControls {
 
-    private static final String PROPERTY_MOVE_DOWN = "Character has moved DOWN.";
+
 
     /**
      * The room that Character is currently in.
@@ -47,10 +48,10 @@ public class Maze implements MazeControls {
     /**
      * Character that is in Maze.
      */
-    private Character myCharacter;
+    private Character myCharacter; // reference changed to private
 
     /**
-     * Signals change in the model to the view.
+     * Signals change from the model to the view.
      */
     private PropertyChangeSupport myPcs;
 
@@ -59,16 +60,89 @@ public class Maze implements MazeControls {
      */
     public Maze(final int theWidth, final int theHeight) {
         super();
-        // arbitrary values for a new Character with starting position.
-        myCharacter = new Character(0, 0, theWidth, theHeight);
+
+        // Calculate the initial position for the Character to be in the middle of the screen.
+        // since it is represented within the top left corner of a pixel, you have to subtract
+        // the tile size.
+        final int startX = (MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE) / 2;
+        final int startY = (MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE) / 2;
+
+        // Instantiate the Character with the calculated initial position.
+        myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH,
+                MazeControls.MY_SCREEN_HEIGHT);
+
 
         myWidth = theWidth;
         myHeight = theHeight;
+        createMaze();
+        myPcs = new PropertyChangeSupport(this);
+
+    }
+
+    /**
+     * Fills the maze with Rooms and sets initial game values.
+     */
+    public void createMaze() {
 
         myCorrectAnswers = 0;
-        myRooms = new Room[theWidth][theHeight];
+        myRooms = new Room[myWidth][myHeight];
+
+        for (int i = 0; i < myWidth; i++) {
+            for (int j = 0; j < myHeight; j++) {
+                myRooms[i][j] = new Room();
+            }
+        }
+
+        assignDoors();
         myCurrentRoom = myRooms[0][0];
-        myPcs = new PropertyChangeSupport(this);
+    }
+
+    /**
+     * Create door objects in myRooms to reference different directional
+     * doors that the Character traverses through.
+     */
+    public void assignDoors() {
+
+        final Door leftDoor = new Door("Left Door.");
+        final Door rightDoor = new Door("Right Door.");
+        final Door topDoor = new Door("Top Door.");
+        final Door bottomDoor = new Door("Bottom Door.");
+
+        for (int i = 0; i < myWidth; i++) {
+            for (int j = 0; j < myHeight; j++) {
+
+                final Door left;
+                final Door right;
+                final Door top;
+                final Door bottom;
+
+                if (j > 0 && i > 0) {
+                    left = myRooms[i - 1][j].getRightDoor();
+                } else {
+                    left = leftDoor;
+                }
+
+                if (j < myHeight - 1 && i < myWidth - 1) {
+                    right = myRooms[i + 1][j].getLeftDoor();
+                } else {
+                    right = rightDoor;
+                }
+
+                if (i > 0 && j > 0) {
+                    top = myRooms[i][j - 1].getBottomDoor();
+                } else {
+                    top = topDoor;
+                }
+
+                if (i < myWidth - 1 && j < myHeight - 1) {
+                    bottom = myRooms[i][j + 1].getTopDoor();
+                } else {
+                    bottom = bottomDoor;
+                }
+
+                myRooms[i][j] = new Room(left, right, top, bottom);
+            }
+        }
 
     }
 
@@ -86,7 +160,7 @@ public class Maze implements MazeControls {
      */
     public String getCurrentRoomInfo() {
 
-        String info = "This is information";
+        final String info = "This is information";
 
         return info;
     }
@@ -96,7 +170,7 @@ public class Maze implements MazeControls {
      */
     public boolean answerQuestion(final String theInput) {
 
-        boolean validity = false;
+        final boolean validity = false;
 
         return validity;
     }
@@ -109,7 +183,7 @@ public class Maze implements MazeControls {
 
         // TODO: Evaluate nearby cells to see if traversable.
 
-        boolean move = false;
+        final boolean move = true;
 
         return move;
     }
@@ -126,24 +200,36 @@ public class Maze implements MazeControls {
      */
     public boolean isGameLost() {
 
-        boolean game = false;
+        final boolean game = true;
 
         return game;
     }
 
     @Override
     public void newGame() {
+        // Calculate the initial position for the Character to be in the middle of the screen.
+        // since it is represented within the top left corner of a pixel, you have to subtract
+        // the tile size.
+        final int startX = (MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE) / 2;
+        final int startY = (MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE) / 2;
+
+        // Instantiate the Character with the calculated initial position.
+        myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH,
+                MazeControls.MY_SCREEN_HEIGHT);
 
         myCorrectAnswers = 0;
+        myCurrentRoom = myRooms[0][0];
+        myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
 
     }
 
     @Override
     public void moveDown() {
 
-        if (canMove() == true) {
-            myCurrentRoom = myRooms[myWidth][myHeight + 1];
-            myPcs.firePropertyChange(PROPERTY_MOVE_DOWN, null, myCurrentRoom);
+        if (canMove()) {
+            myCharacter.moveDown();
+            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE,
+                    null, myCharacter);
         }
 
     }
@@ -151,8 +237,9 @@ public class Maze implements MazeControls {
     @Override
     public void moveUp() {
 
-        if (canMove() == true) {
-            myCurrentRoom = myRooms[myWidth][myHeight - 1];
+        if (canMove()) {
+            myCharacter.moveUp();
+            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         }
 
     }
@@ -160,8 +247,10 @@ public class Maze implements MazeControls {
     @Override
     public void moveLeft() {
 
-        if (canMove() == true) {
-            myCurrentRoom = myRooms[myWidth - 1][myHeight];
+        if (canMove()) {
+            myCharacter.moveLeft();
+            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE,
+                    null, myCharacter);
         }
 
     }
@@ -169,8 +258,10 @@ public class Maze implements MazeControls {
     @Override
     public void moveRight() {
 
-        if (canMove() == true) {
-            myCurrentRoom = myRooms[myWidth + 1][myHeight];
+        if (canMove()) {
+            myCharacter.moveRight();
+            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE,
+                    null, myCharacter);
         }
 
     }
@@ -178,5 +269,44 @@ public class Maze implements MazeControls {
     @Override
     public void pauseGame() {
 
+    }
+    /**
+     * adds an object as a listener to the propertyChangeSupport object.
+     * @param theListener The PropertyChangeListener to be added
+     */
+    @Override
+    public void addPropertyChangeListener(final PropertyChangeListener theListener) {
+        myPcs.addPropertyChangeListener(theListener);
+    }
+
+    /**
+     * adds an object as a listener to the propertyChangeSupport object.
+     * @param thePropertyName The name of the property to listen on.
+     * @param theListener The PropertyChangeListener to be added
+     */
+    @Override
+    public void addPropertyChangeListener(final String thePropertyName,
+                                          final PropertyChangeListener theListener) {
+        myPcs.addPropertyChangeListener(thePropertyName, theListener);
+    }
+
+    /**
+     * removes an object as a listener to the propertyChangeSupport object.
+     * @param theListener The PropertyChangeListener to be removed
+     */
+    @Override
+    public void removePropertyChangeListener(final PropertyChangeListener theListener) {
+        myPcs.removePropertyChangeListener(theListener);
+    }
+
+    /**
+     * removes an object as a listener to the propertyChangeSupport object.
+     * @param thePropertyName The name of the property that was listened on.
+     * @param theListener The PropertyChangeListener to be removed
+     */
+    @Override
+    public void removePropertyChangeListener(final String thePropertyName,
+                                             final PropertyChangeListener theListener) {
+        myPcs.removePropertyChangeListener(thePropertyName, theListener);
     }
 }
