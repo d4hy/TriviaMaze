@@ -61,7 +61,11 @@ public class Character {
     /**
      * The speed at which the character moves between each tile.
      */
-    private final int mySpeed=4;
+    private final int mySpeed = 4;
+
+    private int mySpriteCounter;
+
+    private int mySpriteNumber = 1;
     /**
      * These will be sprites that we use.
      */
@@ -108,24 +112,52 @@ public class Character {
         BufferedImage image = null;
         switch (myDirection) {
             case "up":
-                image = myUp1;
+                if (mySpriteNumber == 1) {
+                    image = myUp1;
+
+                }
+                if (mySpriteNumber == 2) {
+                    image = myUp2;
+
+                }
+
                 break;
             case "down":
-                image = myDown1;
+                if (mySpriteNumber == 1) {
+                    image = myDown1;
+
+                }
+                if (mySpriteNumber == 2) {
+                    image = myDown2;
+
+                }
                 break;
             case "right":
-                image = myRight1;
+                if (mySpriteNumber == 1) {
+                    image = myRight1;
+
+                }
+                if (mySpriteNumber == 2) {
+                    image = myRight2;
+
+                }
                 break;
             case "left":
-                image = myLeft1;
+                if (mySpriteNumber == 1) {
+                    image = myLeft1;
+
+                }
+                if (mySpriteNumber == 2) {
+                    image = myLeft2;
+
+                }
                 break;
 
             default:
                 throw new IllegalStateException("Unexpected value: " + myDirection);
         }
         g2.drawImage(image, x, y, MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
-        // Draw the rectangle
-        //g2.fillRect(x, y, MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE);
+
     }
     /**
      * Resets the character's position to where they spawned.
