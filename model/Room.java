@@ -75,8 +75,7 @@ public class Room {
     /**
      * Constructor for Room.
      */
-    public Room(final Door theLeftDoor, final Door theRightDoor,
-                final Door theTopDoor, final Door theBottomDoor) {
+
     public Room() { }
 
     public void setDoor(final String theDoor) {
