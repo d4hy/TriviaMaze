@@ -74,7 +74,7 @@ public class Character {
      */
     private int mySpriteNumber = 1;
     /**
-     * These will be sprites that we use.
+     * These will be sprites that we use for the character
      */
     @SuppressWarnings("checkstyle:MultipleVariableDeclarations")
     private BufferedImage myUp1, myUp2, myDown1,

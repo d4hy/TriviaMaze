@@ -4,6 +4,14 @@
  */
 package model;
 
+import controller.MazeControls;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
+import javax.imageio.ImageIO;
+
+
 /**
  * Room class will contain information about its Doors in response to player actions in Maze.
  *
@@ -37,6 +45,12 @@ public class Room {
      * Bottom door in Room.
      */
     private Door myBottomDoor;
+
+    /**
+     * The sprite to use for the room.
+     */
+
+    private BufferedImage myRoomTile;
 
     /**
      * Constructor for Room.
@@ -98,6 +112,45 @@ public class Room {
 
     }
 
+    /**
+     * Draw the room tiles.
+     */
+    public void draw(final Graphics2D g2) {
+
+
+
+
+
+
+        final BufferedImage image = getRoomTileImage();
+        // Draw a grid of room tiles
+        for (int i = 0; i < MazeControls.MY_MAX_SCREEN_ROW; i++) {
+            for (int j = 0; j < MazeControls.MY_MAX_SCREEN_COL; j++) {
+                final int x = i * MazeControls.MY_TILE_SIZE;
+                final int y = j * MazeControls.MY_TILE_SIZE;
+                g2.drawImage(image, x, y, MazeControls.MY_TILE_SIZE,
+                        MazeControls.MY_TILE_SIZE, null);
+            }
+        }
+
+
+    }
+
+    /**
+     * This method will load the user images.
+     */
+    private BufferedImage getRoomTileImage() {
+        try {
+            //the string is the path of where the file for the room tiles
+            myRoomTile = ImageIO.read(Objects.requireNonNull(getClass().
+                    getResourceAsStream("/res/room_tile_red.png")));
+
+        } catch (final IOException e) {
+            e.printStackTrace();
+
+        }
+        return myRoomTile;
+    }
     /**
      * Returns validity of Character answered Question.
      * @return boolean if question asked was answered.

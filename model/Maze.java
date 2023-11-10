@@ -74,8 +74,9 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         myWidth = theWidth;
         myHeight = theHeight;
-        createMaze();
         myPcs = new PropertyChangeSupport(this);
+        createMaze();
+
 
     }
 
@@ -95,6 +96,9 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         assignDoors();
         myCurrentRoom = myRooms[0][0];
+        myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+
+
     }
 
     /**
@@ -219,6 +223,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         myCorrectAnswers = 0;
         myCurrentRoom = myRooms[0][0];
+        myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
         myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
 
     }
