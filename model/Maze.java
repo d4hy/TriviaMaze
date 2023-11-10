@@ -18,6 +18,30 @@ import java.beans.PropertyChangeSupport;
  */
 public class Maze implements PropertyChangedEnabledMazeControls {
 
+    /**
+     * Constant to use for assigning right door in rooms.
+     */
+    private static final String RIGHT_DOOR = "Right";
+
+    /**
+     * Constant to use for assigning left door in rooms.
+     */
+    private static final String LEFT_DOOR = "Left";
+
+    /**
+     * Constant to use for assigning top door in rooms.
+     */
+    private static final String TOP_DOOR = "Top";
+
+    /**
+     * Constant to use for assigning bottom door in rooms.
+     */
+    private static final String BOTTOM_DOOR = "Bottom";
+
+    /**
+     * Constant to use for reaching the furthest rooms in perimeter of maze.
+     */
+    private static final int ENDPOINT = 3;
 
 
     /**
@@ -48,7 +72,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     /**
      * Character that is in Maze.
      */
-    private Character myCharacter; // reference changed to private
+    private Character myCharacter;
 
     /**
      * Signals change from the model to the view.
@@ -94,6 +118,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             }
         }
 
+        createRooms();
         assignDoors();
         myCurrentRoom = myRooms[0][0];
         myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
@@ -102,49 +127,135 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     }
 
     /**
+     * Creates appropriate directional doors for each room, with perimeter rooms only
+     * containing doors leading to rooms adjacent to it.
+     */
+    private void createRooms() {
+
+        setTopRow();
+        setLeftCol();
+        setBottomRow();
+        setRightCol();
+
+        for (int i = 1; i < myWidth - 1; i++) {
+            for (int j = 1; j < myHeight - 1; j++) {
+                myRooms[i][j].setDoor(RIGHT_DOOR);
+                myRooms[i][j].setDoor(LEFT_DOOR);
+                myRooms[i][j].setDoor(TOP_DOOR);
+                myRooms[i][j].setDoor(BOTTOM_DOOR);
+            }
+        }
+
+    }
+
+    /**
+     * Sets the doors of top row in maze.
+     */
+    private void setTopRow() {
+
+        // assigning outside the loop since it only has to be done once.
+        myRooms[0][0].setDoor(RIGHT_DOOR);
+        myRooms[0][0].setDoor(BOTTOM_DOOR);
+        myRooms[ENDPOINT][0].setDoor(LEFT_DOOR);
+        myRooms[ENDPOINT][0].setDoor(BOTTOM_DOOR);
+
+        for (int i = 1; i < myWidth - 2; i++) {
+            myRooms[0][i].setDoor(LEFT_DOOR);
+            myRooms[0][i].setDoor(RIGHT_DOOR);
+            myRooms[0][i].setDoor(BOTTOM_DOOR);
+        }
+
+    }
+
+    /**
+     * Sets the doors of left column in maze.
+     */
+    private void setLeftCol() {
+
+        // assigning outside the loop since it only has to be done once.
+        myRooms[0][ENDPOINT].setDoor(RIGHT_DOOR);
+        myRooms[0][ENDPOINT].setDoor(TOP_DOOR);
+
+        for (int i = 1; i < myHeight - 2; i++) {
+            myRooms[0][i].setDoor(TOP_DOOR);
+            myRooms[0][i].setDoor(RIGHT_DOOR);
+            myRooms[0][i].setDoor(BOTTOM_DOOR);
+        }
+
+
+    }
+
+    /**
+     * Sets the doors of bottom row in maze.
+     */
+    private void setBottomRow() {
+
+        // assigning outside the loop since it only has to be done once.
+        myRooms[ENDPOINT][ENDPOINT].setDoor(LEFT_DOOR);
+        myRooms[ENDPOINT][ENDPOINT].setDoor(TOP_DOOR);
+
+        for (int i = 1; i < myWidth - 2; i++) {
+            myRooms[i][ENDPOINT].setDoor(TOP_DOOR);
+            myRooms[i][ENDPOINT].setDoor(RIGHT_DOOR);
+            myRooms[i][ENDPOINT].setDoor(LEFT_DOOR);
+        }
+
+    }
+
+    /**
+     * Sets the doors of right column in maze.
+     */
+    private void setRightCol() {
+
+        for (int i = 1; i < myWidth - 2; i++) {
+            myRooms[ENDPOINT][i].setDoor(TOP_DOOR);
+            myRooms[ENDPOINT][i].setDoor(BOTTOM_DOOR);
+            myRooms[ENDPOINT][i].setDoor(LEFT_DOOR);
+        }
+
+    }
+
+    /**
      * Create door objects in myRooms to reference different directional
      * doors that the Character traverses through.
      */
-    public void assignDoors() {
-
-        final Door leftDoor = new Door("Left Door.");
-        final Door rightDoor = new Door("Right Door.");
-        final Door topDoor = new Door("Top Door.");
-        final Door bottomDoor = new Door("Bottom Door.");
+    private void assignDoors() {
 
         for (int i = 0; i < myWidth; i++) {
             for (int j = 0; j < myHeight; j++) {
 
-                final Door left;
-                final Door right;
-                final Door top;
-                final Door bottom;
-
+                // assigns all rooms that have both left and top doors.
                 if (j > 0 && i > 0) {
-                    left = myRooms[i - 1][j].getRightDoor();
-                } else {
-                    left = leftDoor;
+                    myRooms[i][j].assignLeftDoor(myRooms[i - 1][j].getRightDoor());
+                    myRooms[i][j].assignTopDoor(myRooms[i][j - 1].getBottomDoor());
                 }
 
-                if (j < myHeight - 1 && i < myWidth - 1) {
-                    right = myRooms[i + 1][j].getLeftDoor();
-                } else {
-                    right = rightDoor;
+                // assigns all rooms that have both right and bottom doors.
+                if (j < myHeight - 2 && i < myWidth - 2) {
+                    myRooms[i][j].assignRightDoor(myRooms[i + 1][j].getLeftDoor());
+                    myRooms[i][j].assignBottomDoor(myRooms[i][j + 1].getTopDoor());
                 }
 
-                if (i > 0 && j > 0) {
-                    top = myRooms[i][j - 1].getBottomDoor();
-                } else {
-                    top = topDoor;
+                // assigns left door of top row.
+                if (i > 0 && j == 0) {
+                    myRooms[i][j].assignLeftDoor(myRooms[i - 1][j].getRightDoor());
                 }
 
-                if (i < myWidth - 1 && j < myHeight - 1) {
-                    bottom = myRooms[i][j + 1].getTopDoor();
-                } else {
-                    bottom = bottomDoor;
+                // assigns top doors of left column.
+                if (i == 0 && j > 0) {
+                    myRooms[i][j].assignTopDoor(myRooms[i][j - 1].getBottomDoor());
                 }
 
-                myRooms[i][j] = new Room(left, right, top, bottom);
+                // assigns right doors of last row.
+                if (i < myWidth - 2 && j == ENDPOINT) {
+                    myRooms[i][j].assignRightDoor(myRooms[i + 1][j].getLeftDoor());
+                }
+
+                // assigns bottom doors of right column.
+                if (i == ENDPOINT && j < myHeight - 2) {
+                    myRooms[i][j].assignBottomDoor(myRooms[i][j + 1].getTopDoor());
+                }
+
             }
         }
 

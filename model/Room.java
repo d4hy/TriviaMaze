@@ -52,26 +52,21 @@ public class Room {
 
     private BufferedImage myRoomTile;
 
-    /**
-     * Constructor for Room.
-     */
-    public Room(final Door theLeftDoor, final Door theRightDoor,
-                final Door theTopDoor, final Door theBottomDoor) {
+    public Room() { }
 
-        myLeftDoor = theLeftDoor;
-        myRightDoor = theRightDoor;
-        myTopDoor = theTopDoor;
-        myBottomDoor = theBottomDoor;
+    public void setDoor(final String theDoor) {
+
+        if (Objects.equals(theDoor, "Left")) {
+            myLeftDoor = new Door("Left Door");
+        } else if (Objects.equals(theDoor, "Right")) {
+            myRightDoor = new Door("Right Door");
+        } else if (Objects.equals(theDoor, "Top")) {
+            myTopDoor = new Door("Top Door");
+        } else if (Objects.equals(theDoor, "Bottom")) {
+            myBottomDoor = new Door("Bottom Door");
+        }
 
     }
-
-    public Room() {
-        myLeftDoor = new Door("Left Door");
-        myRightDoor = new Door("Right Door");
-        myTopDoor = new Door("Top Door");
-        myBottomDoor = new Door("Bottom Door");
-    }
-
     /**
      * Retrieves left door in specific Room.
      * @return left Door.
@@ -102,6 +97,42 @@ public class Room {
      */
     public Door getBottomDoor() {
         return myBottomDoor;
+    }
+
+    /**
+     * Will reassign reference of door in this Room to share with adjacent room's
+     * door.
+     * @param theDoor door of adjacent room.
+     */
+    public void assignLeftDoor(final Door theDoor) {
+        myLeftDoor = theDoor;
+    }
+
+    /**
+     * Will reassign reference of door in this Room to share with adjacent room's
+     * door.
+     * @param theDoor door of adjacent room.
+     */
+    public void assignRightDoor(final Door theDoor) {
+        myRightDoor = theDoor;
+    }
+
+    /**
+     * Will reassign reference of door in this Room to share with adjacent room's
+     * door.
+     * @param theDoor door of adjacent room.
+     */
+    public void assignTopDoor(final Door theDoor) {
+        myTopDoor = theDoor;
+    }
+
+    /**
+     * Will reassign reference of door in this Room to share with adjacent room's
+     * door.
+     * @param theDoor door of adjacent room.
+     */
+    public void assignBottomDoor(final Door theDoor) {
+        myBottomDoor = theDoor;
     }
 
     /**
