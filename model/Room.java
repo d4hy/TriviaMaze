@@ -52,6 +52,31 @@ public class Room {
 
     private BufferedImage myRoomTile;
 
+    /**
+     * The sprite to use for the left door.
+     */
+    private BufferedImage myLeftDoorImg;
+
+    /**
+     * The sprite to use for the right door.
+     */
+    private BufferedImage myRightDoorImg;
+    /**
+     * The sprite to use for the top door.
+     */
+    private BufferedImage myTopDoorImg;
+    /**
+     * The sprite to use for the bottom door.
+     */
+    private BufferedImage myBottomDoorImg;
+
+
+
+    /**
+     * Constructor for Room.
+     */
+    public Room(final Door theLeftDoor, final Door theRightDoor,
+                final Door theTopDoor, final Door theBottomDoor) {
     public Room() { }
 
     public void setDoor(final String theDoor) {
@@ -144,15 +169,24 @@ public class Room {
     }
 
     /**
-     * Draw the room tiles.
+     * Draw the room and their doors.
      */
     public void draw(final Graphics2D g2) {
 
+        drawRooms(g2);
 
 
 
 
 
+
+
+    }
+    /**
+     * Draws the current rooms floor.
+     *
+     */
+    public void drawRooms(final Graphics2D g2) {
         final BufferedImage image = getRoomTileImage();
         // Draw a grid of room tiles
         for (int i = 0; i < MazeControls.MY_MAX_SCREEN_ROW; i++) {
@@ -163,14 +197,28 @@ public class Room {
                         MazeControls.MY_TILE_SIZE, null);
             }
         }
-
-
     }
 
     /**
      * This method will load the user images.
      */
     private BufferedImage getRoomTileImage() {
+        try {
+            //the string is the path of where the file for the room tiles
+            myRoomTile = ImageIO.read(Objects.requireNonNull(getClass().
+                    getResourceAsStream("/res/room_tile_red.png")));
+
+        } catch (final IOException e) {
+            e.printStackTrace();
+
+        }
+        return myRoomTile;
+    }
+
+    /**
+     * This method will load the user images.
+     */
+    private BufferedImage getLeftDoorIMg() {
         try {
             //the string is the path of where the file for the room tiles
             myRoomTile = ImageIO.read(Objects.requireNonNull(getClass().
