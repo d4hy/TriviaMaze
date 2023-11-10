@@ -61,10 +61,17 @@ public class Character {
     /**
      * The speed at which the character moves between each tile.
      */
-    private final int mySpeed = 4;
+    private final int mySpeed = 6;
 
+    /**
+     * Counter for how many steps has taken the sprite alternates.
+     */
     private int mySpriteCounter;
 
+
+    /**
+     * Counter for which walking animation to choose.
+     */
     private int mySpriteNumber = 1;
     /**
      * These will be sprites that we use.
@@ -109,55 +116,54 @@ public class Character {
         x = Math.max(0, Math.min(x, myMaxRows - MazeControls.MY_TILE_SIZE));
         y = Math.max(0, Math.min(y, myMaxCols - MazeControls.MY_TILE_SIZE));
 
+
+        final BufferedImage image = getSpriteImage();
+
+        g2.drawImage(image, x, y, MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
+
+    }
+
+    /**
+     * Get the appropriate sprite image based on the
+     * character's direction and walking animation.
+     * @return theBufferedImage that represents the character.
+     */
+    private BufferedImage getSpriteImage() {
         BufferedImage image = null;
+
         switch (myDirection) {
             case "up":
-                if (mySpriteNumber == 1) {
-                    image = myUp1;
-
-                }
-                if (mySpriteNumber == 2) {
-                    image = myUp2;
-
-                }
-
+                image = getSprite(myUp1, myUp2);
                 break;
             case "down":
-                if (mySpriteNumber == 1) {
-                    image = myDown1;
-
-                }
-                if (mySpriteNumber == 2) {
-                    image = myDown2;
-
-                }
+                image = getSprite(myDown1, myDown2);
                 break;
             case "right":
-                if (mySpriteNumber == 1) {
-                    image = myRight1;
-
-                }
-                if (mySpriteNumber == 2) {
-                    image = myRight2;
-
-                }
+                image = getSprite(myRight1, myRight2);
                 break;
             case "left":
-                if (mySpriteNumber == 1) {
-                    image = myLeft1;
-
-                }
-                if (mySpriteNumber == 2) {
-                    image = myLeft2;
-
-                }
+                image = getSprite(myLeft1, myLeft2);
                 break;
-
             default:
                 throw new IllegalStateException("Unexpected value: " + myDirection);
         }
-        g2.drawImage(image, x, y, MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
 
+        return image;
+    }
+
+    /**
+     * Gets the sprite image based on the current sprite number.
+     *
+     * @param sprite1 The first sprite image.
+     * @param sprite2 The second sprite image.
+     * @return The sprite image based on the current sprite number.
+     */
+    private BufferedImage getSprite(final BufferedImage sprite1, final BufferedImage sprite2) {
+        if (mySpriteNumber == 1) {
+            return sprite1;
+        } else {
+            return sprite2;
+        }
     }
     /**
      * Resets the character's position to where they spawned.
@@ -179,6 +185,7 @@ public class Character {
             // If already at or above the top boundary, set Y-coordinate to 0
             myCurrentPosition.setLocation(myCurrentPosition.getX(), 0);
         }
+        alternateWalkingSprite();
     }
 
     /**
@@ -190,11 +197,13 @@ public class Character {
         if (newY < myMaxCols - MazeControls.MY_TILE_SIZE) {
             myDirection = "down";
             myCurrentPosition.setLocation(myCurrentPosition.getX(), newY);
+
         } else {
             // If already at or below the bottom boundary, set Y-coordinate to bottom boundary
             myCurrentPosition.setLocation(myCurrentPosition.getX(),
                     myMaxCols - MazeControls.MY_TILE_SIZE);
         }
+        alternateWalkingSprite();
     }
 
     /**
@@ -211,7 +220,9 @@ public class Character {
             myCurrentPosition.setLocation(myMaxRows - MazeControls.MY_TILE_SIZE,
                     myCurrentPosition.getY());
         }
+        alternateWalkingSprite();
     }
+
 
     /**
      * Method to move the user left if it is within the boundaries.
@@ -226,8 +237,23 @@ public class Character {
             // If already at or beyond the left boundary, set X-coordinate to 0
             myCurrentPosition.setLocation(0, myCurrentPosition.getY());
         }
+        alternateWalkingSprite();
     }
-
+    /**
+     * Alternates the walking animation of the character.
+     */
+    private void alternateWalkingSprite() {
+        mySpriteCounter++;
+        //every 10 movements, change the walking animation
+        if (mySpriteCounter > 5) {
+            if (mySpriteNumber == 1) {
+                mySpriteNumber = 2;
+            } else if (mySpriteNumber == 2) {
+                mySpriteNumber = 1;
+            }
+            mySpriteCounter = 0;
+        }
+    }
 
     /**
      * This method will load the user images.
