@@ -187,48 +187,45 @@ public class Room {
      */
     private void drawRoomsDoors(final Graphics2D g2) {
 
-
-
-
         // Draw the left door if it exists
         if (myLeftDoor != null) {
             final BufferedImage leftDoorImg = getLeftDoorImg();
             // Calculate the position to draw the left door in the middle of the left border
             final int leftDoorImgX = 0;
-            final int leftDoorImgY = (MazeControls.MY_MAX_SCREEN_COL / 2)
-                    * MazeControls.MY_TILE_SIZE;
+            final int leftDoorImgY = (MazeControls.MY_SCREEN_HEIGHT / 2)
+                    - (MazeControls.MY_TILE_SIZE / 2);
             //draws the door that is to the left of the door if it exists.
             g2.drawImage(leftDoorImg, leftDoorImgX , leftDoorImgY, MazeControls.MY_TILE_SIZE,
                     MazeControls.MY_TILE_SIZE, null);
         }
+
         // Draw the right door if it exists
         if (myRightDoor != null) {
             final BufferedImage rightDoorImg = getRightDoorImg();
-            // Calculate the position to draw the
-            // right door on the right side of the room's border.
-            final int rightDoorImgX = (MazeControls.MY_MAX_SCREEN_ROW - 1)
-                    * MazeControls.MY_TILE_SIZE;
-            final int rightDoorImgY = (MazeControls.MY_MAX_SCREEN_COL / 2)
-                    * MazeControls.MY_TILE_SIZE;
+            // Calculate the position to draw the right door on the
+            // right side of the room's border.
+            final int rightDoorImgX = MazeControls.MY_SCREEN_WIDTH
+                    - MazeControls.MY_TILE_SIZE;
+            final int rightDoorImgY = (MazeControls.MY_SCREEN_HEIGHT / 2)
+                    - (MazeControls.MY_TILE_SIZE / 2);
             // Draw the right door.
-            g2.drawImage(rightDoorImg, rightDoorImgX ,
-                    rightDoorImgY, MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
+            g2.drawImage(rightDoorImg, rightDoorImgX, rightDoorImgY,
+                    MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
         }
 
         // Draw the bottom door if it exists
         if (myBottomDoor != null) {
             final BufferedImage bottomDoorImg = getBottomDoorImg();
-            // Calculate the position to draw the
-            // right door on the bottom side of the room's border.
-            final int bottomDoorImgX = (MazeControls.MY_MAX_SCREEN_ROW - 1)
-                    * MazeControls.MY_TILE_SIZE;
-            final int bottomDoorImgY = (MazeControls.MY_MAX_SCREEN_COL / 2)
-                    * MazeControls.MY_TILE_SIZE;
+            // Calculate the position to draw the right door on
+            // the bottom side of the room's border.
+            final int bottomDoorImgX = (MazeControls.MY_SCREEN_WIDTH / 2)
+                    - (MazeControls.MY_TILE_SIZE / 2);
+            final int bottomDoorImgY = MazeControls.MY_SCREEN_HEIGHT
+                    - MazeControls.MY_TILE_SIZE;
             // Draw the right door.
-            g2.drawImage(bottomDoorImg, bottomDoorImgX , bottomDoorImgY,
+            g2.drawImage(bottomDoorImg, bottomDoorImgX, bottomDoorImgY,
                     MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
         }
-
     }
 
 
