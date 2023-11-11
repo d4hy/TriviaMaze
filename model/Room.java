@@ -216,7 +216,7 @@ public class Room {
         // Draw the bottom door if it exists
         if (myBottomDoor != null) {
             final BufferedImage bottomDoorImg = getBottomDoorImg();
-            // Calculate the position to draw the right door on
+            // Calculate the position to draw the bottom door on
             // the bottom side of the room's border.
             final int bottomDoorImgX = (MazeControls.MY_SCREEN_WIDTH / 2)
                     - (MazeControls.MY_TILE_SIZE / 2);
@@ -224,6 +224,17 @@ public class Room {
                     - MazeControls.MY_TILE_SIZE;
             // Draw the right door.
             g2.drawImage(bottomDoorImg, bottomDoorImgX, bottomDoorImgY,
+                    MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
+        }
+        // Draw the top door if it exists
+        if (myTopDoor != null) {
+            final BufferedImage topDoorImg = getTopDoorImg();
+            // Calculate the position to draw the top door in the middle of the top border
+            final int topDoorImgX = (MazeControls.MY_SCREEN_WIDTH / 2)
+                    - (MazeControls.MY_TILE_SIZE / 2);
+            final int topDoorImgY = 0;
+            // Draw the top door.
+            g2.drawImage(topDoorImg, topDoorImgX, topDoorImgY,
                     MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
         }
     }
@@ -309,6 +320,22 @@ public class Room {
         }
         return myBottomDoorImg;
     }
+    /**
+     * This method will load the bottom door images.
+     */
+    private BufferedImage getTopDoorImg() {
+        try {
+            //the string is the path of where the file for the bottom door img.
+            myTopDoorImg = ImageIO.read(Objects.requireNonNull(getClass().
+                    getResourceAsStream("/res/top_door.png")));
+
+        } catch (final IOException e) {
+            e.printStackTrace();
+
+        }
+        return myTopDoorImg;
+    }
+
     /**
      * Returns validity of Character answered Question.
      * @return boolean if question asked was answered.
