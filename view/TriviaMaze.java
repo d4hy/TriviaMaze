@@ -2,6 +2,7 @@
 package view;
 
 
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -12,6 +13,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import model.Maze;
 
 /**
  * This class will serve as the container class where everything will be displayed and ran.
@@ -22,9 +24,13 @@ import javax.swing.JOptionPane;
 public  final class TriviaMaze implements PropertyChangeListener {
 
     /**
+     *  Maze Object to be referenced.
+     */
+    private final Maze myMaze;
+    /**
      * Static variable used to contain the gui components.
      */
-    private static JFrame myWindow;
+    private  JFrame myWindow;
 
     /**
      * Constructs the JFrame where everything will be contained and displays
@@ -32,6 +38,9 @@ public  final class TriviaMaze implements PropertyChangeListener {
      */
     public TriviaMaze() {
         myWindow = new JFrame();
+
+        myMaze = new Maze(4, 4);
+        myMaze.newGame();
         setUpJFrame();
         addMazeView();
         addUserOptionsToJFrame();
@@ -41,7 +50,7 @@ public  final class TriviaMaze implements PropertyChangeListener {
      * Sets up the JFrame where everything will be contained.
      */
 
-    private static void setUpJFrame() {
+    private  void setUpJFrame() {
 
         //This lets the window properly close when user clicks X button.
         myWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,11 +66,9 @@ public  final class TriviaMaze implements PropertyChangeListener {
     /**
      * Adds the JPanel of the maze to the JFrame.
      */
-    private static void addMazeView() {
-        final MazeView mazeview = new MazeView();
-
-        //adds the maze view as a key listener.
-        mazeview.addKeyListener(mazeview);
+    private  void addMazeView() {
+        final MazeView mazeview = new MazeView(myMaze);
+        myMaze.addPropertyChangeListener(mazeview);
         mazeview.setFocusable(true);
         myWindow.add(mazeview);
         //Window will be sized to fit the preferred size
@@ -74,7 +81,7 @@ public  final class TriviaMaze implements PropertyChangeListener {
     /**
      *  Builds and adds a menu bar that displays options to the user.
      */
-    private static void addUserOptionsToJFrame() {
+    private  void addUserOptionsToJFrame() {
         final JMenuBar menuBar = new JMenuBar();
         //The file option
         final JMenu menu = new JMenu("File");
@@ -86,7 +93,7 @@ public  final class TriviaMaze implements PropertyChangeListener {
      * Builds the menu Items and adds actionlisteners.
      * Also adds to the sub menu of user options and returns it.
      */
-    private static JMenu buildUserOptions() {
+    private  JMenu buildUserOptions() {
         final JMenuItem newGame = new JMenuItem("New game");
         final JMenuItem endGame = new JMenuItem("End Game");
         final JMenuItem exit = new JMenuItem("Exit");

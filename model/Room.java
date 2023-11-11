@@ -172,8 +172,8 @@ public class Room {
      */
     public void draw(final Graphics2D g2) {
 
-        drawRooms(g2);
-
+        drawRoomsFloor(g2);
+        drawRoomsDoors(g2);
 
 
 
@@ -181,11 +181,62 @@ public class Room {
 
 
     }
+
+    /**
+     * Draws the rooms doors.
+     */
+    private void drawRoomsDoors(final Graphics2D g2) {
+
+
+
+
+        // Draw the left door if it exists
+        if (myLeftDoor != null) {
+            final BufferedImage leftDoorImg = getLeftDoorImg();
+            // Calculate the position to draw the left door in the middle of the left border
+            final int leftDoorImgX = 0;
+            final int leftDoorImgY = (MazeControls.MY_MAX_SCREEN_COL / 2)
+                    * MazeControls.MY_TILE_SIZE;
+            //draws the door that is to the left of the door if it exists.
+            g2.drawImage(leftDoorImg, leftDoorImgX , leftDoorImgY, MazeControls.MY_TILE_SIZE,
+                    MazeControls.MY_TILE_SIZE, null);
+        }
+        // Draw the right door if it exists
+        if (myRightDoor != null) {
+            final BufferedImage rightDoorImg = getRightDoorImg();
+            // Calculate the position to draw the
+            // right door on the right side of the room's border.
+            final int rightDoorImgX = (MazeControls.MY_MAX_SCREEN_ROW - 1)
+                    * MazeControls.MY_TILE_SIZE;
+            final int rightDoorImgY = (MazeControls.MY_MAX_SCREEN_COL / 2)
+                    * MazeControls.MY_TILE_SIZE;
+            // Draw the right door.
+            g2.drawImage(rightDoorImg, rightDoorImgX ,
+                    rightDoorImgY, MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
+        }
+
+        // Draw the bottom door if it exists
+        if (myBottomDoor != null) {
+            final BufferedImage bottomDoorImg = getBottomDoorImg();
+            // Calculate the position to draw the
+            // right door on the bottom side of the room's border.
+            final int bottomDoorImgX = (MazeControls.MY_MAX_SCREEN_ROW - 1)
+                    * MazeControls.MY_TILE_SIZE;
+            final int bottomDoorImgY = (MazeControls.MY_MAX_SCREEN_COL / 2)
+                    * MazeControls.MY_TILE_SIZE;
+            // Draw the right door.
+            g2.drawImage(bottomDoorImg, bottomDoorImgX , bottomDoorImgY,
+                    MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
+        }
+
+    }
+
+
     /**
      * Draws the current rooms floor.
      *
      */
-    public void drawRooms(final Graphics2D g2) {
+    private void drawRoomsFloor(final Graphics2D g2) {
         final BufferedImage image = getRoomTileImage();
         // Draw a grid of room tiles
         for (int i = 0; i < MazeControls.MY_MAX_SCREEN_ROW; i++) {
@@ -215,19 +266,51 @@ public class Room {
     }
 
     /**
-     * This method will load the user images.
+     * This method will load the left door images.
      */
-    private BufferedImage getLeftDoorIMg() {
+    private BufferedImage getLeftDoorImg() {
         try {
-            //the string is the path of where the file for the room tiles
-            myRoomTile = ImageIO.read(Objects.requireNonNull(getClass().
-                    getResourceAsStream("/res/room_tile_red.png")));
+            //the string is the path of where the file for the left door img.
+            myLeftDoorImg = ImageIO.read(Objects.requireNonNull(getClass().
+                    getResourceAsStream("/res/left_door.png")));
 
         } catch (final IOException e) {
             e.printStackTrace();
 
         }
-        return myRoomTile;
+        return myLeftDoorImg;
+    }
+
+    /**
+     * This method will load the right door images.
+     */
+    private BufferedImage getRightDoorImg() {
+        try {
+            //the string is the path of where the file for the right door img.
+            myRightDoorImg = ImageIO.read(Objects.requireNonNull(getClass().
+                    getResourceAsStream("/res/right_door.png")));
+
+        } catch (final IOException e) {
+            e.printStackTrace();
+
+        }
+        return myRightDoorImg;
+    }
+
+    /**
+     * This method will load the bottom door images.
+     */
+    private BufferedImage getBottomDoorImg() {
+        try {
+            //the string is the path of where the file for the bottom door img.
+            myBottomDoorImg = ImageIO.read(Objects.requireNonNull(getClass().
+                    getResourceAsStream("/res/bottom_door.png")));
+
+        } catch (final IOException e) {
+            e.printStackTrace();
+
+        }
+        return myBottomDoorImg;
     }
     /**
      * Returns validity of Character answered Question.

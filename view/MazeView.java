@@ -38,16 +38,21 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      *  Maze Object to be referenced.
      */
-    private final Maze myMaze = new Maze(4, 4);
+    private final Maze myMaze;
 
     /**
      *  Character to reference.
      */
     private Character myCharacter;
 
+
+    /**
+     * The current room to reference.
+     */
     private Room myRoom;
 
-    MazeView() {
+    MazeView(final Maze theMaze) {
+        this.myMaze = theMaze;
         setUp();
         myMaze.addPropertyChangeListener(this);
         myMaze.newGame();
@@ -142,17 +147,17 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
             case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
             case KeyEvent.VK_SPACE -> handleSpaceKey();
-            default -> {}
+            default ->  { }
         }
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyTyped(final KeyEvent theE) {
         // Not needed for this example
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(final KeyEvent theE) {
         // Not needed for this example
     }
     private void handleUpKey() {
