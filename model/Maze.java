@@ -344,6 +344,8 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         myCorrectAnswers = 0;
         myCurrentRoom = myRooms[0][0];
+        // Print the door status
+        printMazeDoorStatus();
         myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
         myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
 
@@ -392,6 +394,21 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
     }
 
+    /**
+     * Prints the door status of each room in the maze.
+     */
+    public void printMazeDoorStatus() {
+        for (int i = 0; i < myWidth; i++) {
+            for (int j = 0; j < myHeight; j++) {
+                System.out.println("Door status for Room [" + i + "][" + j + "]:");
+                System.out.println("Left Door: " + (myRooms[i][j].getLeftDoor() != null ? "Exists" : "Not Exists"));
+                System.out.println("Right Door: " + (myRooms[i][j].getRightDoor() != null ? "Exists" : "Not Exists"));
+                System.out.println("Top Door: " + (myRooms[i][j].getTopDoor() != null ? "Exists" : "Not Exists"));
+                System.out.println("Bottom Door: " + (myRooms[i][j].getBottomDoor() != null ? "Exists" : "Not Exists"));
+                System.out.println("------------------------");
+            }
+        }
+    }
     @Override
     public void pauseGame() {
 
