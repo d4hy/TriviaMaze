@@ -22,11 +22,6 @@ import javax.imageio.ImageIO;
 public class Room {
 
     /**
-     * The available Doors within current Room.
-     */
-    private Door[] myDoors;
-
-    /**
      * Left door in Room.
      */
     private Door myLeftDoor;
@@ -78,6 +73,11 @@ public class Room {
 
     public Room() { }
 
+    /**
+     * When Maze is created, this method is called to flag what rooms should have
+     * what doors existing.
+     * @param theDoor the Door that's created in Room according to direction.
+     */
     public void setDoor(final String theDoor) {
 
         if (Objects.equals(theDoor, "Left")) {
@@ -124,8 +124,7 @@ public class Room {
     }
 
     /**
-     * Will reassign reference of door in this Room to share with adjacent room's
-     * door.
+     * Will reassign the reference of room's left door to specified door.
      * @param theDoor door of adjacent room.
      */
     public void assignLeftDoor(final Door theDoor) {
@@ -133,8 +132,7 @@ public class Room {
     }
 
     /**
-     * Will reassign reference of door in this Room to share with adjacent room's
-     * door.
+     * Will reassign the reference of room's right door to specified door.
      * @param theDoor door of adjacent room.
      */
     public void assignRightDoor(final Door theDoor) {
@@ -142,8 +140,7 @@ public class Room {
     }
 
     /**
-     * Will reassign reference of door in this Room to share with adjacent room's
-     * door.
+     * Will reassign the reference of room's top door to specified door.
      * @param theDoor door of adjacent room.
      */
     public void assignTopDoor(final Door theDoor) {
@@ -151,8 +148,7 @@ public class Room {
     }
 
     /**
-     * Will reassign reference of door in this Room to share with adjacent room's
-     * door.
+     * Will reassign the reference of room's bottom door to specified door.
      * @param theDoor door of adjacent room.
      */
     public void assignBottomDoor(final Door theDoor) {

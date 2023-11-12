@@ -166,10 +166,10 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         // assigning outside the loop since it only has to be done once.
         myRooms[0][0].setDoor(RIGHT_DOOR);
         myRooms[0][0].setDoor(BOTTOM_DOOR);
-        myRooms[ENDPOINT][0].setDoor(LEFT_DOOR);
-        myRooms[ENDPOINT][0].setDoor(BOTTOM_DOOR);
+        myRooms[0][ENDPOINT].setDoor(LEFT_DOOR);
+        myRooms[0][ENDPOINT].setDoor(BOTTOM_DOOR);
 
-        for (int i = 1; i < myWidth - 2; i++) {
+        for (int i = 1; i < myWidth - 1; i++) {
             myRooms[0][i].setDoor(LEFT_DOOR);
             myRooms[0][i].setDoor(RIGHT_DOOR);
             myRooms[0][i].setDoor(BOTTOM_DOOR);
@@ -182,14 +182,15 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     private void setLeftCol() {
 
+        // sets [3, 0]
         // assigning outside the loop since it only has to be done once.
-        myRooms[0][ENDPOINT].setDoor(RIGHT_DOOR);
-        myRooms[0][ENDPOINT].setDoor(TOP_DOOR);
+        myRooms[ENDPOINT][0].setDoor(RIGHT_DOOR);
+        myRooms[ENDPOINT][0].setDoor(TOP_DOOR);
 
-        for (int i = 1; i < myHeight - 2; i++) {
-            myRooms[0][i].setDoor(TOP_DOOR);
-            myRooms[0][i].setDoor(RIGHT_DOOR);
-            myRooms[0][i].setDoor(BOTTOM_DOOR);
+        for (int i = 1; i < myHeight - 1; i++) {
+            myRooms[i][0].setDoor(TOP_DOOR);
+            myRooms[i][0].setDoor(RIGHT_DOOR);
+            myRooms[i][0].setDoor(BOTTOM_DOOR);
         }
 
 
@@ -200,14 +201,15 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     private void setBottomRow() {
 
+        // sets [3, 3]
         // assigning outside the loop since it only has to be done once.
         myRooms[ENDPOINT][ENDPOINT].setDoor(LEFT_DOOR);
         myRooms[ENDPOINT][ENDPOINT].setDoor(TOP_DOOR);
 
-        for (int i = 1; i < myWidth - 2; i++) {
-            myRooms[i][ENDPOINT].setDoor(TOP_DOOR);
-            myRooms[i][ENDPOINT].setDoor(RIGHT_DOOR);
-            myRooms[i][ENDPOINT].setDoor(LEFT_DOOR);
+        for (int i = 1; i < myWidth - 1; i++) {
+            myRooms[ENDPOINT][i].setDoor(TOP_DOOR);
+            myRooms[ENDPOINT][i].setDoor(RIGHT_DOOR);
+            myRooms[ENDPOINT][i].setDoor(LEFT_DOOR);
         }
 
     }
@@ -217,10 +219,11 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     private void setRightCol() {
 
-        for (int i = 1; i < myWidth - 2; i++) {
-            myRooms[ENDPOINT][i].setDoor(TOP_DOOR);
-            myRooms[ENDPOINT][i].setDoor(BOTTOM_DOOR);
-            myRooms[ENDPOINT][i].setDoor(LEFT_DOOR);
+//        myRooms[ENDPOINT][1].setDoor();
+        for (int i = 1; i < myWidth - 1; i++) {
+            myRooms[i][ENDPOINT].setDoor(TOP_DOOR);
+            myRooms[i][ENDPOINT].setDoor(BOTTOM_DOOR);
+            myRooms[i][ENDPOINT].setDoor(LEFT_DOOR);
         }
 
     }
@@ -236,34 +239,36 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
                 // assigns all rooms that have both left and top doors.
                 if (j > 0 && i > 0) {
-                    myRooms[i][j].assignLeftDoor(myRooms[i - 1][j].getRightDoor());
-                    myRooms[i][j].assignTopDoor(myRooms[i][j - 1].getBottomDoor());
+                    myRooms[i][j].assignLeftDoor(myRooms[i][j - 1].getRightDoor());
+                    myRooms[i][j].assignTopDoor(myRooms[i - 1][j].getBottomDoor());
                 }
 
                 // assigns all rooms that have both right and bottom doors.
                 if (j < myHeight - 2 && i < myWidth - 2) {
-                    myRooms[i][j].assignRightDoor(myRooms[i + 1][j].getLeftDoor());
-                    myRooms[i][j].assignBottomDoor(myRooms[i][j + 1].getTopDoor());
+                    myRooms[i][j].assignRightDoor(myRooms[i][j + 1].getLeftDoor());
+                    myRooms[i][j].assignBottomDoor(myRooms[i + 1][j].getTopDoor());
                 }
 
-                // assigns left door of top row.
+                // assigns left col top doors
                 if (i > 0 && j == 0) {
-                    myRooms[i][j].assignLeftDoor(myRooms[i - 1][j].getRightDoor());
+                    myRooms[i][j].assignTopDoor(myRooms[i - 1][j].getBottomDoor());
+
                 }
 
-                // assigns top doors of left column.
+                // assigns top row left doors
                 if (i == 0 && j > 0) {
-                    myRooms[i][j].assignTopDoor(myRooms[i][j - 1].getBottomDoor());
+                    myRooms[i][j].assignLeftDoor(myRooms[i][j - 1].getRightDoor());
+
                 }
 
                 // assigns right doors of last row.
-                if (i < myWidth - 2 && j == ENDPOINT) {
-                    myRooms[i][j].assignRightDoor(myRooms[i + 1][j].getLeftDoor());
+                if (i == ENDPOINT && j < myHeight - 2) {
+                    myRooms[i][j].assignRightDoor(myRooms[i][j + 1].getLeftDoor());
                 }
 
                 // assigns bottom doors of right column.
-                if (i == ENDPOINT && j < myHeight - 2) {
-                    myRooms[i][j].assignBottomDoor(myRooms[i][j + 1].getTopDoor());
+                if (i < myWidth - 2 && j == ENDPOINT) {
+                    myRooms[i][j].assignBottomDoor(myRooms[i + 1][j].getTopDoor());
                 }
 
             }
@@ -343,7 +348,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
                 MazeControls.MY_SCREEN_HEIGHT);
 
         myCorrectAnswers = 0;
-        myCurrentRoom = myRooms[0][0];
+        createMaze();
         // Print the door status
         printMazeDoorStatus();
         myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
