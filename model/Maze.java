@@ -147,6 +147,16 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         }
 
     }
+    /**
+     * Print information about the doors of the current room.
+     */
+    public void printCurrentRoomDoors() {
+        System.out.println("Current Room Doors:");
+        System.out.println("Left Door: " + (myCurrentRoom.getLeftDoor() != null ? "Exists" : "Not Exists"));
+        System.out.println("Right Door: " + (myCurrentRoom.getRightDoor() != null ? "Exists" : "Not Exists"));
+        System.out.println("Top Door: " + (myCurrentRoom.getTopDoor() != null ? "Exists" : "Not Exists"));
+        System.out.println("Bottom Door: " + (myCurrentRoom.getBottomDoor() != null ? "Exists" : "Not Exists"));
+    }
 
     /**
      * Sets the doors of top row in maze.
