@@ -42,8 +42,17 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      * Constant to use for reaching the furthest rooms in perimeter of maze.
      */
     private static final int ENDPOINT = 3;
+    /**
+     * Number of correct answers that the current Character has answered.
+     */
+    private static int myCorrectAnswers;
 
 
+    /**
+     * Field to show if the character can currently move.
+     */
+
+    private boolean myCanMove;
     /**
      * The room that Character is currently in.
      */
@@ -64,10 +73,6 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     private int myHeight;
 
-    /**
-     * Number of correct answers that the current Character has answered.
-     */
-    private static int myCorrectAnswers;
 
     /**
      * Character that is in Maze.
@@ -84,7 +89,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     public Maze(final int theWidth, final int theHeight) {
         super();
-
+        setMoveTrue();
         // Calculate the initial position for the Character to be in the middle of the screen.
         // since it is represented within the top left corner of a pixel, you have to subtract
         // the tile size.
@@ -152,10 +157,14 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     public void printCurrentRoomDoors() {
         System.out.println("Current Room Doors:");
-        System.out.println("Left Door: " + (myCurrentRoom.getLeftDoor() != null ? "Exists" : "Not Exists"));
-        System.out.println("Right Door: " + (myCurrentRoom.getRightDoor() != null ? "Exists" : "Not Exists"));
-        System.out.println("Top Door: " + (myCurrentRoom.getTopDoor() != null ? "Exists" : "Not Exists"));
-        System.out.println("Bottom Door: " + (myCurrentRoom.getBottomDoor() != null ? "Exists" : "Not Exists"));
+        System.out.println("Left Door: " + (myCurrentRoom.getLeftDoor() != null
+                ? "Exists" : "Not Exists"));
+        System.out.println("Right Door: " + (myCurrentRoom.getRightDoor() != null
+                ? "Exists" : "Not Exists"));
+        System.out.println("Top Door: " + (myCurrentRoom.getTopDoor() != null
+                ? "Exists" : "Not Exists"));
+        System.out.println("Bottom Door: " + (myCurrentRoom.getBottomDoor() != null
+                ? "Exists" : "Not Exists"));
     }
 
     /**
@@ -311,12 +320,23 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     public boolean canMove() {
 
-        // TODO: Evaluate nearby cells to see if traversable.
-
-        final boolean move = true;
-
-        return move;
+        return myCanMove;
     }
+
+    /**
+     * Sets it to where the Character can move.
+     */
+    private void setMoveTrue() {
+        myCanMove = true;
+    }
+
+    /**
+     * Sets it to where the Character can't move.
+     */
+    private void setMoveFalse() {
+        myCanMove = false;
+    }
+
 
     /**
      * Door holding current Question to be locked if answered incorrectly.
@@ -346,7 +366,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         // Instantiate the Character with the calculated initial position.
         myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH,
                 MazeControls.MY_SCREEN_HEIGHT);
-
+        setMoveTrue();
         myCorrectAnswers = 0;
         createMaze();
         // Print the door status
@@ -356,45 +376,198 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
     }
 
-    @Override
-    public void moveDown() {
 
-        if (canMove()) {
-            myCharacter.moveDown();
-            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE,
-                    null, myCharacter);
-        }
+    /**
+     * Checks if the character is at the right door.
+     *
+     * @return true if the character is at the right door, false otherwise.
+     */
+    private boolean checkIfAtRightDoor() {
 
+
+        // Check if the character's position is at the right door
+        // and if the Y coordinate is within the vertical range of the right door.
+        return myCharacter.getCurrentPosition().getX()
+                == MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE
+                && myCharacter.getCurrentPosition().getY()
+                >= (MazeControls.MY_SCREEN_HEIGHT / 2.0)
+                - (MazeControls.MY_TILE_SIZE / 2.0)
+                && myCharacter.getCurrentPosition().getY()
+                <= (MazeControls.MY_SCREEN_HEIGHT / 2.0)
+                + (MazeControls.MY_TILE_SIZE / 2.0);
+    }
+    /**
+     * Checks if the character is at the left door.
+     *
+     * @return true if the character is at the left door, false otherwise.
+     */
+    private boolean checkIfAtLeftDoor() {
+        // Check if the character's position is at the left door
+        // and if the Y coordinate is within the vertical range of the left door.
+        return myCharacter.getCurrentPosition().getX() == 0
+                && myCharacter.getCurrentPosition().getY()
+                >= (MazeControls.MY_SCREEN_HEIGHT / 2.0)
+                - (MazeControls.MY_TILE_SIZE / 2.0)
+                && myCharacter.getCurrentPosition().getY()
+                <= (MazeControls.MY_SCREEN_HEIGHT / 2.0)
+                + (MazeControls.MY_TILE_SIZE / 2.0);
     }
 
+    /**
+     * Checks if the character is at the top door.
+     *
+     * @return true if the character is at the top door, false otherwise.
+     */
+    private boolean checkIfAtTopDoor() {
+        // Check if the character's position is at the top door
+        // and if the X coordinate is within the horizontal range of the top door.
+        return myCharacter.getCurrentPosition().getY() == 0
+                && myCharacter.getCurrentPosition().getX()
+                >= (MazeControls.MY_SCREEN_WIDTH / 2.0)
+                - (MazeControls.MY_TILE_SIZE / 2.0)
+                && myCharacter.getCurrentPosition().getX()
+                <= (MazeControls.MY_SCREEN_WIDTH / 2.0)
+                + (MazeControls.MY_TILE_SIZE / 2.0);
+    }
+    /**
+     * Checks if the character is at the bottom door.
+     *
+     * @return true if the character is at the bottom door, false otherwise.
+     */
+    private boolean checkIfAtBottomDoor() {
+        // Check if the character's position is at the bottom door
+        // and if the X coordinate is within the horizontal range of the right door.
+        return myCharacter.getCurrentPosition().getY() == MazeControls.MY_SCREEN_HEIGHT
+                - MazeControls.MY_TILE_SIZE
+                && myCharacter.getCurrentPosition().getX()
+                >= (MazeControls.MY_SCREEN_WIDTH / 2.0)
+                - (MazeControls.MY_TILE_SIZE / 2.0)
+                && myCharacter.getCurrentPosition().getX()
+                <= (MazeControls.MY_SCREEN_WIDTH / 2.0)
+                + (MazeControls.MY_TILE_SIZE / 2.0);
+    }
+    /**
+     * Moves the character down.
+     */
+    @Override
+    public void moveDown() {
+        // Moves the character
+        if (canMove()) {
+            myCharacter.moveDown();
+            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
+        }
+
+        // Checks if the character's position is at the bottom door if it exists.
+        if (myCurrentRoom.getBottomDoor() != null && checkIfAtBottomDoor()) {
+            setMoveFalse();
+            System.out.println("At bottom door");
+
+            // Character is at the left door position
+            // Your code here...
+
+            // Fire property change support and change into the next room
+
+            //myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+
+            // Freeze until otherwise
+            // Add your code for freezing here...
+
+        }
+    }
+
+
+    /**
+     * Moves the character up.
+     *
+     */
     @Override
     public void moveUp() {
 
+        // Moves the character
         if (canMove()) {
             myCharacter.moveUp();
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         }
 
-    }
+        // Checks if the character's position is at the top door if it exists.
+        if (myCurrentRoom.getTopDoor() != null && checkIfAtTopDoor()) {
+            setMoveFalse();
+            System.out.println("At Top door");
 
-    @Override
-    public void moveLeft() {
+            // Character is at the left door position
+            // Your code here...
 
-        if (canMove()) {
-            myCharacter.moveLeft();
-            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE,
-                    null, myCharacter);
+            // Fire property change support and change into the next room
+
+            //myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+
+            // Freeze until otherwise
+            // Add your code for freezing here...
+
         }
 
     }
 
+    /**
+     * Moves the character left.
+     *
+     */
+    @Override
+    public void moveLeft() {
+
+        // Moves the character
+        if (canMove()) {
+            myCharacter.moveLeft();
+            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
+        }
+
+        // Checks if the character's position is at the top door if it exists.
+        if (myCurrentRoom.getLeftDoor() != null && checkIfAtLeftDoor()) {
+            setMoveFalse();
+            System.out.println("At Left door");
+
+            // Character is at the left door position
+            // Your code here...
+
+            // Fire property change support and change into the next room
+
+           // myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+
+            // Freeze until otherwise
+            // Add your code for freezing here...
+
+        }
+
+    }
+
+    /**
+     * Moves the character right.
+     *
+     */
     @Override
     public void moveRight() {
 
+        // Moves the character
         if (canMove()) {
             myCharacter.moveRight();
-            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE,
-                    null, myCharacter);
+            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
+        }
+
+        // Checks if the character's position is at the top door if it exists.
+        if (myCurrentRoom.getRightDoor() != null && checkIfAtRightDoor()) {
+            setMoveFalse();
+            System.out.println("At Right door");
+
+            // Character is at the left door position
+            // Your code here...
+
+            // Fire property change support and change into the next room
+
+           // myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+
+            // Freeze until otherwise
+            // Add your code for freezing here...
+
         }
 
     }
@@ -406,10 +579,14 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         for (int i = 0; i < myWidth; i++) {
             for (int j = 0; j < myHeight; j++) {
                 System.out.println("Door status for Room [" + i + "][" + j + "]:");
-                System.out.println("Left Door: " + (myRooms[i][j].getLeftDoor() != null ? "Exists" : "Not Exists"));
-                System.out.println("Right Door: " + (myRooms[i][j].getRightDoor() != null ? "Exists" : "Not Exists"));
-                System.out.println("Top Door: " + (myRooms[i][j].getTopDoor() != null ? "Exists" : "Not Exists"));
-                System.out.println("Bottom Door: " + (myRooms[i][j].getBottomDoor() != null ? "Exists" : "Not Exists"));
+                System.out.println("Left Door: " + (myRooms[i][j].getLeftDoor() != null
+                        ? "Exists" : "Not Exists"));
+                System.out.println("Right Door: " + (myRooms[i][j].getRightDoor() != null
+                        ? "Exists" : "Not Exists"));
+                System.out.println("Top Door: " + (myRooms[i][j].getTopDoor() != null
+                        ? "Exists" : "Not Exists"));
+                System.out.println("Bottom Door: " + (myRooms[i][j].getBottomDoor() != null
+                        ? "Exists" : "Not Exists"));
                 System.out.println("------------------------");
             }
         }
