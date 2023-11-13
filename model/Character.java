@@ -61,7 +61,7 @@ public class Character {
     /**
      * The speed at which the character moves between each movement.
      */
-    private final int mySpeed = 8;
+    private final int mySpeed = 16;
 
     /**
      * Counter for how many steps has taken the sprite alternates.
@@ -245,7 +245,7 @@ public class Character {
     private void alternateWalkingSprite() {
         mySpriteCounter++;
         //every 10 movements, change the walking animation
-        if (mySpriteCounter > 6) {
+        if (mySpriteCounter > 1) {
             if (mySpriteNumber == 1) {
                 mySpriteNumber = 2;
             } else if (mySpriteNumber == 2) {
