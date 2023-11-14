@@ -132,15 +132,15 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     }
 
     /**
-     * Creates appropriate directional doors for each room, with perimeter rooms only
-     * containing doors leading to rooms adjacent to it.
+     * Creates the rooms in Maze with only the doors that should exist in each.
+     * Ex. Room [0][0] should only have right and bottom doors.
      */
     private void createRooms() {
 
-        setTopRow();
-        setLeftCol();
-        setBottomRow();
-        setRightCol();
+        createTopRowDoors();
+        createLeftColDoors();
+        createBottomRowDoors();
+        createRightColDoors();
 
         for (int i = 1; i < myWidth - 1; i++) {
             for (int j = 1; j < myHeight - 1; j++) {
@@ -170,7 +170,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     /**
      * Sets the doors of top row in maze.
      */
-    private void setTopRow() {
+    private void createTopRowDoors() {
 
         // assigning outside the loop since it only has to be done once.
         myRooms[0][0].setDoor(RIGHT_DOOR);
@@ -189,7 +189,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     /**
      * Sets the doors of left column in maze.
      */
-    private void setLeftCol() {
+    private void createLeftColDoors() {
 
         // sets [3, 0]
         // assigning outside the loop since it only has to be done once.
@@ -208,7 +208,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     /**
      * Sets the doors of bottom row in maze.
      */
-    private void setBottomRow() {
+    private void createBottomRowDoors() {
 
         // sets [3, 3]
         // assigning outside the loop since it only has to be done once.
@@ -226,7 +226,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     /**
      * Sets the doors of right column in maze.
      */
-    private void setRightCol() {
+    private void createRightColDoors() {
 
 //        myRooms[ENDPOINT][1].setDoor();
         for (int i = 1; i < myWidth - 1; i++) {
@@ -238,8 +238,8 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     }
 
     /**
-     * Create door objects in myRooms to reference different directional
-     * doors that the Character traverses through.
+     * Method that reassigns the doors of each room to properly reference each other.
+     * Ex. Right door in [0][0] should be the same as left door in [0][1].
      */
     private void assignDoors() {
 
