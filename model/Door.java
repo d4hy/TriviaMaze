@@ -37,6 +37,11 @@ public class Door {
 
     }
 
+    public Question getMyQuestion(final Door theDoor) {
+
+        return myQuestion;
+    }
+
     /**
      * Unlocks Door if associated Question is answered correctly.
      */

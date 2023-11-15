@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import model.Character;
 import model.Maze;
+import model.Room;
 
 /**
  *  This class serves as a screen class that displays the game.
@@ -37,14 +38,21 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      *  Maze Object to be referenced.
      */
-    private final Maze myMaze = new Maze(4, 4);
+    private final Maze myMaze;
 
     /**
      *  Character to reference.
      */
     private Character myCharacter;
 
-    MazeView() {
+
+    /**
+     * The current room to reference.
+     */
+    private Room myRoom;
+
+    MazeView(final Maze theMaze) {
+        this.myMaze = theMaze;
         setUp();
         myMaze.addPropertyChangeListener(this);
         myMaze.newGame();
@@ -94,14 +102,18 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
         g2.setColor(Color.white);
 
+        //if the room reference isn't null draw the room tiles
+        if (myRoom != null) {
+
+            myRoom.draw(g2);
+
+        }
+        //if the character reference isn't null draw them
         if (myCharacter != null) {
-            // Calculate the correct coordinates for drawing the rectangle
-
-
-
             myCharacter.draw(g2);
 
         }
+
 
         // good practice to save memory, release any system resources it's using
         // after it is done drawing.
@@ -118,7 +130,12 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         if (propertyName.equals(myMaze.PROPERTY_CHARACTER_MOVE)) {
             myCharacter = (Character) theEvt.getNewValue();
             repaint();
+        } else if (propertyName.equals(myMaze.PROPERTY_ROOM_CHANGE)) {
+            myRoom = (Room) theEvt.getNewValue();
+            repaint();
+            myMaze.printCurrentRoomDoors();
         }
+
     }
 
     // Implementing KeyListener methods
@@ -131,17 +148,17 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
             case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
             case KeyEvent.VK_SPACE -> handleSpaceKey();
-            default -> {}
+            default ->  { }
         }
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyTyped(final KeyEvent theE) {
         // Not needed for this example
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(final KeyEvent theE) {
         // Not needed for this example
     }
     private void handleUpKey() {

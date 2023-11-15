@@ -30,6 +30,10 @@ public class Question {
 
     }
 
+    public Question(final String theQuestion) {
+        myQuestion = theQuestion;
+    }
+
     /**
      * Gets text of current Question.
      * @return String text of the question.
@@ -66,7 +70,8 @@ public class Question {
      * @return String of explicit question.
      */
     public String getDummyQuestion() {
-        return "Who is Beabadoobee?";
+        myQuestion = "Who is Beabadoobee?";
+        return myQuestion;
     }
 
     /**
@@ -74,7 +79,8 @@ public class Question {
      * @return String of explicit answer.
      */
     public String getDummyAnswer() {
-        return "UK Indie Rock Artist";
+        myAnswer = "UK Indie Rock Artist";
+        return myAnswer;
     }
 
     /**

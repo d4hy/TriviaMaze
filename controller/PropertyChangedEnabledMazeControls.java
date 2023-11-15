@@ -45,6 +45,11 @@ public interface PropertyChangedEnabledMazeControls extends MazeControls {
      * Fires property change that character has moved right.
      */
      String PROPERTY_MOVE_RIGHT = "Character has moved RIGHT.";
+
+    /**
+     *  String to fire when the current room has changed.
+     */
+    String PROPERTY_ROOM_CHANGE = "room has changed";
     /**
      * Add a PropertyChangeListener to the listener list. The listener is registered for
      * all properties. The same listener object may be added more than once, and will be
