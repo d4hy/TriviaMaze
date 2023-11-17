@@ -18,10 +18,18 @@ public class Question {
      */
     private String myQuestion;
 
+    private String myQuestionType;
+
     /**
      * Correct answer to Question that is to be expected.
      */
-    private String myAnswer;
+    private String myCorrectAnswer;
+
+    private String mySecondOption;
+
+    private String myThirdOption;
+
+    private String myFourthOption;
 
     /**
      * Constructor for Question.
@@ -30,8 +38,17 @@ public class Question {
 
     }
 
-    public Question(final String theQuestion) {
-        myQuestion = theQuestion;
+    public Question(final String theQuestionText, final String theQuestionType,
+                    final String theCorrectAnswer, final String theSecondOption,
+                    final String theThirdOption, final String theFourthOption) {
+
+        myQuestion = theQuestionText;
+        myQuestionType = theQuestionType;
+        myCorrectAnswer = theCorrectAnswer;
+        mySecondOption = theSecondOption;
+        myThirdOption = theThirdOption;
+        myFourthOption = theFourthOption;
+
     }
 
     /**
@@ -39,10 +56,11 @@ public class Question {
      * @return String text of the question.
      */
     public String getQuestionText() {
-
-        myQuestion = "This is a question.";
-
         return myQuestion;
+    }
+
+    public String getMyQuestionType() {
+        return myQuestionType;
     }
 
     /**
@@ -51,9 +69,9 @@ public class Question {
      */
     public String getAnswer() {
 
-        myAnswer = "This is the answer.";
+        myCorrectAnswer = "This is the answer.";
 
-        return myAnswer;
+        return myCorrectAnswer;
     }
 
     /**
@@ -79,8 +97,8 @@ public class Question {
      * @return String of explicit answer.
      */
     public String getDummyAnswer() {
-        myAnswer = "UK Indie Rock Artist";
-        return myAnswer;
+        myCorrectAnswer = "UK Indie Rock Artist";
+        return myCorrectAnswer;
     }
 
     /**
