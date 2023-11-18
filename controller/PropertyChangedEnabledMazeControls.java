@@ -27,24 +27,24 @@ public interface PropertyChangedEnabledMazeControls extends MazeControls {
     String PROPERTY_CHARACTER_MOVE = "CHAR_MOVED";
 
     /**
-     * Fires property change that character has moved downwards.
+     * Fires property change that the  character is at the bottom door.
      */
-     String PROPERTY_MOVE_DOWN = "Character has moved DOWN.";
+     String PROPERTY_AT_BOT_DOOR = "Character is at the bottom door.";
 
     /**
-     * Fires property change that character has moved upwards.
+     *Fires property change that the  character is at the right door.
      */
-     String PROPERTY_MOVE_UP = "Character has moved UP.";
+     String PROPERTY_AT_RIGHT_DOOR = "Character is at the Right door";
 
     /**
-     * Fires property change that character has moved left.
+     * Fires property change that the  character is at the left door.
      */
-     String PROPERTY_MOVE_LEFT = "Character has moved LEFT.";
+     String PROPERTY_AT_LEFT_DOOR = "Character is at the left.";
 
     /**
-     * Fires property change that character has moved right.
+     *Fires property change that the  character is at the top door.
      */
-     String PROPERTY_MOVE_RIGHT = "Character has moved RIGHT.";
+     String PROPERTY_AT_TOP_DOOR= "Character is at the top door";
 
     /**
      *  String to fire when the current room has changed.

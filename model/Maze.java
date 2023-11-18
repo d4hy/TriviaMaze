@@ -327,7 +327,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     /**
      * Sets it to where the Character can move.
      */
-    private void setMoveTrue() {
+    public void setMoveTrue() {
         myCanMove = true;
 
         //notifies that just has been unfrozen, usually after answering a question.
@@ -464,6 +464,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     private boolean checkIfAtBottomDoor() {
         // Check if the character's position is at the bottom door
         // and if the X coordinate is within the horizontal range of the right door.
+        myPcs.firePropertyChange(PROPERTY_AT_BOT_DOOR,null,myCurrentRoom.getBottomDoor().getMyQuestion(myCurrentRoom.getBottomDoor()));
         return myCharacter.getCurrentPosition().getY() == MazeControls.MY_SCREEN_HEIGHT
                 - MazeControls.MY_TILE_SIZE
                 && myCharacter.getCurrentPosition().getX()
