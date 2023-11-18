@@ -93,8 +93,8 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     public Maze(final int theWidth, final int theHeight) {
         super();
-        setMoveTrue();
-        setMyGameOverStatus(false);
+
+
         // Calculate the initial position for the Character to be in the middle of the screen.
         // since it is represented within the top left corner of a pixel, you have to subtract
         // the tile size.
@@ -110,6 +110,8 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         myHeight = theHeight;
         myPcs = new PropertyChangeSupport(this);
         createMaze();
+        setMoveTrue();
+        setMyGameOverStatus(false);
 
 
     }
