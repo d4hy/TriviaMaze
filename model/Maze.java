@@ -333,6 +333,9 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     private void setMoveTrue() {
         myCanMove = true;
+
+        //notifies that just has been unfrozen, usually after answering a question.
+        myPcs.firePropertyChange(PROPERTY_FREEZE, null, myCanMove);
     }
 
     /**
@@ -340,6 +343,9 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     private void setMoveFalse() {
         myCanMove = false;
+        //notifies that the user is frozen in place, usually when they are answering a question.
+        myPcs.firePropertyChange(PROPERTY_FREEZE, null, myCanMove);
+
     }
 
 
@@ -362,10 +368,10 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      * Sets the game to true or false based on the status passed.
      * @param theStatus of the game you are trying to set.
      */
-    private void setMyGameOverStatus( final boolean theStatus) {
+    private void setMyGameOverStatus(final boolean theStatus) {
         myGameOverStatus = theStatus;
         //notifies pcs that it changed
-        myPcs.firePropertyChange(PROPERTY_GAME_OVER, null, myCurrentRoom);
+        myPcs.firePropertyChange(PROPERTY_GAME_OVER, null, myGameOverStatus);
     }
 
 
@@ -476,13 +482,17 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         /*
          Checks if the character's position is at the bottom door if it exists.
-        Will prompt for a question if the game isn't over and if the doors question isn't answered.
+        Will prompt for a question if the game isn't over and if the doors question isn't
+        answered.
         */
         if (myCurrentRoom.getBottomDoor() != null && checkIfAtBottomDoor() && !isGameLost()) {
 
-            // if the question isn't answered yet prompt for the question and freeze the character in place.
-            if (!myCurrentRoom.getBottomDoor().isMyQuestionAnswered()) {
+            // if the question hasn't been prompted for the question and
+            // freeze the character in place, so they can answer.
+            if (!myCurrentRoom.getBottomDoor().isMyQuestionPrompted()) {
                 setMoveFalse();
+
+
             }
 
             System.out.println("At bottom door");
@@ -514,9 +524,21 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         }
 
-        // Checks if the character's position is at the top door if it exists.
-        if (myCurrentRoom.getTopDoor() != null && checkIfAtTopDoor()) {
-            setMoveFalse();
+
+        /*
+         Checks if the character's position is at the top door if it exists.
+        Will prompt for a question if the game isn't over and if the doors question isn't
+        answered.
+        */
+        if (myCurrentRoom.getTopDoor() != null && checkIfAtTopDoor() && !isGameLost()) {
+            // if the question hasn't been prompted for the question and
+            // freeze the character in place, so they can answer.
+            if (!myCurrentRoom.getTopDoor().isMyQuestionPrompted()) {
+                setMoveFalse();
+
+
+            }
+
             System.out.println("At Top door");
 
             // Character is at the left door position
@@ -546,9 +568,21 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         }
 
-        // Checks if the character's position is at the top door if it exists.
-        if (myCurrentRoom.getLeftDoor() != null && checkIfAtLeftDoor()) {
-            setMoveFalse();
+        /*
+         Checks if the character's position is at the top door if it exists.
+        Will prompt for a question if the game isn't over and if the doors question isn't
+        answered.
+        */
+        if (myCurrentRoom.getLeftDoor() != null && checkIfAtLeftDoor() && !isGameLost()) {
+
+
+            // if the question hasn't been prompted for the question and
+            // freeze the character in place, so they can answer.
+            if (!myCurrentRoom.getLeftDoor().isMyQuestionPrompted()) {
+                setMoveFalse();
+
+
+            }
             System.out.println("At Left door");
 
             // Character is at the left door position
@@ -578,9 +612,17 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         }
 
-        // Checks if the character's position is at the top door if it exists.
-        if (myCurrentRoom.getRightDoor() != null && checkIfAtRightDoor()) {
-            setMoveFalse();
+           /*
+         Checks if the character's position is at the top door if it exists.
+        Will prompt for a question if the game isn't over and if the doors question isn't
+        answered.
+        */
+        if (myCurrentRoom.getRightDoor() != null && checkIfAtRightDoor() && !isGameLost()) {
+            // if the question hasn't been prompted for the question and
+            // freeze the character in place, so they can answer.
+            if (!myCurrentRoom.getLeftDoor().isMyQuestionPrompted()) {
+                setMoveFalse();
+            }
             System.out.println("At Right door");
 
             // Character is at the left door position

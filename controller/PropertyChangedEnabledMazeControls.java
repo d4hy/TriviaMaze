@@ -50,6 +50,18 @@ public interface PropertyChangedEnabledMazeControls extends MazeControls {
      *  String to fire when the current room has changed.
      */
     String PROPERTY_ROOM_CHANGE = "room has changed";
+
+
+    /**
+     * A property name for the user to prompt the question.
+     */
+    String PROPERTY_PROMPT_QUESTION = "PROMPT";
+
+
+    /**
+     * A property name for the user when they are frozen.
+     */
+    String PROPERTY_FREEZE = "FROZEN STATUS";
     /**
      * Add a PropertyChangeListener to the listener list. The listener is registered for
      * all properties. The same listener object may be added more than once, and will be
