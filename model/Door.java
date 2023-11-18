@@ -23,13 +23,19 @@ public class Door {
      */
     private boolean myLockedStatus;
 
+
+    /**
+     * Whether the question of the door is answered or not.
+     */
+    private boolean isMyQuestionAnswered;
+
     /**
      * Question associated with current Door.
      */
     private Question myQuestion;
 
     /**
-     * Constructor for Door
+     * Constructor for Door.
      */
     public Door(final String theDoorDescription) {
 
@@ -43,18 +49,38 @@ public class Door {
     }
 
     /**
-     * Unlocks Door if associated Question is answered correctly.
+     *  Returns if the door's questions is answered or not.
+     * @return boolean if the question is answered or not.
      */
-    public void unlock() {}
+    public boolean isMyQuestionAnswered() {
+        return isMyQuestionAnswered;
+    }
 
     /**
-     * Returns status of Door.
+     * Sets the question status of the door to be answered or not.
+     * @param theStatus of the question to be set to.
+     */
+    public void setMyQuestionAnsweredStatus(final boolean theStatus) {
+        isMyQuestionAnswered = theStatus;
+    }
+
+
+    /**
+     * Unlocks Door if associated Question is answered correctly.
+     */
+    public void unlock() {
+        myLockedStatus = false;
+    }
+
+
+
+
+
+    /**
+     * Returns door's locked status.
      * @return myLockedStatus if Door is locked or not.
      */
     public boolean isLocked() {
-
-        myLockedStatus = false;
-
         return myLockedStatus;
     }
 

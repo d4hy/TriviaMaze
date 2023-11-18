@@ -474,9 +474,17 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         }
 
-        // Checks if the character's position is at the bottom door if it exists.
-        if (myCurrentRoom.getBottomDoor() != null && checkIfAtBottomDoor()) {
-            setMoveFalse();
+        /*
+         Checks if the character's position is at the bottom door if it exists.
+        Will prompt for a question if the game isn't over and if the doors question isn't answered.
+        */
+        if (myCurrentRoom.getBottomDoor() != null && checkIfAtBottomDoor() && !isGameLost()) {
+
+            // if the question isn't answered yet prompt for the question and freeze the character in place.
+            if(!myCurrentRoom.getBottomDoor().isMyQuestionAnswered()) {
+                setMoveFalse();
+            }
+
             System.out.println("At bottom door");
 
             // Character is at the left door position

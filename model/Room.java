@@ -155,13 +155,7 @@ public class Room {
         myBottomDoor = theDoor;
     }
 
-    /**
-     * Depending on validity of answered Question, will unlock specified Door
-     * in this Room.
-     */
-    public void unlockDoors() {
 
-    }
 
     /**
      * Draw the room and their doors.
@@ -332,14 +326,5 @@ public class Room {
         return myTopDoorImg;
     }
 
-    /**
-     * Returns validity of Character answered Question.
-     * @return boolean if question asked was answered.
-     */
-    public boolean isQuestionAnswered() {
 
-        boolean answer = false;
-
-        return answer;
-    }
 }
