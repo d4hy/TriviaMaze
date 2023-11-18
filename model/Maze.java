@@ -292,13 +292,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
     }
 
-    /**
-     * Move method to place Character into a different position.
-     * @param theInput
-     */
-    public void move(final String theInput) {
 
-    }
 
     /**
      * Returns information about the current room Character is in.
