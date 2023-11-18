@@ -495,8 +495,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             if (!myCurrentRoom.getBottomDoor().isMyQuestionPrompted()) {
                 setMoveFalse();
                 myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_BOT_DOOR, null,
-                        myCurrentRoom.getBottomDoor().
-                                getMyQuestion(myCurrentRoom.getBottomDoor()));
+                        myCurrentRoom);
                 //add code here to display the question prompt class
 
             } else if (myCurrentRoom.getBottomDoor().isMyQuestionPrompted()
@@ -545,8 +544,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             if (!myCurrentRoom.getTopDoor().isMyQuestionPrompted()) {
                 setMoveFalse();
                 myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_TOP_DOOR, null,
-                        myCurrentRoom.getTopDoor().
-                                getMyQuestion(myCurrentRoom.getTopDoor()));
+                        myCurrentRoom);
                 //add code here to display the question prompt class
 
 
@@ -594,8 +592,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             if (!myCurrentRoom.getLeftDoor().isMyQuestionPrompted()) {
                 setMoveFalse();
                 myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_LEFT_DOOR, null,
-                        myCurrentRoom.getLeftDoor().
-                                getMyQuestion(myCurrentRoom.getLeftDoor()));
+                        myCurrentRoom);
                 //add code here to display the question prompt class
 
 
@@ -640,8 +637,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             if (!myCurrentRoom.getLeftDoor().isMyQuestionPrompted()) {
                 setMoveFalse();
                 myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_RIGHT_DOOR, null,
-                        myCurrentRoom.getRightDoor().
-                                getMyQuestion(myCurrentRoom.getRightDoor()));
+                        myCurrentRoom);
 
                 //add code here to display the question prompt class
             }
