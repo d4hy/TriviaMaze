@@ -73,6 +73,10 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     private int myHeight;
 
+    /**
+     * The status of the game if it is over.
+     */
+    private boolean  myGameOverStatus;
 
     /**
      * Character that is in Maze.
@@ -90,6 +94,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     public Maze(final int theWidth, final int theHeight) {
         super();
         setMoveTrue();
+        setMyGameOverStatus(false);
         // Calculate the initial position for the Character to be in the middle of the screen.
         // since it is represented within the top left corner of a pixel, you have to subtract
         // the tile size.
@@ -346,14 +351,23 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     }
 
     /**
-     * Evaluates current game and determines whether it is won or lost.
+     * Returns if the game is lost or not.
      */
     public boolean isGameLost() {
 
-        final boolean game = true;
-
-        return game;
+        return myGameOverStatus;
     }
+
+    /**
+     * Sets the game to true or false based on the status passed.
+     * @param theStatus of the game you are trying to set.
+     */
+    private void setMyGameOverStatus( final boolean theStatus) {
+        myGameOverStatus = theStatus;
+        //notifies pcs that it changed
+        myPcs.firePropertyChange(PROPERTY_GAME_OVER, null, myCurrentRoom);
+    }
+
 
     @Override
     public void newGame() {
@@ -371,6 +385,9 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         createMaze();
         // Print the door status
         printMazeDoorStatus();
+        setMyGameOverStatus(false);
+
+
         myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
         myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
 
