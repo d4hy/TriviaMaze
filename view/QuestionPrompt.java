@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 
 import model.Door;
 import model.Maze;
+import model.Question;
 import model.Room;
 
 
@@ -29,6 +30,12 @@ public class QuestionPrompt implements PropertyChangeListener {
      * The current room to reference.
      */
     private Room myRoom;
+
+
+    /**
+     * The current question to prompt
+     */
+    private Question myQuestionToPrompt;
 
     /**
      * Constructs a QuestionPrompt with a reference to the Maze object.
@@ -86,8 +93,8 @@ public class QuestionPrompt implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent theEvt) {
         // Listen for changes in the model, if needed.
         final String propertyName = theEvt.getPropertyName();
-        if (propertyName.equals(myMaze.PROPERTY_FREEZE)) {
-            myRoom = (Room) theEvt.getNewValue();
+        if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_BOT_DOOR)) {
+            myQuestionToPrompt = (Question) theEvt.getNewValue();
             // If the freeze property is triggered, display the question prompt
             displayQuestionPrompt();
         }

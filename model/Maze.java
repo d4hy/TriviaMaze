@@ -330,8 +330,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     public void setMoveTrue() {
         myCanMove = true;
 
-        //notifies that just has been unfrozen, usually after answering a question.
-        myPcs.firePropertyChange(PROPERTY_FREEZE, null, myCurrentRoom);
+
     }
 
     /**
@@ -339,8 +338,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     private void setMoveFalse() {
         myCanMove = false;
-        //notifies that the user is frozen in place, usually when they are answering a question.
-        myPcs.firePropertyChange(PROPERTY_FREEZE, null, myCurrentRoom);
+
 
     }
 
@@ -464,7 +462,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     private boolean checkIfAtBottomDoor() {
         // Check if the character's position is at the bottom door
         // and if the X coordinate is within the horizontal range of the right door.
-        myPcs.firePropertyChange(PROPERTY_AT_BOT_DOOR,null,myCurrentRoom.getBottomDoor().getMyQuestion(myCurrentRoom.getBottomDoor()));
+
         return myCharacter.getCurrentPosition().getY() == MazeControls.MY_SCREEN_HEIGHT
                 - MazeControls.MY_TILE_SIZE
                 && myCharacter.getCurrentPosition().getX()
@@ -496,6 +494,9 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             // freeze the character in place, so they can answer.
             if (!myCurrentRoom.getBottomDoor().isMyQuestionPrompted()) {
                 setMoveFalse();
+                myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_BOT_DOOR, null,
+                        myCurrentRoom.getBottomDoor().
+                                getMyQuestion(myCurrentRoom.getBottomDoor()));
                 //add code here to display the question prompt class
 
             } else if (myCurrentRoom.getBottomDoor().isMyQuestionPrompted()
@@ -543,7 +544,11 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             // freeze the character in place, so they can answer.
             if (!myCurrentRoom.getTopDoor().isMyQuestionPrompted()) {
                 setMoveFalse();
+                myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_TOP_DOOR, null,
+                        myCurrentRoom.getTopDoor().
+                                getMyQuestion(myCurrentRoom.getTopDoor()));
                 //add code here to display the question prompt class
+
 
             }
 
@@ -588,7 +593,11 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             // freeze the character in place, so they can answer.
             if (!myCurrentRoom.getLeftDoor().isMyQuestionPrompted()) {
                 setMoveFalse();
+                myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_LEFT_DOOR, null,
+                        myCurrentRoom.getLeftDoor().
+                                getMyQuestion(myCurrentRoom.getLeftDoor()));
                 //add code here to display the question prompt class
+
 
             }
             System.out.println("At Left door");
@@ -630,6 +639,10 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             // freeze the character in place, so they can answer.
             if (!myCurrentRoom.getLeftDoor().isMyQuestionPrompted()) {
                 setMoveFalse();
+                myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_RIGHT_DOOR, null,
+                        myCurrentRoom.getRightDoor().
+                                getMyQuestion(myCurrentRoom.getRightDoor()));
+
                 //add code here to display the question prompt class
             }
             System.out.println("At Right door");

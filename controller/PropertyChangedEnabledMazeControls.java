@@ -53,15 +53,27 @@ public interface PropertyChangedEnabledMazeControls extends MazeControls {
 
 
     /**
-     * A property name for the user to prompt the question.
+     * A property name for the user to prompt the question when at the bottom door.
      */
-    String PROPERTY_PROMPT_QUESTION = "PROMPT";
-
+    String PROPERTY_PROMPT_QUESTION_BOT_DOOR = "PROMPTQuestionFromBottomDoor";
 
     /**
-     * A property name for the user when they are frozen.
+     * A property name for the user to prompt the question when at the top door.
      */
-    String PROPERTY_FREEZE = "FROZEN STATUS";
+    String PROPERTY_PROMPT_QUESTION_TOP_DOOR = "PROMPTQuestionFromTopDoor";
+
+    /**
+     * A property name for the user to prompt the question when at the left door.
+     */
+    String PROPERTY_PROMPT_QUESTION_LEFT_DOOR = "PROMPTQuestionFromLeftDoor";
+
+    /**
+     * A property name for the user to prompt the question when at the right door.
+     */
+    String PROPERTY_PROMPT_QUESTION_RIGHT_DOOR = "PROMPTQuestionFromRightDoor";
+
+
+
     /**
      * Add a PropertyChangeListener to the listener list. The listener is registered for
      * all properties. The same listener object may be added more than once, and will be
