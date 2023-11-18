@@ -497,6 +497,9 @@ public class Maze implements PropertyChangedEnabledMazeControls {
                 setMoveFalse();
                 //add code here to display the question prompt class
 
+            } else if (myCurrentRoom.getBottomDoor().isMyQuestionPrompted()
+                    && myCurrentRoom.getBottomDoor().isMyQuestionAnswered()) {
+                setMoveTrue();
             }
 
             System.out.println("At bottom door");

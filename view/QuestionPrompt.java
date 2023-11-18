@@ -49,6 +49,8 @@ public class QuestionPrompt implements PropertyChangeListener {
         // If correct, set the door as prompted and unlock it
         // Update the game state accordingly
         myMaze.getCurrentRoom().getBottomDoor().setMyQuestionPromptedStatus(true);
+        myMaze.getCurrentRoom().getBottomDoor().setMyQuestionAnsweredStatus(true);
+
 
     }
 
