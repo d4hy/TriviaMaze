@@ -481,7 +481,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         if (myCurrentRoom.getBottomDoor() != null && checkIfAtBottomDoor() && !isGameLost()) {
 
             // if the question isn't answered yet prompt for the question and freeze the character in place.
-            if(!myCurrentRoom.getBottomDoor().isMyQuestionAnswered()) {
+            if (!myCurrentRoom.getBottomDoor().isMyQuestionAnswered()) {
                 setMoveFalse();
             }
 

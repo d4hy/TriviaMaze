@@ -25,9 +25,14 @@ public class Door {
 
 
     /**
-     * Whether the question of the door is answered or not.
+     * Whether the question of the door is correctly answered or not.
      */
     private boolean isMyQuestionAnswered;
+
+    /**
+     * Whether the question was prompted or not.
+     */
+    private boolean isMyQuestionPrompted;
 
     /**
      * Question associated with current Door.
@@ -38,7 +43,8 @@ public class Door {
      * Constructor for Door.
      */
     public Door(final String theDoorDescription) {
-
+        isMyQuestionPrompted = false;
+        isMyQuestionAnswered = false;
         myDoorDescription = theDoorDescription;
 
     }
@@ -47,6 +53,24 @@ public class Door {
 
         return myQuestion;
     }
+
+
+    /**
+     *  Returns if the door's questions has been prompted or not.
+     * @return boolean if the question has been prompted or not.
+     */
+    public boolean isMyQuestionPrompted() {
+        return isMyQuestionPrompted;
+    }
+
+    /**
+     * Sets the question prompted status of the door.
+     * @param theStatus if the door's question has been prompted yet.
+     */
+    public void setMyQuestionPromptedStatus(final boolean theStatus) {
+        isMyQuestionPrompted = theStatus;
+    }
+
 
     /**
      *  Returns if the door's questions is answered or not.
