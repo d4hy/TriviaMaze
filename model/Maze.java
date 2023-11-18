@@ -634,7 +634,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         if (myCurrentRoom.getRightDoor() != null && checkIfAtRightDoor() && !isGameLost()) {
             // if the question hasn't been prompted for the question and
             // freeze the character in place, so they can answer.
-            if (!myCurrentRoom.getLeftDoor().isMyQuestionPrompted()) {
+            if (!myCurrentRoom.getRightDoor().isMyQuestionPrompted()) {
                 setMoveFalse();
                 myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_RIGHT_DOOR, null,
                         myCurrentRoom);

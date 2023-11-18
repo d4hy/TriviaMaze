@@ -31,12 +31,6 @@ public class QuestionPrompt implements PropertyChangeListener {
      */
     private Room myRoom;
 
-
-    /**
-     * The current question to prompt
-     */
-    private Question myQuestionToPrompt;
-
     /**
      * Constructs a QuestionPrompt with a reference to the Maze object.
      *
@@ -48,26 +42,74 @@ public class QuestionPrompt implements PropertyChangeListener {
 
     /**
      * Displays a question prompt to the user and processes their answer.
-     * If the answer is correct, it sets the associated door as prompted and unlocks it.
+     * If the answer is correct, it sets the bottom door as prompted and unlocks it.
      * Updates the game state accordingly.
+     * @param theDoor The door for which the question prompt is displayed.
      */
-    public void displayQuestionPrompt() {
-        if (!myRoom.getBottomDoor().isMyQuestionPrompted() || !myRoom.getBottomDoor().isMyQuestionAnswered()) {
-            handleQuestionPrompt(myRoom.getBottomDoor());
-        } else if (!myRoom.getLeftDoor().isMyQuestionPrompted() || !myRoom.getLeftDoor().isMyQuestionAnswered()) {
-            handleQuestionPrompt(myRoom.getLeftDoor());
-        } else if (!myRoom.getRightDoor().isMyQuestionPrompted() || !myRoom.getRightDoor().isMyQuestionAnswered()) {
-            handleQuestionPrompt(myRoom.getRightDoor());
-        } else if (!myRoom.getTopDoor().isMyQuestionPrompted() || !myRoom.getTopDoor().isMyQuestionAnswered()) {
-            handleQuestionPrompt(myRoom.getTopDoor());
+    private void displayQuestionBottomPrompt(Door theDoor) {
+        // Display the question prompt using JOptionPane
+        String userAnswer = JOptionPane.showInputDialog(null, "Your question goes here");
+
+        // Process the user's answer (validate, etc.)
+        // If the answer is "OK", set the door as prompted and unlock it
+        if ("OK".equalsIgnoreCase(userAnswer.trim())) {
+            theDoor.setMyQuestionPromptedStatus(true);
+            theDoor.setMyQuestionAnsweredStatus(true);
+
+            // Set the character to move again
+            myMaze.setMoveTrue();
         }
     }
 
     /**
-     * Handles the question prompt for a specific door.
+     * Displays a question prompt to the user and processes their answer.
+     * If the answer is correct, it sets the Top door as prompted and unlocks it.
+     * Updates the game state accordingly.
      * @param theDoor The door for which the question prompt is displayed.
      */
-    private void handleQuestionPrompt(Door theDoor) {
+    private void displayQuestionTopPrompt(Door theDoor) {
+        // Display the question prompt using JOptionPane
+        String userAnswer = JOptionPane.showInputDialog(null, "Your question goes here");
+
+        // Process the user's answer (validate, etc.)
+        // If the answer is "OK", set the door as prompted and unlock it
+        if ("OK".equalsIgnoreCase(userAnswer.trim())) {
+            theDoor.setMyQuestionPromptedStatus(true);
+            theDoor.setMyQuestionAnsweredStatus(true);
+
+            // Set the character to move again
+            myMaze.setMoveTrue();
+        }
+    }
+
+    /**
+     * Displays a question prompt to the user and processes their answer.
+     * If the answer is correct, it sets the Left door as prompted and unlocks it.
+     * Updates the game state accordingly.
+     * @param theDoor The door for which the question prompt is displayed.
+     */
+    private void displayQuestionLeftPrompt(Door theDoor) {
+        // Display the question prompt using JOptionPane
+        String userAnswer = JOptionPane.showInputDialog(null, "Your question goes here");
+
+        // Process the user's answer (validate, etc.)
+        // If the answer is "OK", set the door as prompted and unlock it
+        if ("OK".equalsIgnoreCase(userAnswer.trim())) {
+            theDoor.setMyQuestionPromptedStatus(true);
+            theDoor.setMyQuestionAnsweredStatus(true);
+
+            // Set the character to move again
+            myMaze.setMoveTrue();
+        }
+    }
+
+    /**
+     * Displays a question prompt to the user and processes their answer.
+     * If the answer is correct, it sets the Right door as prompted and unlocks it.
+     * Updates the game state accordingly.
+     * @param theDoor The door for which the question prompt is displayed.
+     */
+    private void displayQuestionRightPrompt(Door theDoor) {
         // Display the question prompt using JOptionPane
         String userAnswer = JOptionPane.showInputDialog(null, "Your question goes here");
 
@@ -83,6 +125,9 @@ public class QuestionPrompt implements PropertyChangeListener {
     }
 
 
+
+
+
     /**
      * Listens for property changes in the Maze class.
      * When the freeze property is triggered, it displays a question prompt.
@@ -90,13 +135,21 @@ public class QuestionPrompt implements PropertyChangeListener {
      * @param theEvt The property change event.
      */
     @Override
-    public void propertyChange(PropertyChangeEvent theEvt) {
+    public void propertyChange(final PropertyChangeEvent theEvt) {
         // Listen for changes in the model, if needed.
         final String propertyName = theEvt.getPropertyName();
         if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_BOT_DOOR)) {
-            myQuestionToPrompt = (Question) theEvt.getNewValue();
-            // If the freeze property is triggered, display the question prompt
-            displayQuestionPrompt();
+            myRoom = (Room) theEvt.getNewValue();
+            displayQuestionBottomPrompt(myRoom.getBottomDoor());
+        } else if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_TOP_DOOR)) {
+            myRoom = (Room) theEvt.getNewValue();
+            displayQuestionTopPrompt(myRoom.getTopDoor());
+        } else if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_LEFT_DOOR)) {
+            myRoom = (Room) theEvt.getNewValue();
+            displayQuestionLeftPrompt(myRoom.getLeftDoor());
+        } else if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_RIGHT_DOOR)) {
+            myRoom = (Room) theEvt.getNewValue();
+            displayQuestionRightPrompt(myRoom.getRightDoor());
         }
     }
 }
