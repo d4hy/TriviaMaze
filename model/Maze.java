@@ -39,6 +39,12 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     private static final String BOTTOM_DOOR = "Bottom";
 
     /**
+     * Constant to be used to check if the current room has these types of doors.
+     */
+    private static final String[]
+            DOORS_TO_CHECK = {RIGHT_DOOR, LEFT_DOOR, TOP_DOOR, BOTTOM_DOOR};
+
+    /**
      * Constant to use for reaching the furthest rooms in perimeter of maze.
      */
     private static final int ENDPOINT = 3;
@@ -293,6 +299,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
 
 
+
     /**
      * Returns information about the current room Character is in.
      * @return String info about current room.
@@ -402,6 +409,86 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
     }
 
+    /**
+     * Handles the interaction when the character is near a specific door.
+     *
+     * @param theDoorType The door with which the character is interacting.
+     */
+    private void handleDoorInteraction(final String theDoorType) {
+        final int currentRow = getCurrentRoomRow();
+        final int currentCol = getCurrentRoomCol();
+
+        final boolean isValidMove;
+
+        // Determine the new room coordinates based on the door's direction
+        int newRow = currentRow;
+        int newCol = currentCol;
+
+        switch (theDoorType) {
+            case RIGHT_DOOR:
+                isValidMove = currentCol < ENDPOINT && myRooms[newRow][++newCol] != null;
+                break;
+            case LEFT_DOOR:
+                isValidMove = currentCol > 0 && myRooms[newRow][--newCol] != null;
+                break;
+            case TOP_DOOR:
+                isValidMove = currentRow > 0 && myRooms[--newRow][newCol] != null;
+                break;
+            case BOTTOM_DOOR:
+                isValidMove = currentRow < ENDPOINT && myRooms[++newRow][newCol] != null;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + theDoorType);
+        }
+
+        // Move to the new room if the move is valid
+        if (isValidMove) {
+            myCurrentRoom = myRooms[newRow][newCol];
+            myCharacter.resetToMiddle();
+            myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
+            myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+        }
+    }
+    /**
+     * Checks if the character is near a specific door.
+     *
+     * @param theDoorType The type of door to check (e.g., "Right", "Left", "Top", "Bottom").
+     * @return True if the character is near the specified door, false otherwise.
+     */
+    private boolean isCharacterNearDoor(final String theDoorType) {
+        double doorX = 0;
+        double doorY = 0;
+
+        // Set door positions based on the door type
+        switch (theDoorType) {
+            case RIGHT_DOOR -> {
+                doorX = MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE;
+                doorY = MazeControls.MY_SCREEN_HEIGHT / 2.0;
+            }
+            case LEFT_DOOR -> {
+                doorX = 0.0;
+                doorY = MazeControls.MY_SCREEN_HEIGHT / 2.0;
+            }
+            case TOP_DOOR -> {
+                doorX = MazeControls.MY_SCREEN_WIDTH / 2.0;
+                doorY = 0.0;
+            }
+            case BOTTOM_DOOR -> {
+                doorX = MazeControls.MY_SCREEN_WIDTH / 2.0;
+                doorY = MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE;
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + theDoorType);
+        }
+
+        // Check if the character's position is near the specified door
+        return myCharacter.getCurrentPosition().getX() >= doorX - MazeControls.MY_TILE_SIZE
+                && myCharacter.getCurrentPosition().getX() <= doorX
+                + MazeControls.MY_TILE_SIZE
+                && myCharacter.getCurrentPosition().getY()
+                >= doorY - MazeControls.MY_TILE_SIZE
+                && myCharacter.getCurrentPosition().getY()
+                <= doorY + MazeControls.MY_TILE_SIZE;
+    }
 
     /**
      * Checks if the character is at the right door.
@@ -505,6 +592,110 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     }
 
     /**
+     * Gets the property name for prompting a question based on the door's direction.
+     *
+     * @param theDoorType  The door for which to get the property name.
+     * @return The property name for prompting a question.
+     */
+    private String getPromptQuestionPropertyName(final String theDoorType) {
+        final String result;
+        switch (theDoorType) {
+            case RIGHT_DOOR:
+                result = PROPERTY_PROMPT_QUESTION_RIGHT_DOOR;
+                break;
+            case LEFT_DOOR:
+                result = PROPERTY_PROMPT_QUESTION_LEFT_DOOR;
+                break;
+            case TOP_DOOR:
+                result = PROPERTY_PROMPT_QUESTION_TOP_DOOR;
+                break;
+            case BOTTOM_DOOR:
+                result = PROPERTY_PROMPT_QUESTION_BOT_DOOR;
+                break;
+            default:
+                result = "";
+                break;
+        }
+        return result;
+    }
+
+    /**
+     * Checks all doors in the current room for interaction.
+     */
+    private void checkDoors() {
+        for (String doorDirection : DOORS_TO_CHECK) {
+            Door door = getDoorForDirection(doorDirection);
+
+            // Check if the door should be handled based on conditions
+            if (shouldHandleDoorInteraction(door, doorDirection)) {
+                System.out.println("At " + doorDirection + " door");
+
+                // Handle unprompted door
+                if (!door.isMyQuestionPrompted()) {
+                    handleUnpromptedDoor(doorDirection);
+                }
+                // Handle answered door
+                else if (door.isMyQuestionPrompted() && door.isMyQuestionAnswered()) {
+                    handleAnsweredDoor(doorDirection);
+                }
+            }
+        }
+    }
+
+    /**
+     * Gets the corresponding door based on the direction.
+     *
+     * @param doorDirection The direction of the door.
+     * @return The corresponding door.
+     */
+    private Door getDoorForDirection(String doorDirection) {
+        switch (doorDirection) {
+            case RIGHT_DOOR:
+                return myCurrentRoom.getRightDoor();
+            case LEFT_DOOR:
+                return myCurrentRoom.getLeftDoor();
+            case TOP_DOOR:
+                return myCurrentRoom.getTopDoor();
+            case BOTTOM_DOOR:
+                return myCurrentRoom.getBottomDoor();
+            default:
+                throw new IllegalStateException("Unexpected value: " + doorDirection);
+        }
+    }
+
+    /**
+     * Checks if the door should be handled for interaction.
+     *
+     * @param door           The door to check.
+     * @param doorDirection  The direction of the door.
+     * @return True if the door should be handled, false otherwise.
+     */
+    private boolean shouldHandleDoorInteraction(Door door, String doorDirection) {
+        return door != null && isCharacterNearDoor(doorDirection) && !isGameLost();
+    }
+
+    /**
+     * Handles unprompted door interaction.
+     *
+     * @param doorDirection The direction of the door.
+     */
+    private void handleUnpromptedDoor(String doorDirection) {
+        setMoveFalse();
+        // Fire property change event to prompt the question
+        myPcs.firePropertyChange(getPromptQuestionPropertyName(doorDirection), null, myCurrentRoom);
+        // Add code here to display the question prompt class
+    }
+
+    /**
+     * Handles door interaction when the question is answered.
+     *
+     * @param doorDirection The direction of the door.
+     */
+    private void handleAnsweredDoor(String doorDirection) {
+        // Move within the corresponding room
+        handleDoorInteraction(doorDirection);
+    }
+    /**
      * Moves the character down.
      */
     @Override
@@ -514,43 +705,45 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             myCharacter.moveDown();
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         }
+        // Iterate through all doors in the current room
+        for (String doorDirection : DOORS_TO_CHECK) {
+            Door door = null;
 
-        /*
-         Checks if the character's position is at the bottom door if it exists.
-        Will prompt for a question if the game isn't over and if the doors question isn't
-        answered.
-        */
-        if (myCurrentRoom.getBottomDoor() != null && checkIfAtBottomDoor() && !isGameLost()) {
-            System.out.println("At bottom door");
-            // if the question hasn't been prompted for the question and
-            // freeze the character in place, so they can answer.
-            if (!myCurrentRoom.getBottomDoor().isMyQuestionPrompted()) {
-                setMoveFalse();
-                myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_BOT_DOOR, null,
-                        myCurrentRoom);
-                //add code here to display the question prompt class
+            // Get the corresponding door based on the direction
+            switch (doorDirection) {
+                case RIGHT_DOOR:
+                    door = myCurrentRoom.getRightDoor();
+                    break;
+                case LEFT_DOOR:
+                    door = myCurrentRoom.getLeftDoor();
+                    break;
+                case TOP_DOOR:
+                    door = myCurrentRoom.getTopDoor();
+                    break;
+                case BOTTOM_DOOR:
+                    door = myCurrentRoom.getBottomDoor();
+                    break;
+            }
 
-                //if the bottom door's question is prompted and answered correctly
-                // move within the room below.
-            } else if (myCurrentRoom.getBottomDoor().isMyQuestionPrompted()
-                    && myCurrentRoom.getBottomDoor().isMyQuestionAnswered()) {
-                // Get the indices of the current room
-                int currentRow = getCurrentRoomRow();
-                int currentCol = getCurrentRoomCol();
+            if (door != null && isCharacterNearDoor(doorDirection) && !isGameLost()) {
+                System.out.println("At " + doorDirection + " door");
 
-                // Check if there is a room below
-                if (currentRow < ENDPOINT && myRooms[currentRow + 1][currentCol] != null) {
-                    Room nextRoom = myRooms[currentRow + 1][currentCol];
-                    myCurrentRoom = nextRoom;
-                    //resets the character to the middle after entering the new room.
-                    myCharacter.resetToMiddle();
-                    myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
-                    myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
-
+                // Check if the door's question hasn't been prompted
+                if (!door.isMyQuestionPrompted()) {
+                    setMoveFalse();
+                    // Fire property change event based on the door's direction
+                    myPcs.firePropertyChange(getPromptQuestionPropertyName(doorDirection),
+                            null, myCurrentRoom);
+                    // Add code here to display the question prompt class
+                } else if (door.isMyQuestionPrompted() && door.isMyQuestionAnswered()) {
+                    // Move within the corresponding room if the question is answered correctly
+                    handleDoorInteraction(doorDirection);
                 }
             }
         }
     }
+
+
 
 
     /**
@@ -566,41 +759,45 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         }
 
+        // Iterate through all doors in the current room
+        for (String doorDirection : DOORS_TO_CHECK) {
+            Door door = null;
 
-        /*
-         Checks if the character's position is at the top door if it exists.
-        Will prompt for a question if the game isn't over and if the doors question isn't
-        answered.
-        */
-        if (myCurrentRoom.getTopDoor() != null && checkIfAtTopDoor() && !isGameLost()) {
-            System.out.println("At Top door");
-            // if the question hasn't been prompted for the question and
-            // freeze the character in place, so they can answer.
-            if (!myCurrentRoom.getTopDoor().isMyQuestionPrompted()) {
-                setMoveFalse();
-                myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_TOP_DOOR, null,
-                        myCurrentRoom);
-                //if the top door's question is prompted and answered correctly
-                // move within the room above.
-            } else if (myCurrentRoom.getTopDoor().isMyQuestionPrompted()
-                    && myCurrentRoom.getTopDoor().isMyQuestionAnswered()) {
+            // Get the corresponding door based on the direction
+            switch (doorDirection) {
+                case RIGHT_DOOR:
+                    door = myCurrentRoom.getRightDoor();
+                    break;
+                case LEFT_DOOR:
+                    door = myCurrentRoom.getLeftDoor();
+                    break;
+                case TOP_DOOR:
+                    door = myCurrentRoom.getTopDoor();
+                    break;
+                case BOTTOM_DOOR:
+                    door = myCurrentRoom.getBottomDoor();
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + doorDirection);
+            }
 
-                // Get the indices of the current room
-                int currentRow = getCurrentRoomRow();
-                int currentCol = getCurrentRoomCol();
+            if (door != null && isCharacterNearDoor(doorDirection) && !isGameLost()) {
+                System.out.println("At " + doorDirection + " door");
 
-                // Check if there is a room on top
-                if (currentRow > 0 && myRooms[currentRow - 1][currentCol] != null) {
-                    Room nextRoom = myRooms[currentRow -1][currentCol];
-                    myCurrentRoom = nextRoom;
-                    // resets to middle after entering the new room.
-                    myCharacter.resetToMiddle();
-                    myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
-                    myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+                // Check if the door's question hasn't been prompted
+                if (!door.isMyQuestionPrompted()) {
+                    setMoveFalse();
+                    // Fire property change event based on the door's direction
+                    myPcs.firePropertyChange(getPromptQuestionPropertyName
+                            (doorDirection), null, myCurrentRoom);
+                    // Add code here to display the question prompt class
+                } else if (door.isMyQuestionPrompted() && door.isMyQuestionAnswered()) {
+                    // Move within the corresponding room if the question is answered correctly
+                    handleDoorInteraction(doorDirection);
                 }
-
             }
         }
+
 
     }
 
@@ -617,44 +814,45 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         }
 
-        /*
-         Checks if the character's position is at the top door if it exists.
-        Will prompt for a question if the game isn't over and if the doors question isn't
-        answered.
-        */
-        if (myCurrentRoom.getLeftDoor() != null && checkIfAtLeftDoor() && !isGameLost()) {
-            System.out.println("At Left door");
+        // Iterate through all doors in the current room
+        for (String doorDirection : DOORS_TO_CHECK) {
+            Door door = null;
 
-            // if the question hasn't been prompted for the question and
-            // freeze the character in place, so they can answer.
-            if (!myCurrentRoom.getLeftDoor().isMyQuestionPrompted()) {
-                setMoveFalse();
-                myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_LEFT_DOOR, null,
-                        myCurrentRoom);
-
-
-
-                //if the left door's question is prompted and answered correctly
-                // move within the room on the left.
-            } else if (myCurrentRoom.getLeftDoor().isMyQuestionPrompted()
-                    && myCurrentRoom.getLeftDoor().isMyQuestionAnswered()) {
-                // Get the indices of the current room
-                int currentRow = getCurrentRoomRow();
-                int currentCol = getCurrentRoomCol();
-
-                // check if there is a room on the left
-                if (currentCol > 0 && myRooms[currentRow ][currentCol - 1 ] != null) {
-                    Room nextRoom = myRooms[currentRow ][currentCol - 1 ];
-                    myCurrentRoom = nextRoom;
-                    // resets to middle after entering the new room.
-                    myCharacter.resetToMiddle();
-                    myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
-                    myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
-                }
-
+            // Get the corresponding door based on the direction
+            switch (doorDirection) {
+                case RIGHT_DOOR:
+                    door = myCurrentRoom.getRightDoor();
+                    break;
+                case LEFT_DOOR:
+                    door = myCurrentRoom.getLeftDoor();
+                    break;
+                case TOP_DOOR:
+                    door = myCurrentRoom.getTopDoor();
+                    break;
+                case BOTTOM_DOOR:
+                    door = myCurrentRoom.getBottomDoor();
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + doorDirection);
             }
 
+            if (door != null && isCharacterNearDoor(doorDirection) && !isGameLost()) {
+                System.out.println("At " + doorDirection + " door");
+
+                // Check if the door's question hasn't been prompted
+                if (!door.isMyQuestionPrompted()) {
+                    setMoveFalse();
+                    // Fire property change event based on the door's direction
+                    myPcs.firePropertyChange(getPromptQuestionPropertyName
+                            (doorDirection), null, myCurrentRoom);
+                    // Add code here to display the question prompt class
+                } else if (door.isMyQuestionPrompted() && door.isMyQuestionAnswered()) {
+                    // Move within the corresponding room if the question is answered correctly
+                    handleDoorInteraction(doorDirection);
+                }
+            }
         }
+
 
     }
 
@@ -671,42 +869,43 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         }
 
-           /*
-         Checks if the character's position is at the top door if it exists.
-        Will prompt for a question if the game isn't over and if the doors question isn't
-        answered.
-        */
-        if (myCurrentRoom.getRightDoor() != null && checkIfAtRightDoor() && !isGameLost()) {
-            System.out.println("At Right door");
+        // Iterate through all doors in the current room
+        for (String doorDirection : DOORS_TO_CHECK) {
+            Door door = null;
 
-            // if the question hasn't been prompted for the question and
-            // freeze the character in place, so they can answer.
-            if (!myCurrentRoom.getRightDoor().isMyQuestionPrompted()) {
-                setMoveFalse();
-                myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_RIGHT_DOOR, null,
-                        myCurrentRoom);
-
-                //if the right door's question is prompted and answered correctly
-                // move within the room on the right.
-            } else if (myCurrentRoom.getRightDoor().isMyQuestionPrompted()
-                    && myCurrentRoom.getRightDoor().isMyQuestionAnswered()) {
-
-                // Get the indices of the current room
-                int currentRow = getCurrentRoomRow();
-                int currentCol = getCurrentRoomCol();
-
-                // check if there is a room on the right
-                if (currentCol < ENDPOINT && myRooms[currentRow ][currentCol +1 ] != null) {
-                    Room nextRoom = myRooms[currentRow ][currentCol + 1 ];
-                    myCurrentRoom = nextRoom;
-                    // resets to middle after entering the new room.
-                    myCharacter.resetToMiddle();
-                    myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
-                    myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
-                }
+            // Get the corresponding door based on the direction
+            switch (doorDirection) {
+                case RIGHT_DOOR:
+                    door = myCurrentRoom.getRightDoor();
+                    break;
+                case LEFT_DOOR:
+                    door = myCurrentRoom.getLeftDoor();
+                    break;
+                case TOP_DOOR:
+                    door = myCurrentRoom.getTopDoor();
+                    break;
+                case BOTTOM_DOOR:
+                    door = myCurrentRoom.getBottomDoor();
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + doorDirection);
             }
 
+            if (door != null && isCharacterNearDoor(doorDirection) && !isGameLost()) {
+                System.out.println("At " + doorDirection + " door");
 
+                // Check if the door's question hasn't been prompted
+                if (!door.isMyQuestionPrompted()) {
+                    setMoveFalse();
+                    // Fire property change event based on the door's direction
+                    myPcs.firePropertyChange(
+                            getPromptQuestionPropertyName(doorDirection), null, myCurrentRoom);
+                    // Add code here to display the question prompt class
+                } else if (door.isMyQuestionPrompted() && door.isMyQuestionAnswered()) {
+                    // Move within the corresponding room if the question is answered correctly
+                    handleDoorInteraction(doorDirection);
+                }
+            }
         }
 
     }
