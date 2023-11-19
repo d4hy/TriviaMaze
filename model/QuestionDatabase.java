@@ -16,6 +16,9 @@ public final class QuestionDatabase {
      */
     private static final ArrayList<Question> myQuestions = new ArrayList<>();
 
+    /**
+     * Private, empty constructor to ensure this remains a utility class.
+     */
     private QuestionDatabase() {
 
     }
@@ -75,5 +78,14 @@ public final class QuestionDatabase {
             e.printStackTrace();
             System.exit(0);
         }
+    }
+
+    /**
+     * Returns completed list of questions extracted from database file
+     * using SQLite.
+     * @return arraylist of Question objects.
+     */
+    public static ArrayList<Question> getQuestions() {
+        return myQuestions;
     }
 }
