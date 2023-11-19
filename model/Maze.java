@@ -105,7 +105,6 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH,
                 MazeControls.MY_SCREEN_HEIGHT);
 
-
         myWidth = theWidth;
         myHeight = theHeight;
         myPcs = new PropertyChangeSupport(this);
@@ -382,6 +381,8 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         // Calculate the initial position for the Character to be in the middle of the screen.
         // since it is represented within the top left corner of a pixel, you have to subtract
         // the tile size.
+
+
         final int startX = (MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE) / 2;
         final int startY = (MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE) / 2;
 
@@ -472,6 +473,37 @@ public class Maze implements PropertyChangedEnabledMazeControls {
                 <= (MazeControls.MY_SCREEN_WIDTH / 2.0)
                 + (MazeControls.MY_TILE_SIZE / 2.0);
     }
+
+    /**
+     * Method that returns the current row that is the current room.
+     * @return -1 if the room doesn't exist, otherwise a value >= 0
+     */
+    public int getCurrentRoomRow() {
+        for (int i = 0; i < myRooms.length; i++) {
+            for (int j = 0; j < myRooms[i].length; j++) {
+                if (myRooms[i][j] == myCurrentRoom) {
+                    return i;
+                }
+            }
+        }
+        return -1; // Room not found, handle appropriately
+    }
+
+    /**
+     * Method that returns the current column that is the current room.
+     * @return -1 if the room doesn't exist, otherwise a value >= 0
+     */
+    public int getCurrentRoomCol() {
+        for (int i = 0; i < myRooms.length; i++) {
+            for (int j = 0; j < myRooms[i].length; j++) {
+                if (myRooms[i][j] == myCurrentRoom) {
+                    return j;
+                }
+            }
+        }
+        return -1; // Room not found, handle appropriately
+    }
+
     /**
      * Moves the character down.
      */
@@ -489,7 +521,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         answered.
         */
         if (myCurrentRoom.getBottomDoor() != null && checkIfAtBottomDoor() && !isGameLost()) {
-
+            System.out.println("At bottom door");
             // if the question hasn't been prompted for the question and
             // freeze the character in place, so they can answer.
             if (!myCurrentRoom.getBottomDoor().isMyQuestionPrompted()) {
@@ -498,23 +530,25 @@ public class Maze implements PropertyChangedEnabledMazeControls {
                         myCurrentRoom);
                 //add code here to display the question prompt class
 
+                //if the bottom door's question is prompted and answered correctly
+                // move within the room below.
             } else if (myCurrentRoom.getBottomDoor().isMyQuestionPrompted()
                     && myCurrentRoom.getBottomDoor().isMyQuestionAnswered()) {
-                setMoveTrue();
+                // Get the indices of the current room
+                int currentRow = getCurrentRoomRow();
+                int currentCol = getCurrentRoomCol();
+
+                // Check if there is a room below
+                if (currentRow < ENDPOINT && myRooms[currentRow + 1][currentCol] != null) {
+                    Room nextRoom = myRooms[currentRow + 1][currentCol];
+                    myCurrentRoom = nextRoom;
+                    //resets the character to the middle after entering the new room.
+                    myCharacter.resetToMiddle();
+                    myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
+                    myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+
+                }
             }
-
-            System.out.println("At bottom door");
-
-            // Character is at the left door position
-            // Your code here...
-
-            // Fire property change support and change into the next room
-
-            //myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
-
-            // Freeze until otherwise
-            // Add your code for freezing here...
-
         }
     }
 
@@ -539,29 +573,33 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         answered.
         */
         if (myCurrentRoom.getTopDoor() != null && checkIfAtTopDoor() && !isGameLost()) {
+            System.out.println("At Top door");
             // if the question hasn't been prompted for the question and
             // freeze the character in place, so they can answer.
             if (!myCurrentRoom.getTopDoor().isMyQuestionPrompted()) {
                 setMoveFalse();
                 myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_TOP_DOOR, null,
                         myCurrentRoom);
-                //add code here to display the question prompt class
+                //if the top door's question is prompted and answered correctly
+                // move within the room above.
+            } else if (myCurrentRoom.getTopDoor().isMyQuestionPrompted()
+                    && myCurrentRoom.getTopDoor().isMyQuestionAnswered()) {
 
+                // Get the indices of the current room
+                int currentRow = getCurrentRoomRow();
+                int currentCol = getCurrentRoomCol();
+
+                // Check if there is a room on top
+                if (currentRow > 0 && myRooms[currentRow - 1][currentCol] != null) {
+                    Room nextRoom = myRooms[currentRow -1][currentCol];
+                    myCurrentRoom = nextRoom;
+                    // resets to middle after entering the new room.
+                    myCharacter.resetToMiddle();
+                    myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
+                    myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+                }
 
             }
-
-            System.out.println("At Top door");
-
-            // Character is at the left door position
-            // Your code here...
-
-            // Fire property change support and change into the next room
-
-            //myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
-
-            // Freeze until otherwise
-            // Add your code for freezing here...
-
         }
 
     }
@@ -585,7 +623,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         answered.
         */
         if (myCurrentRoom.getLeftDoor() != null && checkIfAtLeftDoor() && !isGameLost()) {
-
+            System.out.println("At Left door");
 
             // if the question hasn't been prompted for the question and
             // freeze the character in place, so they can answer.
@@ -593,21 +631,28 @@ public class Maze implements PropertyChangedEnabledMazeControls {
                 setMoveFalse();
                 myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_LEFT_DOOR, null,
                         myCurrentRoom);
-                //add code here to display the question prompt class
 
+
+
+                //if the left door's question is prompted and answered correctly
+                // move within the room on the left.
+            } else if (myCurrentRoom.getLeftDoor().isMyQuestionPrompted()
+                    && myCurrentRoom.getLeftDoor().isMyQuestionAnswered()) {
+                // Get the indices of the current room
+                int currentRow = getCurrentRoomRow();
+                int currentCol = getCurrentRoomCol();
+
+                // check if there is a room on the left
+                if (currentCol > 0 && myRooms[currentRow ][currentCol - 1 ] != null) {
+                    Room nextRoom = myRooms[currentRow ][currentCol - 1 ];
+                    myCurrentRoom = nextRoom;
+                    // resets to middle after entering the new room.
+                    myCharacter.resetToMiddle();
+                    myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
+                    myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+                }
 
             }
-            System.out.println("At Left door");
-
-            // Character is at the left door position
-            // Your code here...
-
-            // Fire property change support and change into the next room
-
-           // myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
-
-            // Freeze until otherwise
-            // Add your code for freezing here...
 
         }
 
@@ -632,6 +677,8 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         answered.
         */
         if (myCurrentRoom.getRightDoor() != null && checkIfAtRightDoor() && !isGameLost()) {
+            System.out.println("At Right door");
+
             // if the question hasn't been prompted for the question and
             // freeze the character in place, so they can answer.
             if (!myCurrentRoom.getRightDoor().isMyQuestionPrompted()) {
@@ -639,19 +686,26 @@ public class Maze implements PropertyChangedEnabledMazeControls {
                 myPcs.firePropertyChange(PROPERTY_PROMPT_QUESTION_RIGHT_DOOR, null,
                         myCurrentRoom);
 
-                //add code here to display the question prompt class
+                //if the right door's question is prompted and answered correctly
+                // move within the room on the right.
+            } else if (myCurrentRoom.getRightDoor().isMyQuestionPrompted()
+                    && myCurrentRoom.getRightDoor().isMyQuestionAnswered()) {
+
+                // Get the indices of the current room
+                int currentRow = getCurrentRoomRow();
+                int currentCol = getCurrentRoomCol();
+
+                // check if there is a room on the right
+                if (currentCol < ENDPOINT && myRooms[currentRow ][currentCol +1 ] != null) {
+                    Room nextRoom = myRooms[currentRow ][currentCol + 1 ];
+                    myCurrentRoom = nextRoom;
+                    // resets to middle after entering the new room.
+                    myCharacter.resetToMiddle();
+                    myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
+                    myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+                }
             }
-            System.out.println("At Right door");
 
-            // Character is at the left door position
-            // Your code here...
-
-            // Fire property change support and change into the next room
-
-           // myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
-
-            // Freeze until otherwise
-            // Add your code for freezing here...
 
         }
 
