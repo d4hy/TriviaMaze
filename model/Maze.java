@@ -631,10 +631,10 @@ public class Maze implements PropertyChangedEnabledMazeControls {
                 System.out.println("At " + doorDirection + " door");
 
                 // Handle unprompted door
-                if (!door.isMyQuestionPrompted()) {
-                    handleUnpromptedDoor(doorDirection);
+                if (door.hasMyQuestionBeenNotPrompted()) {
+                    handleUnpromptedDoor(door,doorDirection);
                     // Handle answered door
-                } else if (door.isMyQuestionPrompted() && door.isMyQuestionAnswered()) {
+                } else if (!door.hasMyQuestionBeenNotPrompted() && door.hasMyQuestionBeenAnsweredCorrectly()) {
                     handleAnsweredDoor(doorDirection);
                 }
             }
@@ -682,15 +682,18 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
     /**
      * Handles unprompted door interaction.
-     *
+     * @param theDoor The Door object.
      * @param theDoorDirection The direction of the door.
      */
-    private void handleUnpromptedDoor(final String theDoorDirection) {
-        setMoveFalse();
-        // Fire property change event to prompt the question
-        myPcs.firePropertyChange(getPromptQuestionPropertyName(theDoorDirection),
-                null, myCurrentRoom);
-        // Add code here to display the question prompt class
+    private void handleUnpromptedDoor(final Door theDoor, final String theDoorDirection) {
+        if (theDoor.hasMyQuestionBeenNotPrompted()) {
+            setMoveFalse();
+            // Fire property change event to prompt the question
+            myPcs.firePropertyChange(getPromptQuestionPropertyName(theDoorDirection),
+                    null, myCurrentRoom);
+            // Add code here to display the question prompt class
+            theDoor.setMyQuestionNotPromptedStatus(false); // Set the flag to false after prompting the question
+        }
     }
 
     /**

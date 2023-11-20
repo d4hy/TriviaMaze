@@ -25,14 +25,14 @@ public class Door {
 
 
     /**
-     * Whether the question of the door is correctly answered or not.
+     * Whether the question of the door has been correctly answered or has.
      */
-    private boolean isMyQuestionAnswered;
+    private boolean myQuestionHasBeenAnsweredCorrectly;
 
     /**
-     * Whether the question was prompted or not.
+     * Whether the question  has been not prompted or has.
      */
-    private boolean isMyQuestionPrompted;
+    private boolean myQuestionHasNotBeenPrompted;
 
     /**
      * Question associated with current Door.
@@ -43,8 +43,8 @@ public class Door {
      * Constructor for Door.
      */
     public Door(final String theDoorDescription) {
-        isMyQuestionPrompted = false;
-        isMyQuestionAnswered = false;
+        myQuestionHasNotBeenPrompted = true;
+        myQuestionHasBeenAnsweredCorrectly = false;
         myDoorDescription = theDoorDescription;
 
     }
@@ -56,36 +56,37 @@ public class Door {
 
 
     /**
-     *  Returns if the door's questions has been prompted or not.
-     * @return boolean if the question has been prompted or not.
+     * Returns a boolean if the door's Question has not been prompted or has.
+     * @return true if the door's question has not been prompted, false if it has been prompted.
      */
-    public boolean isMyQuestionPrompted() {
-        return isMyQuestionPrompted;
+    public boolean hasMyQuestionBeenNotPrompted() {
+        return myQuestionHasNotBeenPrompted;
     }
 
     /**
-     * Sets the question prompted status of the door.
-     * @param theStatus if the door's question has been prompted yet.
+     * Sets the status if the door's question has not been prompted or has.
+     * @param theStatus if true, it will set door's myQuestionHasNotBeenPrompted status to true, false
+     *                  will set myQuestionHasNotBeenPrompted status to false .
      */
-    public void setMyQuestionPromptedStatus(final boolean theStatus) {
-        isMyQuestionPrompted = theStatus;
+    public void setMyQuestionNotPromptedStatus(final boolean theStatus) {
+        myQuestionHasNotBeenPrompted = theStatus;
     }
 
 
     /**
-     *  Returns if the door's questions is answered or not.
+     *  Returns if the door's questions has been answered correclty or not.
      * @return boolean if the question is answered or not.
      */
-    public boolean isMyQuestionAnswered() {
-        return isMyQuestionAnswered;
+    public boolean hasMyQuestionBeenAnsweredCorrectly() {
+        return myQuestionHasBeenAnsweredCorrectly;
     }
 
     /**
-     * Sets the question status of the door to be answered or not.
+     * Sets the question status if the door has been answered correctly or not.
      * @param theStatus of the question to be set to.
      */
-    public void setMyQuestionAnsweredStatus(final boolean theStatus) {
-        isMyQuestionAnswered = theStatus;
+    public void setMyQuestionHasBeenAnsweredCorrectlyStatus(final boolean theStatus) {
+        myQuestionHasBeenAnsweredCorrectly = theStatus;
     }
 
 

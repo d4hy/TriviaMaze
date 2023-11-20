@@ -39,11 +39,12 @@ public class QuestionPrompt implements PropertyChangeListener {
     public QuestionPrompt(final Maze theMaze)  {
         myMaze = theMaze;
     }
-
     /**
      * Displays a question prompt to the user and processes their answer.
      * If the answer is correct, it sets the bottom door as prompted and unlocks it.
+     * If the dialog is closed or the answer is incorrect, it sets the question as not prompted.
      * Updates the game state accordingly.
+     *
      * @param theDoor The door for which the question prompt is displayed.
      */
     private void displayQuestionBottomPrompt(Door theDoor) {
@@ -53,9 +54,14 @@ public class QuestionPrompt implements PropertyChangeListener {
         // Process the user's answer (validate, etc.)
         // If the answer is "OK", set the door as prompted and unlock it
         if ("OK".equalsIgnoreCase(userAnswer.trim())) {
-            theDoor.setMyQuestionPromptedStatus(true);
-            theDoor.setMyQuestionAnsweredStatus(true);
+            theDoor.setMyQuestionNotPromptedStatus(false);
+            theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
 
+            // Set the character to move again
+            myMaze.setMoveTrue();
+        } else {
+            // If the dialog is closed or the answer is incorrect, set the question as not prompted
+            theDoor.setMyQuestionNotPromptedStatus(true);
             // Set the character to move again
             myMaze.setMoveTrue();
         }
@@ -74,9 +80,14 @@ public class QuestionPrompt implements PropertyChangeListener {
         // Process the user's answer (validate, etc.)
         // If the answer is "OK", set the door as prompted and unlock it
         if ("OK".equalsIgnoreCase(userAnswer.trim())) {
-            theDoor.setMyQuestionPromptedStatus(true);
-            theDoor.setMyQuestionAnsweredStatus(true);
+            theDoor.setMyQuestionNotPromptedStatus(false);
+            theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
 
+            // Set the character to move again
+            myMaze.setMoveTrue();
+        } else {
+            // If the dialog is closed or the answer is incorrect, set the question as not prompted
+            theDoor.setMyQuestionNotPromptedStatus(true);
             // Set the character to move again
             myMaze.setMoveTrue();
         }
@@ -95,9 +106,14 @@ public class QuestionPrompt implements PropertyChangeListener {
         // Process the user's answer (validate, etc.)
         // If the answer is "OK", set the door as prompted and unlock it
         if ("OK".equalsIgnoreCase(userAnswer.trim())) {
-            theDoor.setMyQuestionPromptedStatus(true);
-            theDoor.setMyQuestionAnsweredStatus(true);
+            theDoor.setMyQuestionNotPromptedStatus(false);
+            theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
 
+            // Set the character to move again
+            myMaze.setMoveTrue();
+        } else {
+            // If the dialog is closed or the answer is incorrect, set the question as not prompted
+            theDoor.setMyQuestionNotPromptedStatus(true);
             // Set the character to move again
             myMaze.setMoveTrue();
         }
@@ -116,9 +132,14 @@ public class QuestionPrompt implements PropertyChangeListener {
         // Process the user's answer (validate, etc.)
         // If the answer is "OK", set the door as prompted and unlock it
         if ("OK".equalsIgnoreCase(userAnswer.trim())) {
-            theDoor.setMyQuestionPromptedStatus(true);
-            theDoor.setMyQuestionAnsweredStatus(true);
+            theDoor.setMyQuestionNotPromptedStatus(false);
+            theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
 
+            // Set the character to move again
+            myMaze.setMoveTrue();
+        } else {
+            // If the dialog is closed or the answer is incorrect, set the question as not prompted
+            theDoor.setMyQuestionNotPromptedStatus(true);
             // Set the character to move again
             myMaze.setMoveTrue();
         }
