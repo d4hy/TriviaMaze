@@ -61,7 +61,7 @@ public class QuestionPrompt implements PropertyChangeListener {
             myMaze.setMoveTrue();
         } else {
             // If the dialog is closed or the answer is incorrect, set the question as not prompted
-            theDoor.setMyQuestionNotPromptedStatus(true);
+            theDoor.setMyQuestionNotPromptedStatus(false);
             // Set the character to move again
             myMaze.setMoveTrue();
         }
@@ -87,7 +87,7 @@ public class QuestionPrompt implements PropertyChangeListener {
             myMaze.setMoveTrue();
         } else {
             // If the dialog is closed or the answer is incorrect, set the question as not prompted
-            theDoor.setMyQuestionNotPromptedStatus(true);
+            theDoor.setMyQuestionNotPromptedStatus(false);
             // Set the character to move again
             myMaze.setMoveTrue();
         }
@@ -113,7 +113,7 @@ public class QuestionPrompt implements PropertyChangeListener {
             myMaze.setMoveTrue();
         } else {
             // If the dialog is closed or the answer is incorrect, set the question as not prompted
-            theDoor.setMyQuestionNotPromptedStatus(true);
+            theDoor.setMyQuestionNotPromptedStatus(false);
             // Set the character to move again
             myMaze.setMoveTrue();
         }
@@ -139,7 +139,7 @@ public class QuestionPrompt implements PropertyChangeListener {
             myMaze.setMoveTrue();
         } else {
             // If the dialog is closed or the answer is incorrect, set the question as not prompted
-            theDoor.setMyQuestionNotPromptedStatus(true);
+            theDoor.setMyQuestionNotPromptedStatus(false);
             // Set the character to move again
             myMaze.setMoveTrue();
         }

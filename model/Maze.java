@@ -456,6 +456,8 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      * @return True if the character is near the specified door, false otherwise.
      */
     private boolean isCharacterNearDoor(final String theDoorType) {
+
+
         double doorX = 0;
         double doorY = 0;
 
@@ -480,16 +482,53 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             default -> throw new IllegalStateException("Unexpected value: " + theDoorType);
         }
 
+
         // Check if the character's position is near the specified door
-        return myCharacter.getCurrentPosition().getX() >= doorX - MazeControls.MY_TILE_SIZE
-                && myCharacter.getCurrentPosition().getX() <= doorX
-                + MazeControls.MY_TILE_SIZE
-                && myCharacter.getCurrentPosition().getY()
-                >= doorY - MazeControls.MY_TILE_SIZE
-                && myCharacter.getCurrentPosition().getY()
-                <= doorY + MazeControls.MY_TILE_SIZE;
+        boolean isNearDoor = myCharacter.getCurrentPosition().getX() >= doorX - MazeControls.MY_TILE_SIZE
+                && myCharacter.getCurrentPosition().getX() <= doorX + MazeControls.MY_TILE_SIZE
+                && myCharacter.getCurrentPosition().getY() >= doorY - MazeControls.MY_TILE_SIZE
+                && myCharacter.getCurrentPosition().getY() <= doorY + MazeControls.MY_TILE_SIZE;
+
+        // If the character is near a door, check if all doors have been incorrectly answered
+        if (isNearDoor && !myGameOverStatus) {
+            checkIfAllDoorsIncorrectlyAnswered();
+            // Additional actions to perform if the game is not over
+            // You can add more code here based on your requirements
+        }
+
+        return isNearDoor;
     }
 
+    /**
+     * Checks if all doors in the current room have been prompted and answered incorrectly.
+     * If so, sets myGameOverStatus to true and fires the corresponding property change.
+     */
+    private void checkIfAllDoorsIncorrectlyAnswered() {
+        // Initialize a boolean variable to track if all doors have been incorrectly answered.
+        boolean allDoorsIncorrectlyAnswered = true;
+
+        // Iterate through each door direction in the array of doors to check.
+        for (String doorDirection : DOORS_TO_CHECK) {
+            // Get the Door object for the current direction.
+            Door door = getDoorForDirection(doorDirection);
+
+            // Check if the door is not null (exists).
+            if (door != null) {
+                // Update the boolean variable based on the conditions.
+                allDoorsIncorrectlyAnswered = allDoorsIncorrectlyAnswered &&
+                        !door.hasMyQuestionBeenNotPrompted() &&
+                        !door.hasMyQuestionBeenAnsweredCorrectly();
+            }
+        }
+
+        // If all doors have been incorrectly answered, set game over status to true.
+        if (allDoorsIncorrectlyAnswered) {
+            System.out.println("GameOver");
+            myGameOverStatus = true;
+            // Fire a property change event to notify listeners about the game over status change.
+            myPcs.firePropertyChange(PROPERTY_GAME_OVER, null, true);
+        }
+    }
     /**
      * Checks if the character is at the right door.
      *
@@ -625,18 +664,19 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     private void checkDoors() {
         for (String doorDirection : DOORS_TO_CHECK) {
             final Door door = getDoorForDirection(doorDirection);
-
             // Check if the door should be handled based on conditions
             if (shouldHandleDoorInteraction(door, doorDirection)) {
                 System.out.println("At " + doorDirection + " door");
 
                 // Handle unprompted door
                 if (door.hasMyQuestionBeenNotPrompted()) {
-                    handleUnpromptedDoor(door,doorDirection);
+                    handleUnpromptedDoor(door, doorDirection);
                     // Handle answered door
                 } else if (!door.hasMyQuestionBeenNotPrompted() && door.hasMyQuestionBeenAnsweredCorrectly()) {
                     handleAnsweredDoor(doorDirection);
+
                 }
+
             }
         }
     }
@@ -691,8 +731,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             // Fire property change event to prompt the question
             myPcs.firePropertyChange(getPromptQuestionPropertyName(theDoorDirection),
                     null, myCurrentRoom);
-            // Add code here to display the question prompt class
-            theDoor.setMyQuestionNotPromptedStatus(false); // Set the flag to false after prompting the question
+
         }
     }
 
@@ -704,6 +743,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     private void handleAnsweredDoor(final String theDoorDirection) {
         // Move within the corresponding room
         handleDoorInteraction(theDoorDirection);
+
     }
     /**
      * Moves the character down.
