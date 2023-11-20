@@ -8,6 +8,7 @@ import controller.MazeControls;
 import controller.PropertyChangedEnabledMazeControls;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 
 /**
  * Maze class contains data that will be responsible for current data of game.
@@ -48,6 +49,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      * Constant to use for reaching the furthest rooms in perimeter of maze.
      */
     private static final int ENDPOINT = 3;
+
     /**
      * Number of correct answers that the current Character has answered.
      */
@@ -95,6 +97,11 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     private PropertyChangeSupport myPcs;
 
     /**
+     * Arraylist of Questions to be used throughout setup of Maze.
+     */
+    private ArrayList<Question> myQuestions = new ArrayList<>();
+
+    /**
      * Constructor for new game of Maze, creating starting point of a Character and Rooms.
      */
     public Maze(final int theWidth, final int theHeight) {
@@ -119,6 +126,9 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         setMyGameOverStatus(false);
 
 
+
+
+
     }
 
     /**
@@ -134,6 +144,12 @@ public class Maze implements PropertyChangedEnabledMazeControls {
                 myRooms[i][j] = new Room();
             }
         }
+        // Establishes connection to database and creates questions.
+        QuestionDatabase.connectToDatabase();
+        // Retrieves list of questions to use when creating Maze.
+        myQuestions = QuestionDatabase.getQuestions();
+
+        // TODO: Shuffle questions and distribute when assigning doors.
 
         createRooms();
         assignDoors();
