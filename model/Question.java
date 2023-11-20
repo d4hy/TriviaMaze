@@ -54,22 +54,9 @@ public class Question {
     private ArrayList<Question> myListOfQuestions;
 
     /**
-     * Constructor for Question.
+     * Dummy constructor for Question.
      */
     public Question() {
-
-    }
-
-    public Question(final String theQuestionText, final String theQuestionType,
-                    final String theCorrectAnswer, final String theSecondOption,
-                    final String theThirdOption, final String theFourthOption) {
-
-        myQuestion = theQuestionText;
-        myQuestionType = theQuestionType;
-        myCorrectAnswer = theCorrectAnswer;
-        mySecondOption = theSecondOption;
-        myThirdOption = theThirdOption;
-        myFourthOption = theFourthOption;
 
     }
 
