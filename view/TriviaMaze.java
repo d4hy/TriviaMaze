@@ -41,8 +41,11 @@ public  final class TriviaMaze implements PropertyChangeListener {
 
         myMaze = new Maze(4, 4);
         myMaze.newGame();
+
+
         setUpJFrame();
         addMazeView();
+        addQuestionPrompt();
         addUserOptionsToJFrame();
     }
 
@@ -63,6 +66,11 @@ public  final class TriviaMaze implements PropertyChangeListener {
 
     }
 
+    private void addQuestionPrompt() {
+        // Pass the Maze object to the QuestionPrompt constructor
+        final QuestionPrompt questionPrompt = new QuestionPrompt(myMaze);
+        myMaze.addPropertyChangeListener(questionPrompt);
+    }
     /**
      * Adds the JPanel of the maze to the JFrame.
      */
