@@ -54,6 +54,23 @@ public class Door {
         return myQuestion;
     }
 
+    /**
+     * Takes a Question from the database to assign to this door.
+     * @param theQuestion
+     */
+    public void setQuestion(final Question theQuestion) {
+        myQuestion = theQuestion;
+    }
+
+    /**
+     * Method used for testing to know if Door has a question assigned to it.
+     * @param theDoor specific Door in room.
+     * @return boolean if question is null.
+     */
+    public boolean hasQuestion(final Door theDoor) {
+        return myQuestion != null;
+    }
+
 
     /**
      * Returns a boolean if the door's Question has not been prompted or has.
