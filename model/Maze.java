@@ -8,7 +8,11 @@ import controller.MazeControls;
 import controller.PropertyChangedEnabledMazeControls;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Maze class contains data that will be responsible for current data of game.
@@ -70,6 +74,11 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      * 2D Array of all rooms within this Maze.
      */
     private Room[][] myRooms;
+
+    /**
+     * Array of all Doors within the Maze.
+     */
+    private ArrayList<Door> myDoors;
 
     /**
      * Width of Maze rooms.
@@ -138,6 +147,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         myCorrectAnswers = 0;
         myRooms = new Room[myWidth][myHeight];
+        myDoors = new ArrayList<>();
 
         for (int i = 0; i < myWidth; i++) {
             for (int j = 0; j < myHeight; j++) {
@@ -149,10 +159,12 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         // Retrieves list of questions to use when creating Maze.
         myQuestions = QuestionDatabase.getQuestions();
 
-        // TODO: Shuffle questions and distribute when assigning doors.
+        // Shuffles the questions within ArrayList before assigning to doors.
+        Collections.shuffle(myQuestions);
 
         createRooms();
         assignDoors();
+        assignQuestionsToDoors();
         myCurrentRoom = myRooms[0][0];
         myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
 
@@ -313,7 +325,37 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
     }
 
+    /**
+     * Adds each Door object into a list of Doors that the Maze can then
+     * distribute Questions to from the database.
+     */
+    private void assignQuestionsToDoors() {
 
+        // Adds all active doors to list of doors after maze creation.
+        // This will only check for bottom and right doors in all rooms,
+        // avoiding adding doubles when some doors should be using a "shared" question.
+        for (int i = 0; i < myWidth; i++) {
+            for (int j = 0; j < myHeight; j++) {
+                if (myRooms[i][j].getRightDoor() != null) {
+                    myDoors.add(myRooms[i][j].getRightDoor());
+                }
+                if (myRooms[i][j].getBottomDoor() != null) {
+                    myDoors.add(myRooms[i][j].getBottomDoor());
+                }
+            }
+        }
+
+        // Using index, will add questions to each door given by the list of questions
+        // extracted from the database.
+        int i = 0;
+        for (Door doors : myDoors) {
+            if (i < myQuestions.size()) {
+                doors.setQuestion(myQuestions.get(i));
+                i++;
+            }
+        }
+
+    }
 
 
     /**
