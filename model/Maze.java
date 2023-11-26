@@ -549,17 +549,41 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         return isNearDoor;
     }
-
     /**
      * Checks if it is possible to reach the bottom-right room of the maze,
-     * considering the question answers in each room.
-     *
-     * @return true if the bottom-right room is reachable, false otherwise
+     * considering the question answers in each room. Sets the gameOverStatusToTrue if we are unable to
+     * reach the bottom right room.
      */
     private void canReachBottomRight() {
-       checkAllColumnsRightDoors();
+      checkAllColumnsRightDoors();
+      checkRoomOnTopAndLeftBottomRightRoom();
+
 
     }
+
+    /**
+     * Checks if the room's on top and left of to the bottom right
+     * are traversable, if not then setTheGameOverStatus to be false.
+     */
+    private void checkRoomOnTopAndLeftBottomRightRoom() {
+        int bottomRightRow = myRooms.length;
+        int bottomRightCol = myRooms[0].length;
+
+        //Checking the bottom right room's left and top door if they are prompted and answered correctly
+        final Room bottomRight = myRooms[bottomRightRow -1][bottomRightCol - 1 ];
+
+        final  boolean leftDoorStatus = bottomRight.getLeftDoor() == null || (!bottomRight.getLeftDoor().hasMyQuestionBeenNotPrompted())
+                && (!bottomRight.getLeftDoor().hasMyQuestionBeenAnsweredCorrectly());
+        final boolean rightTopStatus = bottomRight.getTopDoor() == null || (!bottomRight.getTopDoor().hasMyQuestionBeenNotPrompted())
+               && (!bottomRight.getTopDoor().hasMyQuestionBeenAnsweredCorrectly());
+        if (leftDoorStatus && rightTopStatus) {
+            setMyGameOverStatus(true);
+        }
+
+
+
+    }
+
 
 
     /**
