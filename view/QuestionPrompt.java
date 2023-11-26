@@ -48,8 +48,12 @@ public class QuestionPrompt implements PropertyChangeListener {
      * @param theDoor The door for which the question prompt is displayed.
      */
     private void displayQuestionBottomPrompt(Door theDoor) {
+
+        // Retrieve the associated question
+        Question question = theDoor.getMyQuestion(theDoor);
         // Display the question prompt using JOptionPane
-        String userAnswer = JOptionPane.showInputDialog(null, "Your question goes here");
+
+        String userAnswer = JOptionPane.showInputDialog(null, question.getQuestionText());
 
         // Process the user's answer (validate, etc.)
         // If the answer is "OK", set the door as prompted and unlock it

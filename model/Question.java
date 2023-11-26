@@ -65,6 +65,7 @@ public class Question {
      * @return String text of the question.
      */
     public String getQuestionText() {
+        System.out.println(myQuestion);
         return myQuestion;
     }
 

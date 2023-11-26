@@ -338,6 +338,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         for (Door doors : myDoors) {
             if (i < myQuestions.size()) {
                 doors.setQuestion(myQuestions.get(i));
+                System.out.println(doors.getMyQuestion(doors).getQuestionText());
                 i++;
             }
         }
