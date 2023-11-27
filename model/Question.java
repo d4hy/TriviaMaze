@@ -31,29 +31,6 @@ public class Question {
     private String myCorrectAnswer;
 
     /**
-     * If a true/false or multiple choice question, second option part of
-     * Question that is the "incorrect" String.
-     */
-    private String mySecondOption;
-
-    /**
-     * If a multiple choice question, third option part of
-     * Question that is the "incorrect" String.
-     */
-    private String myThirdOption;
-
-    /**
-     * If a multiple choice question, fourth option part of
-     * Question that is the "incorrect" String.
-     */
-    private String myFourthOption;
-
-    /**
-     * List of Questions that are used to fill Doors in Maze.
-     */
-    private ArrayList<Question> myListOfQuestions;
-
-    /**
      * Dummy constructor for Question.
      */
     public Question() {
@@ -65,6 +42,7 @@ public class Question {
      * @return String text of the question.
      */
     public String getQuestionText() {
+        System.out.println(myQuestion);
         return myQuestion;
     }
 
