@@ -8,7 +8,11 @@ import controller.MazeControls;
 import controller.PropertyChangedEnabledMazeControls;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Maze class contains data that will be responsible for current data of game.
@@ -70,6 +74,11 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      * 2D Array of all rooms within this Maze.
      */
     private Room[][] myRooms;
+
+    /**
+     * Array of all Doors within the Maze.
+     */
+    private ArrayList<Door> myDoors;
 
     /**
      * Width of Maze rooms.
@@ -138,6 +147,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         myCorrectAnswers = 0;
         myRooms = new Room[myWidth][myHeight];
+        myDoors = new ArrayList<>();
 
         for (int i = 0; i < myWidth; i++) {
             for (int j = 0; j < myHeight; j++) {
@@ -149,10 +159,13 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         // Retrieves list of questions to use when creating Maze.
         myQuestions = QuestionDatabase.getQuestions();
 
-        // TODO: Shuffle questions and distribute when assigning doors.
+        // Shuffles the questions within ArrayList before assigning to doors.
+        Collections.shuffle(myQuestions);
+        System.out.println(myQuestions.get(0).getQuestionText());
 
         createRooms();
         assignDoors();
+        assignQuestionsToDoors();
         myCurrentRoom = myRooms[0][0];
         myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
 
@@ -180,20 +193,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         }
 
     }
-    /**
-     * Print information about the doors of the current room.
-     */
-    public void printCurrentRoomDoors() {
-        System.out.println("Current Room Doors:");
-        System.out.println("Left Door: " + (myCurrentRoom.getLeftDoor() != null
-                ? "Exists" : "Not Exists"));
-        System.out.println("Right Door: " + (myCurrentRoom.getRightDoor() != null
-                ? "Exists" : "Not Exists"));
-        System.out.println("Top Door: " + (myCurrentRoom.getTopDoor() != null
-                ? "Exists" : "Not Exists"));
-        System.out.println("Bottom Door: " + (myCurrentRoom.getBottomDoor() != null
-                ? "Exists" : "Not Exists"));
-    }
+
 
     /**
      * Sets the doors of top row in maze.
@@ -313,7 +313,34 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
     }
 
+    /**
+     * Adds each Door object into a list of Doors that the Maze can then
+     * distribute Questions to from the database.
+     */
+    private void assignQuestionsToDoors() {
 
+        // Adds all active doors to list of doors after maze creation.
+        // This will only check for bottom and right doors in all rooms,
+        // avoiding adding doubles when some doors should be using a "shared" question.
+        for (int i = 0; i < myWidth; i++) {
+            for (int j = 0; j < myHeight; j++) {
+                if (myRooms[i][j].getRightDoor() != null) {
+                    myDoors.add(myRooms[i][j].getRightDoor());
+                }
+                if (myRooms[i][j].getBottomDoor() != null) {
+                    myDoors.add(myRooms[i][j].getBottomDoor());
+                }
+            }
+        }
+
+        // Using index, will add questions to each door given by the list of questions
+        // extracted from the database.
+        for (int i = 0; i < myQuestions.size() && i < myDoors.size(); i++) {
+            myDoors.get(i).setQuestion(myQuestions.get(i));
+//            System.out.println(myDoors.get(i).hasQuestion(myDoors.get(i)));
+        }
+
+    }
 
 
     /**
@@ -394,6 +421,10 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     private void setMyGameOverStatus(final boolean theStatus) {
         myGameOverStatus = theStatus;
+        if(theStatus ) {
+
+            System.out.println("GameOver");
+        }
         //notifies pcs that it changed
         myPcs.firePropertyChange(PROPERTY_GAME_OVER, null, myGameOverStatus);
     }
@@ -415,8 +446,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         setMoveTrue();
         myCorrectAnswers = 0;
         createMaze();
-        // Print the door status
-        printMazeDoorStatus();
+
         setMyGameOverStatus(false);
 
 
@@ -461,6 +491,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         if (isValidMove) {
             myCurrentRoom = myRooms[newRow][newCol];
             myCharacter.resetToMiddle();
+            System.out.println("row:"+ getCurrentRoomRow() + ",col:"+ getCurrentRoomCol());
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
             myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
         }
@@ -500,21 +531,87 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
 
         // Check if the character's position is near the specified door
-        boolean isNearDoor = myCharacter.getCurrentPosition().getX() >= doorX - MazeControls.MY_TILE_SIZE
+        final boolean isNearDoor = myCharacter.getCurrentPosition().getX() >= doorX - MazeControls.MY_TILE_SIZE
                 && myCharacter.getCurrentPosition().getX() <= doorX + MazeControls.MY_TILE_SIZE
                 && myCharacter.getCurrentPosition().getY() >= doorY - MazeControls.MY_TILE_SIZE
                 && myCharacter.getCurrentPosition().getY() <= doorY + MazeControls.MY_TILE_SIZE;
 
         // If the character is near a door, check if all doors have been incorrectly answered
-        if (isNearDoor && !myGameOverStatus) {
+        if (isNearDoor) {
             checkIfAllDoorsIncorrectlyAnswered();
+            canReachBottomRight();
+
             // Additional actions to perform if the game is not over
             // You can add more code here based on your requirements
         }
 
         return isNearDoor;
     }
+    /**
+     * Checks if it is possible to reach the bottom-right room of the maze,
+     * considering the question answers in each room. Sets the gameOverStatusToTrue if we are unable to
+     * reach the bottom right room.
+     */
+    private void canReachBottomRight() {
+      checkAllColumnsRightDoors();
+      checkRoomOnTopAndLeftBottomRightRoom();
 
+
+    }
+
+    /**
+     * Checks if the room's on top and left of to the bottom right
+     * are traversable, if not then setTheGameOverStatus to be false.
+     */
+    private void checkRoomOnTopAndLeftBottomRightRoom() {
+        int bottomRightRow = myRooms.length;
+        int bottomRightCol = myRooms[0].length;
+
+        //Checking the bottom right room's left and top door if they are prompted and answered correctly
+        final Room bottomRight = myRooms[bottomRightRow -1][bottomRightCol - 1 ];
+
+        final  boolean leftDoorStatus = bottomRight.getLeftDoor() == null || (!bottomRight.getLeftDoor().hasMyQuestionBeenNotPrompted())
+                && (!bottomRight.getLeftDoor().hasMyQuestionBeenAnsweredCorrectly());
+        final boolean rightTopStatus = bottomRight.getTopDoor() == null || (!bottomRight.getTopDoor().hasMyQuestionBeenNotPrompted())
+               && (!bottomRight.getTopDoor().hasMyQuestionBeenAnsweredCorrectly());
+        if (leftDoorStatus && rightTopStatus) {
+            setMyGameOverStatus(true);
+        }
+
+
+
+    }
+
+
+
+    /**
+     * Checks if all the right doors in each column are incorrectly answered,
+     * setting the game over status if all paths to the bottom-right room are unreachable.
+     */
+    private void checkAllColumnsRightDoors() {
+        // Iterate over each column
+        final int whenColumnsRightDoorsAnswersWrong = 4;
+        for (int col = 0; col < myRooms[0].length-1; col++) {
+            int columnsAmountOfWrongAnswers = 0;
+
+            // Iterate over each room in the column
+            for (int row = 0; row < myRooms.length; row++) {
+                final  Room currentRoom = myRooms[row][col];
+                // Check if all doors in the right direction are incorrectly answered
+                    if (!currentRoom.getRightDoor().hasMyQuestionBeenAnsweredCorrectly() &&
+                            !currentRoom.getRightDoor().hasMyQuestionBeenNotPrompted()) {
+                        columnsAmountOfWrongAnswers++;
+
+                }
+            }
+
+            // If an entire column's right doors are answered incorrectly, set the gameOver status to be true.
+            if (columnsAmountOfWrongAnswers == whenColumnsRightDoorsAnswersWrong) {
+                setMyGameOverStatus(true);
+                return; // No need to check other columns once one is found to be unreachable
+            }
+        }
+    }
     /**
      * Checks if all doors in the current room have been prompted and answered incorrectly.
      * If so, sets myGameOverStatus to true and fires the corresponding property change.
@@ -539,82 +636,15 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         // If all doors have been incorrectly answered, set game over status to true.
         if (allDoorsIncorrectlyAnswered) {
-            System.out.println("GameOver");
-            myGameOverStatus = true;
-            // Fire a property change event to notify listeners about the game over status change.
-            myPcs.firePropertyChange(PROPERTY_GAME_OVER, null, true);
+         setMyGameOverStatus(true);
         }
     }
-    /**
-     * Checks if the character is at the right door.
-     *
-     * @return true if the character is at the right door, false otherwise.
-     */
-    private boolean checkIfAtRightDoor() {
 
 
-        // Check if the character's position is at the right door
-        // and if the Y coordinate is within the vertical range of the right door.
-        return myCharacter.getCurrentPosition().getX()
-                == MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE
-                && myCharacter.getCurrentPosition().getY()
-                >= (MazeControls.MY_SCREEN_HEIGHT / 2.0)
-                - (MazeControls.MY_TILE_SIZE / 2.0)
-                && myCharacter.getCurrentPosition().getY()
-                <= (MazeControls.MY_SCREEN_HEIGHT / 2.0)
-                + (MazeControls.MY_TILE_SIZE / 2.0);
-    }
-    /**
-     * Checks if the character is at the left door.
-     *
-     * @return true if the character is at the left door, false otherwise.
-     */
-    private boolean checkIfAtLeftDoor() {
-        // Check if the character's position is at the left door
-        // and if the Y coordinate is within the vertical range of the left door.
-        return myCharacter.getCurrentPosition().getX() == 0
-                && myCharacter.getCurrentPosition().getY()
-                >= (MazeControls.MY_SCREEN_HEIGHT / 2.0)
-                - (MazeControls.MY_TILE_SIZE / 2.0)
-                && myCharacter.getCurrentPosition().getY()
-                <= (MazeControls.MY_SCREEN_HEIGHT / 2.0)
-                + (MazeControls.MY_TILE_SIZE / 2.0);
-    }
 
-    /**
-     * Checks if the character is at the top door.
-     *
-     * @return true if the character is at the top door, false otherwise.
-     */
-    private boolean checkIfAtTopDoor() {
-        // Check if the character's position is at the top door
-        // and if the X coordinate is within the horizontal range of the top door.
-        return myCharacter.getCurrentPosition().getY() == 0
-                && myCharacter.getCurrentPosition().getX()
-                >= (MazeControls.MY_SCREEN_WIDTH / 2.0)
-                - (MazeControls.MY_TILE_SIZE / 2.0)
-                && myCharacter.getCurrentPosition().getX()
-                <= (MazeControls.MY_SCREEN_WIDTH / 2.0)
-                + (MazeControls.MY_TILE_SIZE / 2.0);
-    }
-    /**
-     * Checks if the character is at the bottom door.
-     *
-     * @return true if the character is at the bottom door, false otherwise.
-     */
-    private boolean checkIfAtBottomDoor() {
-        // Check if the character's position is at the bottom door
-        // and if the X coordinate is within the horizontal range of the right door.
 
-        return myCharacter.getCurrentPosition().getY() == MazeControls.MY_SCREEN_HEIGHT
-                - MazeControls.MY_TILE_SIZE
-                && myCharacter.getCurrentPosition().getX()
-                >= (MazeControls.MY_SCREEN_WIDTH / 2.0)
-                - (MazeControls.MY_TILE_SIZE / 2.0)
-                && myCharacter.getCurrentPosition().getX()
-                <= (MazeControls.MY_SCREEN_WIDTH / 2.0)
-                + (MazeControls.MY_TILE_SIZE / 2.0);
-    }
+
+
 
     /**
      * Method that returns the current row that is the current room.
@@ -733,7 +763,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     private boolean shouldHandleDoorInteraction(final Door theDoor,
                                                 final String theDoorDirection) {
-        return theDoor != null && isCharacterNearDoor(theDoorDirection) && !isGameLost();
+        return theDoor != null && isCharacterNearDoor(theDoorDirection);
     }
 
     /**
@@ -832,25 +862,8 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
     }
 
-    /**
-     * Prints the door status of each room in the maze.
-     */
-    public void printMazeDoorStatus() {
-        for (int i = 0; i < myWidth; i++) {
-            for (int j = 0; j < myHeight; j++) {
-                System.out.println("Door status for Room [" + i + "][" + j + "]:");
-                System.out.println("Left Door: " + (myRooms[i][j].getLeftDoor() != null
-                        ? "Exists" : "Not Exists"));
-                System.out.println("Right Door: " + (myRooms[i][j].getRightDoor() != null
-                        ? "Exists" : "Not Exists"));
-                System.out.println("Top Door: " + (myRooms[i][j].getTopDoor() != null
-                        ? "Exists" : "Not Exists"));
-                System.out.println("Bottom Door: " + (myRooms[i][j].getBottomDoor() != null
-                        ? "Exists" : "Not Exists"));
-                System.out.println("------------------------");
-            }
-        }
-    }
+
+
     @Override
     public void pauseGame() {
 

@@ -73,12 +73,7 @@ public class Character {
      * Counter for which walking animation to choose.
      */
     private int mySpriteNumber = 1;
-    /**
-     * These will be sprites that we use for the character
-     */
-    @SuppressWarnings("checkstyle:MultipleVariableDeclarations")
-    private BufferedImage myUp1, myUp2, myDown1,
-            myDown2, myLeft1, myLeft2, myRight1, myRight2;
+
     /**
      * The direction that the character is facing.
      */
@@ -101,70 +96,18 @@ public class Character {
         myMaxRows = theMaxRows;
         myMaxCols = theMaxCols;
         myInventory = new ArrayList<>(); // Add this line to initialize myInventory
-        getPlayerImage();
+
     }
+
 
     /**
-     * Draw the characters, based on their current position.
+     * The direction which the character is facing
+     * @return a String that represents which direction the character is facing.
      */
-    public void draw(final Graphics2D g2) {
-        //the x and y coordinates of the character.
-        int x = getCurrentPosition().x;
-        int y = getCurrentPosition().y;
-
-        // Ensure the rectangle is within the panel's boundaries
-        x = Math.max(0, Math.min(x, myMaxRows - MazeControls.MY_TILE_SIZE));
-        y = Math.max(0, Math.min(y, myMaxCols - MazeControls.MY_TILE_SIZE));
-
-
-        final BufferedImage image = getSpriteImage();
-
-        g2.drawImage(image, x, y, MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
-
+    public String getMyDirection(){
+        return myDirection;
     }
 
-    /**
-     * Get the appropriate sprite image based on the
-     * character's direction and walking animation.
-     * @return theBufferedImage that represents the character.
-     */
-    private BufferedImage getSpriteImage() {
-        BufferedImage image = null;
-
-        switch (myDirection) {
-            case "up":
-                image = getSprite(myUp1, myUp2);
-                break;
-            case "down":
-                image = getSprite(myDown1, myDown2);
-                break;
-            case "right":
-                image = getSprite(myRight1, myRight2);
-                break;
-            case "left":
-                image = getSprite(myLeft1, myLeft2);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + myDirection);
-        }
-
-        return image;
-    }
-
-    /**
-     * Gets the sprite image based on the current sprite number.
-     *
-     * @param sprite1 The first sprite image.
-     * @param sprite2 The second sprite image.
-     * @return The sprite image based on the current sprite number.
-     */
-    private BufferedImage getSprite(final BufferedImage sprite1, final BufferedImage sprite2) {
-        if (mySpriteNumber == 1) {
-            return sprite1;
-        } else {
-            return sprite2;
-        }
-    }
     /**
      * Resets the character's position to where they spawned.
      */
@@ -255,33 +198,7 @@ public class Character {
         }
     }
 
-    /**
-     * This method will load the user images.
-     */
-    private void getPlayerImage() {
-        try {
-            //the string is the path of where the file is
-            myUp1 = ImageIO.read(Objects.requireNonNull(getClass().
-                    getResourceAsStream("/res/up_1.png")));
-            myUp2 = ImageIO.read(Objects.requireNonNull(getClass().
-                    getResourceAsStream("/res/up_2.png")));
-            myDown1 = ImageIO.read(Objects.requireNonNull(getClass().
-                    getResourceAsStream("/res/down_1.png")));
-            myDown2 = ImageIO.read(Objects.requireNonNull(getClass().
-                    getResourceAsStream("/res/down_2.png")));
-            myLeft1 = ImageIO.read(Objects.requireNonNull(getClass().
-                    getResourceAsStream("/res/left_1.png")));
-            myLeft2 = ImageIO.read(Objects.requireNonNull(getClass().
-                    getResourceAsStream("/res/left_2.png")));
-            myRight1 = ImageIO.read(Objects.requireNonNull(getClass().
-                    getResourceAsStream("/res/right_1.png")));
-            myRight2 = ImageIO.read(Objects.requireNonNull(getClass().
-                    getResourceAsStream("/res/right_2.png")));
-        } catch (final IOException e) {
-            e.printStackTrace();
 
-        }
-    }
 
 
 
