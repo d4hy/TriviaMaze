@@ -36,11 +36,11 @@ public final class QuestionFactory {
                                           final String theFourthOption) {
         Question question = null;
 
-        if (Objects.equals(theQuestionType, "Short Answer")) {
+        if (theQuestionType.equals("Short Answer")) {
             question = new ShortAnswer(theQuestionText, theCorrectAnswer);
-        } else if (Objects.equals(theQuestionType, "True False")) {
+        } else if (theQuestionType.equals("True False")) {
             question = new TrueOrFalse(theQuestionText, theCorrectAnswer, theSecondOption);
-        } else if (Objects.equals(theQuestionType, "Multiple Choice")) {
+        } else if (theQuestionType.equals("Multiple Choice")) {
             question = new MultipleChoice(theQuestionText, theCorrectAnswer, theSecondOption,
                     theThirdOption, theFourthOption);
         }
