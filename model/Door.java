@@ -108,10 +108,10 @@ public class Door {
 
 
     /**
-     * Unlocks Door if associated Question is answered correctly.
+     * Locks Door if associated Question is answered incorrectly.
      */
-    public void unlock() {
-        myLockedStatus = false;
+    public void lock() {
+        myLockedStatus = true;
     }
 
 
