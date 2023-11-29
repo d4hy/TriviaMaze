@@ -51,7 +51,9 @@ public class Room {
      * Constructor for Room.
      */
 
-    public Room() { }
+    public Room() {
+        myDeadEndStatus = false;
+    }
 
     /**
      * Retrieves the status if a room is dead end.
