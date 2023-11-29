@@ -40,30 +40,10 @@ public class Room {
      * Bottom door in Room.
      */
     private Door myBottomDoor;
-
     /**
-     * The sprite to use for the room.
+     * Field that will tell us if a room is dead end or not.
      */
-
-    private BufferedImage myRoomTile;
-
-    /**
-     * The sprite to use for the left door.
-     */
-    private BufferedImage myLeftDoorImg;
-
-    /**
-     * The sprite to use for the right door.
-     */
-    private BufferedImage myRightDoorImg;
-    /**
-     * The sprite to use for the top door.
-     */
-    private BufferedImage myTopDoorImg;
-    /**
-     * The sprite to use for the bottom door.
-     */
-    private BufferedImage myBottomDoorImg;
+    private Boolean myDeadEndStatus;
 
 
 
@@ -72,6 +52,21 @@ public class Room {
      */
 
     public Room() { }
+
+    /**
+     * Retrieves the status if a room is dead end.
+     * @return true if this room is a dead end, false otherwise.
+     */
+    public boolean isDeadEnd() {
+        return myDeadEndStatus;
+    }
+
+    /**
+     * Sets this room as a dead end.
+     */
+    public void setAsDeadEnd() {
+        myDeadEndStatus = true;
+    }
 
     /**
      * When Maze is created, this method is called to flag what rooms should have
