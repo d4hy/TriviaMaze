@@ -553,12 +553,65 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      * reach the bottom right room.
      */
     private void canReachBottomRight() {
-      checkAllColumnsRightDoors();
-      checkRoomOnTopAndLeftBottomRightRoom();
+        //checkAllColumnsRightDoors();
+        //checkRoomOnTopAndLeftBottomRightRoom();
+        final int bottomRightRow = myRooms.length - 1;
+        final int bottomRightCol = myRooms[0].length - 1;
+        boolean[][] visited = new boolean[myRooms.length][myRooms[0].length];
 
+        if (!move(visited,myRooms,0, 0)) {
+
+            setMyGameOverStatus(true);
+        }
 
     }
+    private boolean move(final boolean[][] theVisited, final Room[][] theRooms,
+                         final int theRow, final int theCol) {
+        boolean success = false;
+        // Local variable as a copy of the 2D array of rooms.
+        final Room[][] copyOfRooms = theRooms;
 
+        // Local variable to serve as a copy of the current room.
+        final Room currentRoomCheck = copyOfRooms[theRow][theCol];
+        if (validMove(theVisited, copyOfRooms, theRow, theCol)) {
+            markVisited(theVisited, theRow, theCol);
+            if (atExit(theVisited, theRow, theCol)) {
+                return true;
+            }
+            if (currentRoomCheck.getBottomDoor() != null && !currentRoomCheck.getBottomDoor().isLocked()) {
+                success = move(theVisited, copyOfRooms, theRow + 1, theCol); // down
+            }
+            if (!success && currentRoomCheck.getRightDoor() != null && !currentRoomCheck.getRightDoor().isLocked()) {
+                success = move(theVisited, copyOfRooms, theRow, theCol + 1); // right
+            }
+            if (!success && currentRoomCheck.getTopDoor() != null && !currentRoomCheck.getTopDoor().isLocked()) {
+                success = move(theVisited, copyOfRooms, theRow - 1, theCol); // up
+            }
+            if (!success && currentRoomCheck.getLeftDoor() != null && !currentRoomCheck.getLeftDoor().isLocked()) {
+                success = move(theVisited, copyOfRooms, theRow, theCol - 1); // left
+            }
+            if (!success) { // Is a dead end so go to other options
+                copyOfRooms[theRow][theCol].setAsDeadEnd();
+            }
+        }
+        return success;
+    }
+    private  void markVisited(final boolean[][] theVisited,
+                                    final int theRow, final int theCol) {
+        theVisited[theRow][theCol] = true;
+    }
+    private  boolean atExit(final boolean[][] theVisited, final int theRow, final int theCol) {
+
+        return theRow == theVisited.length - 1 && theCol == theVisited[theRow].length - 1;
+    }
+    private  boolean validMove(final boolean[][] theVisited,
+                               final Room[][]theCopyOfRooms,
+                               final int theRow, final int theCol) {
+        return theRow >= 0 && theRow < myRooms.length
+                && theCol >=0 && theCol< myRooms[theRow].length
+                //check  within bounds if the room has not been visited yet, is not a deadend.
+                && !theVisited[theRow][theCol] && !theCopyOfRooms[theRow][theCol].isDeadEnd();
+    }
     /**
      * Checks if the room's on top and left of to the bottom right
      * are traversable, if not then setTheGameOverStatus to be false.
