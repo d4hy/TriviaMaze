@@ -66,6 +66,7 @@ public class QuestionPrompt implements PropertyChangeListener {
         } else {
             // If the dialog is closed or the answer is incorrect, set the question as not prompted
             theDoor.setMyQuestionNotPromptedStatus(false);
+            theDoor.lock();
             // Set the character to move again
             myMaze.setMoveTrue();
         }
@@ -92,6 +93,7 @@ public class QuestionPrompt implements PropertyChangeListener {
         } else {
             // If the dialog is closed or the answer is incorrect, set the question as not prompted
             theDoor.setMyQuestionNotPromptedStatus(false);
+            theDoor.lock();
             // Set the character to move again
             myMaze.setMoveTrue();
         }
@@ -118,6 +120,7 @@ public class QuestionPrompt implements PropertyChangeListener {
         } else {
             // If the dialog is closed or the answer is incorrect, set the question as not prompted
             theDoor.setMyQuestionNotPromptedStatus(false);
+            theDoor.lock();
             // Set the character to move again
             myMaze.setMoveTrue();
         }
@@ -144,6 +147,7 @@ public class QuestionPrompt implements PropertyChangeListener {
         } else {
             // If the dialog is closed or the answer is incorrect, set the question as not prompted
             theDoor.setMyQuestionNotPromptedStatus(false);
+            theDoor.lock();
             // Set the character to move again
             myMaze.setMoveTrue();
         }
