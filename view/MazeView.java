@@ -88,6 +88,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             myDown2, myLeft1, myLeft2, myRight1, myRight2;
 
     MazeView(final Maze theMaze) {
+        myGameUI = NORMAL_STATE;
         this.myMaze = theMaze;
         setUp();
         myMaze.addPropertyChangeListener(this);
