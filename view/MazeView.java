@@ -407,13 +407,22 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
     @Override
     public void keyPressed(final KeyEvent theEvent) {
-        switch (theEvent.getKeyCode()) {
-            case KeyEvent.VK_W, KeyEvent.VK_UP -> handleUpKey();
-            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> handleDownKey();
-            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
-            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
-            case KeyEvent.VK_SPACE -> handleSpaceKey();
-            default ->  { }
+        //if the game isn't a paused state listen to all the other keys.
+        if(myGameUI == NORMAL_STATE) {
+            switch (theEvent.getKeyCode()) {
+                case KeyEvent.VK_W, KeyEvent.VK_UP -> handleUpKey();
+                case KeyEvent.VK_S, KeyEvent.VK_DOWN -> handleDownKey();
+                case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
+                case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
+
+                default -> {
+                }
+            }
+
+        }
+        //pauses the screen if it is this keycode.
+        if (theEvent.getKeyCode() == KeyEvent.VK_SPACE) {
+            handleSpaceKey();
         }
     }
 
