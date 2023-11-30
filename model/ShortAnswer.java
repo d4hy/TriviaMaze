@@ -8,7 +8,7 @@ package model;
  * @author David Hoang
  * @version Fall 2023
  */
-public class ShortAnswer extends Question {
+public class ShortAnswer extends AbstractQuestion {
 
     /**
      * Question's text.

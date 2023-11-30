@@ -6,7 +6,7 @@ import javax.swing.JOptionPane;
 
 import model.Door;
 import model.Maze;
-import model.Question;
+import model.AbstractQuestion;
 import model.Room;
 
 
@@ -50,10 +50,10 @@ public class QuestionPrompt implements PropertyChangeListener {
     private void displayQuestionBottomPrompt(Door theDoor) {
 
         // Retrieve the associated question
-        Question question = theDoor.getMyQuestion(theDoor);
+        AbstractQuestion abstractQuestion = theDoor.getMyQuestion(theDoor);
         // Display the question prompt using JOptionPane
 
-        String userAnswer = JOptionPane.showInputDialog(null, question.getQuestionText());
+        String userAnswer = JOptionPane.showInputDialog(null, abstractQuestion.getQuestionText());
 
         // Process the user's answer (validate, etc.)
         // If the answer is "OK", set the door as prompted and unlock it

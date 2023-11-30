@@ -8,7 +8,7 @@ package model;
  * @author David Hoang
  * @version Fall 2023
  */
-public class TrueOrFalse extends Question {
+public class TrueOrFalse extends AbstractQuestion {
 
     /**
      * Question's text.

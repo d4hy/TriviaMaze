@@ -28,23 +28,24 @@ public final class QuestionFactory {
      * @param theFourthOption The incorrect fourth option to use in view.
      * @return The Question that is created.
      */
-    public static Question createQuestion(final String theQuestionText,
-                                          final String theQuestionType,
-                                          final String theCorrectAnswer,
-                                          final String theSecondOption,
-                                          final String theThirdOption,
-                                          final String theFourthOption) {
-        Question question = null;
+    public static AbstractQuestion createQuestion(final String theQuestionText,
+                                                  final String theQuestionType,
+                                                  final String theCorrectAnswer,
+                                                  final String theSecondOption,
+                                                  final String theThirdOption,
+                                                  final String theFourthOption) {
 
-        if (theQuestionType.equals("Short Answer")) {
-            question = new ShortAnswer(theQuestionText, theCorrectAnswer);
-        } else if (theQuestionType.equals("True False")) {
-            question = new TrueOrFalse(theQuestionText, theCorrectAnswer, theSecondOption);
-        } else if (theQuestionType.equals("Multiple Choice")) {
-            question = new MultipleChoice(theQuestionText, theCorrectAnswer, theSecondOption,
+        AbstractQuestion abstractQuestion = null;
+
+        if (Objects.equals(theQuestionType, "Short Answer")) {
+            abstractQuestion = new ShortAnswer(theQuestionText, theCorrectAnswer);
+        } else if (Objects.equals(theQuestionType, "True False")) {
+            abstractQuestion = new TrueOrFalse(theQuestionText, theCorrectAnswer, theSecondOption);
+        } else if (Objects.equals(theQuestionType, "Multiple Choice")) {
+            abstractQuestion = new MultipleChoice(theQuestionText, theCorrectAnswer, theSecondOption,
                     theThirdOption, theFourthOption);
         }
 
-        return question;
+        return abstractQuestion;
     }
 }

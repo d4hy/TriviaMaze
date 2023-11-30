@@ -37,7 +37,7 @@ public class Door {
     /**
      * Question associated with current Door.
      */
-    private Question myQuestion;
+    private AbstractQuestion myAbstractQuestion;
 
     /**
      * Constructor for Door.
@@ -49,17 +49,17 @@ public class Door {
 
     }
 
-    public Question getMyQuestion(final Door theDoor) {
+    public AbstractQuestion getMyQuestion(final Door theDoor) {
 
-        return myQuestion;
+        return myAbstractQuestion;
     }
 
     /**
      * Takes a Question from the database to assign to this door.
-     * @param theQuestion
+     * @param theAbstractQuestion
      */
-    public void setQuestion(final Question theQuestion) {
-        myQuestion = theQuestion;
+    public void setQuestion(final AbstractQuestion theAbstractQuestion) {
+        myAbstractQuestion = theAbstractQuestion;
     }
 
     /**
@@ -68,7 +68,7 @@ public class Door {
      * @return boolean if question is null.
      */
     public boolean hasQuestion(final Door theDoor) {
-        return myQuestion != null;
+        return myAbstractQuestion != null;
     }
 
 

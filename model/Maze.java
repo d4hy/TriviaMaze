@@ -8,10 +8,7 @@ import controller.MazeControls;
 import controller.PropertyChangedEnabledMazeControls;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 
 /**
@@ -108,7 +105,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     /**
      * Arraylist of Questions to be used throughout setup of Maze.
      */
-    private ArrayList<Question> myQuestions = new ArrayList<>();
+    private ArrayList<AbstractQuestion> myAbstractQuestions = new ArrayList<>();
 
     /**
      * Constructor for new game of Maze, creating starting point of a Character and Rooms.
@@ -157,11 +154,14 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         // Establishes connection to database and creates questions.
         QuestionDatabase.connectToDatabase();
         // Retrieves list of questions to use when creating Maze.
-        myQuestions = QuestionDatabase.getQuestions();
+        myAbstractQuestions = QuestionDatabase.getQuestions();
+
 
         // Shuffles the questions within ArrayList before assigning to doors.
-        Collections.shuffle(myQuestions);
-        System.out.println(myQuestions.get(0).getQuestionText());
+        Collections.shuffle(myAbstractQuestions);
+
+        // test statements
+        System.out.println(myAbstractQuestions.get(0).getQuestionText());
 
         createRooms();
         assignDoors();
@@ -335,9 +335,8 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         // Using index, will add questions to each door given by the list of questions
         // extracted from the database.
-        for (int i = 0; i < myQuestions.size() && i < myDoors.size(); i++) {
-            myDoors.get(i).setQuestion(myQuestions.get(i));
-//            System.out.println(myDoors.get(i).hasQuestion(myDoors.get(i)));
+        for (int i = 0; i < myAbstractQuestions.size() && i < myDoors.size(); i++) {
+            myDoors.get(i).setQuestion(myAbstractQuestions.get(i));
         }
 
     }

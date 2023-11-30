@@ -8,7 +8,7 @@ package model;
  * @author David Hoang
  * @version Fall 2023
  */
-public class MultipleChoice extends Question {
+public class MultipleChoice extends AbstractQuestion {
 
     /**
      * Question's text.
