@@ -33,6 +33,17 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * The initial delay that the timer has.
      */
     private static final int TIMER_DELAY = 1000;
+
+    /**
+     * This variable will represent the state when we are in a playable state.
+     */
+    private static final int NORMAL_STATE =  1;
+
+    /**
+     * This variable will represent the state when we are in a paused state.
+     */
+    private static final int PAUSED_STATE =  2;
+
     /**
      * Timer that will be used for game and question functionality.
      */
@@ -58,6 +69,15 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * Counter for how many steps has taken the sprite alternates.
      */
     private int mySpriteCounter;
+
+    /**
+     * This field will represent which ui to display.
+     *
+     */
+    private int myGameUI;
+
+
+
     /**
      * These will be sprites that we use for the character.
      */
@@ -108,6 +128,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         g2.dispose();
     }
 
+    /**
+     * Method used to draw the room's doors.
+     * @param g2 object used to draw.
+     */
     private void drawRoomsDoors(final Graphics2D g2) {
         drawDoorIfNotNull(g2, myRoom.getLeftDoor(), getLeftDoorImg(),
                 0, MazeControls.MY_SCREEN_HEIGHT / 2 - MazeControls.MY_TILE_SIZE / 2);
@@ -121,6 +145,14 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 MazeControls.MY_SCREEN_WIDTH / 2 - MazeControls.MY_TILE_SIZE / 2, 0);
     }
 
+    /**
+     *  Draws the Door if not null.
+     * @param g2 object used to draw
+     * @param theDoor object that we are drawing for.
+     * @param theDoorImg that we will display.
+     * @param theX Coordinate where the door will be drawn.
+     * @param theY Coordinate where the door will be drawn.
+     */
     private void drawDoorIfNotNull(final Graphics2D g2, final Door theDoor,
                                    final BufferedImage theDoorImg,
                                    final int theX, final int theY) {
@@ -129,6 +161,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         }
     }
 
+    /**
+     * Draws the room's doors.
+     * @param g2 object used to draw.
+     */
     private void drawRoomsFloor(final Graphics2D g2) {
         final BufferedImage image = getRoomTileImage();
         for (int i = 0; i < MazeControls.MY_MAX_SCREEN_ROW; i++) {
@@ -140,42 +176,72 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             }
         }
     }
-
+    /**
+     *  Draws the Door.
+     * @param g2 object used to draw
+     * @param theDoorImg that we will display.
+     * @param theX Coordinate where the door will be drawn.
+     * @param theY Coordinate where the door will be drawn.
+     */
     private void drawDoor(final Graphics2D g2, final BufferedImage theDoorImg,
                           final int theX, final int theY) {
         g2.drawImage(theDoorImg, theX, theY, MazeControls.MY_TILE_SIZE,
                 MazeControls.MY_TILE_SIZE, null);
     }
 
+    /**
+     *  Method that loads the Room's tiles images.
+     * @return the Image that serves as the Room's tiles.
+     */
     private BufferedImage getRoomTileImage() {
 
         final String roomTilePath = "/res/room_tile_red.png";
         return loadImage(roomTilePath);
     }
 
+    /**
+     *  Method that loads the Door's left image.
+     * @return the left Door's image.
+     */
     private BufferedImage getLeftDoorImg() {
 
         final String leftDoorPath = "/res/left_door.png";
         return loadImage(leftDoorPath);
     }
 
+    /**
+     *  Method that loads the Door's right image.
+     * @return the right Door's image.
+     */
     private BufferedImage getRightDoorImg() {
 
         final String rightDoorPath = "/res/right_door.png";
         return loadImage(rightDoorPath);
     }
 
+    /**
+     *  Method that loads the Door's right image.
+     * @return the right Door's image.
+     */
     private BufferedImage getBottomDoorImg() {
 
         final String bottomDoorPath = "/res/bottom_door.png";
         return loadImage(bottomDoorPath);
     }
-
+    /**
+     *  Method that loads the Door's top image.
+     * @return the top Door's image.
+     */
     private BufferedImage getTopDoorImg() {
         final String topDoorPath = "/res/top_door.png";
         return loadImage(topDoorPath);
     }
 
+    /**
+     * Loads an image based on the specified path.
+     * @param thePath to the image.
+     * @return an image that's from the path.
+     */
     private BufferedImage loadImage(final String thePath) {
         try {
             return ImageIO.read
@@ -355,8 +421,20 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
     }
 
+    /**
+     * Will be used to pause and unpause the game.
+     */
     private void handleSpaceKey() {
         System.out.println("Pressed Space");
+        if (myGameUI == NORMAL_STATE) {
+
+            myGameUI = PAUSED_STATE;
+
+        } else if (myGameUI == PAUSED_STATE) {
+            myGameUI = NORMAL_STATE;
+        }
+
+
 
     }
 }
