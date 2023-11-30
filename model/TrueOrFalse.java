@@ -23,7 +23,7 @@ public class TrueOrFalse extends Question {
     /**
      * Text of incorrect second option.
      */
-    private static String myIncorrectAnswer;
+    private static String mySecondOption;
 
     /**
      * Multiple choice constructor calls super to Question and takes parameters based
@@ -38,6 +38,31 @@ public class TrueOrFalse extends Question {
 
         myQuestion = theQuestion;
         myAnswer = theAnswer;
-        myIncorrectAnswer = theIncorrectAnswer;
+        mySecondOption = theIncorrectAnswer;
     }
+
+    /**
+     * Returns the text of the specific question that will be displayed in view.
+     * @return String Text of the question.
+     */
+    public String getQuestionText() {
+        return myQuestion;
+    }
+
+    /**
+     * Returns the correct answer for the question that will be displayed in view.
+     * @return String correct answer text.
+     */
+    public String getAnswerText() {
+        return myAnswer;
+    }
+
+    /**
+     * Returns an incorrect option used for multiple choice in view.
+     * @return String second incorrect option.
+     */
+    public String getSecondOption() {
+        return mySecondOption;
+    }
+
 }
