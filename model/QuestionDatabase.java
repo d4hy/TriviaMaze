@@ -37,7 +37,7 @@ public final class QuestionDatabase {
      * Arraylist stores collection of Question object with respective information
      * needed to distribute and use in Trivia Maze.
      */
-    private static ArrayList<AbstractQuestion> myAbstractQuestions = new ArrayList<>();
+    private static ArrayListBag myAbstractQuestions = new ArrayListBag();
 
     /**
      * Private, empty constructor to ensure this remains a utility class.
@@ -109,7 +109,7 @@ public final class QuestionDatabase {
      * using SQLite.
      * @return arraylist of Question objects.
      */
-    public static ArrayList<AbstractQuestion> getQuestions() {
+    public static ArrayListBag getQuestions() {
         return myAbstractQuestions;
     }
 }

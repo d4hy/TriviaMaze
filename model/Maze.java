@@ -105,7 +105,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     /**
      * Arraylist of Questions to be used throughout setup of Maze.
      */
-    private ArrayList<AbstractQuestion> myAbstractQuestions = new ArrayList<>();
+    private ArrayListBag myAbstractQuestions = new ArrayListBag();
 
     /**
      * Constructor for new game of Maze, creating starting point of a Character and Rooms.
@@ -157,7 +157,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
 
         // Shuffles the questions within ArrayList before assigning to doors.
-        Collections.shuffle(myAbstractQuestions);
+//        Collections.shuffle(myAbstractQuestions);
 
         // test statements
 //        System.out.println(myAbstractQuestions.get(0).getQuestionText());
@@ -334,10 +334,17 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         // Using index, will add questions to each door given by the list of questions
         // extracted from the database.
-        for (int i = 0; i < myAbstractQuestions.size() && i < myDoors.size(); i++) {
-            myDoors.get(i).setQuestion(myAbstractQuestions.get(i));
-            System.out.println(myDoors.get(i).getMyQuestion(myDoors.get(i)).getQuestionText());
+
+        for (Door door : myDoors) {
+            if (!myAbstractQuestions.isBagEmpty()) {
+                door.setQuestion((AbstractQuestion) myAbstractQuestions.grab());
+                System.out.println(door.getMyQuestion(door).getQuestionText());
+            }
         }
+//        for (int i = 0; i < myAbstractQuestions.size() && i < myDoors.size(); i++) {
+//            myDoors.get(i).setQuestion(myAbstractQuestions.get(i));
+//            System.out.println(myDoors.get(i).getMyQuestion(myDoors.get(i)).getQuestionText());
+//        }
 
     }
 
