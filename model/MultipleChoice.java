@@ -74,14 +74,6 @@ public class MultipleChoice extends Question {
 
     /**
      * Returns an incorrect option used for multiple choice in view.
-     * @return String first incorrect option.
-     */
-    public String getFirstOption() {
-        return myAnswer;
-    }
-
-    /**
-     * Returns an incorrect option used for multiple choice in view.
      * @return String second incorrect option.
      */
     public String getSecondOption() {
@@ -105,12 +97,4 @@ public class MultipleChoice extends Question {
         return myFourthOption;
     }
 
-    /**
-     * Returns the type of current Question.
-     * @return String type of question.
-     */
-    public String getQuestionType() {
-
-        return "This is the type of question.";
-    }
 }
