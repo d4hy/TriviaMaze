@@ -1,10 +1,8 @@
 package view;
 
 import controller.MazeControls;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -43,6 +41,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * This variable will represent the state when we are in a paused state.
      */
     private static final int PAUSED_STATE =  2;
+    /**
+     * Font used to draw the settings menu.
+     */
+    private static Font ARIAL_40 = new Font("Arial",Font.PLAIN, 40);
 
     /**
      * Timer that will be used for game and question functionality.
@@ -86,6 +88,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             myDown2, myLeft1, myLeft2, myRight1, myRight2;
 
     MazeView(final Maze theMaze) {
+        myGameUI = NORMAL_STATE;
         this.myMaze = theMaze;
         setUp();
         myMaze.addPropertyChangeListener(this);
@@ -125,8 +128,33 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             drawCharacter(g2);
         }
 
+        if (myGameUI == PAUSED_STATE) {
+            drawTheSettingsMenu(g2);
+        }
+
         g2.dispose();
     }
+
+    /**
+     * Draws the setting menu if the myGameUi is in a paused state.
+     */
+    public void drawTheSettingsMenu(final Graphics2D g2) {
+        g2.setFont(ARIAL_40);
+        g2.setColor(Color.white);
+
+        final String text = "PAUSED";
+        // have to adjust the x coordinate, or else the left side of
+        // this screen will be drawn from the middle all the way to the right.
+
+        //length of the text.
+        final int textLength = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+
+        final int x = MazeControls.MY_SCREEN_WIDTH / 2 - textLength/2;
+        final int y = MazeControls.MY_SCREEN_HEIGHT / 2;
+        // y indicates the baseline of the text.
+        g2.drawString(text, x , y);
+    }
+
 
     /**
      * Method used to draw the room's doors.
@@ -251,10 +279,12 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             return null;
         }
     }
+
+
     /**
      * Draw the characters, based on their current position.
      */
-    public void drawCharacter(final Graphics2D g2) {
+    private void drawCharacter(final Graphics2D g2) {
         getPlayerImage();
         //the x and y coordinates of the character.
         int x = myCharacter.getCurrentPosition().x;
@@ -377,13 +407,22 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
     @Override
     public void keyPressed(final KeyEvent theEvent) {
-        switch (theEvent.getKeyCode()) {
-            case KeyEvent.VK_W, KeyEvent.VK_UP -> handleUpKey();
-            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> handleDownKey();
-            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
-            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
-            case KeyEvent.VK_SPACE -> handleSpaceKey();
-            default ->  { }
+        //if the game isn't a paused state listen to all the other keys.
+        if(myGameUI == NORMAL_STATE) {
+            switch (theEvent.getKeyCode()) {
+                case KeyEvent.VK_W, KeyEvent.VK_UP -> handleUpKey();
+                case KeyEvent.VK_S, KeyEvent.VK_DOWN -> handleDownKey();
+                case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
+                case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
+
+                default -> {
+                }
+            }
+
+        }
+        //pauses the screen if it is this keycode.
+        if (theEvent.getKeyCode() == KeyEvent.VK_SPACE) {
+            handleSpaceKey();
         }
     }
 
@@ -433,8 +472,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         } else if (myGameUI == PAUSED_STATE) {
             myGameUI = NORMAL_STATE;
         }
-
-
-
+        repaint();
     }
 }
