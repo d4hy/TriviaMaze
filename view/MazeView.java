@@ -149,7 +149,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         //length of the text.
         final int textLength = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
 
-        final int x = MazeControls.MY_SCREEN_WIDTH / 2 - textLength;
+        final int x = MazeControls.MY_SCREEN_WIDTH / 2 - textLength/2;
         final int y = MazeControls.MY_SCREEN_HEIGHT / 2;
         // y indicates the baseline of the text.
         g2.drawString(text, x , y);
