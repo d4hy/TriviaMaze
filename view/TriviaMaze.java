@@ -38,15 +38,15 @@ public  final class TriviaMaze implements PropertyChangeListener {
      */
     public TriviaMaze() {
         myWindow = new JFrame();
-
         myMaze = new Maze(4, 4);
-        myMaze.newGame();
+//        myMaze.createMaze();
 
 
         setUpJFrame();
         addMazeView();
         addQuestionPrompt();
         addUserOptionsToJFrame();
+        myMaze.newGame();
     }
 
     /**

@@ -127,7 +127,6 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         myWidth = theWidth;
         myHeight = theHeight;
         myPcs = new PropertyChangeSupport(this);
-        createMaze();
         setMoveTrue();
         setMyGameOverStatus(false);
 
@@ -161,7 +160,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         Collections.shuffle(myAbstractQuestions);
 
         // test statements
-        System.out.println(myAbstractQuestions.get(0).getQuestionText());
+//        System.out.println(myAbstractQuestions.get(0).getQuestionText());
 
         createRooms();
         assignDoors();
@@ -337,6 +336,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         // extracted from the database.
         for (int i = 0; i < myAbstractQuestions.size() && i < myDoors.size(); i++) {
             myDoors.get(i).setQuestion(myAbstractQuestions.get(i));
+            System.out.println(myDoors.get(i).getMyQuestion(myDoors.get(i)).getQuestionText());
         }
 
     }

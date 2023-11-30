@@ -92,7 +92,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         this.myMaze = theMaze;
         setUp();
         myMaze.addPropertyChangeListener(this);
-        myMaze.newGame();
         addKeyListener(this);
         setFocusable(true);
     }

@@ -92,8 +92,9 @@ public final class QuestionDatabase {
 
                 // Depending on the type of question, QuestionFactory will create a specified
                 // question with its applicable fields.
-                final AbstractQuestion abstractQuestion = QuestionFactory.createQuestion(questionText, questionType, correctAnswer,
-                        secondOption, thirdOption, fourthOption);
+                final AbstractQuestion abstractQuestion =
+                        QuestionFactory.createQuestion(questionText, questionType,
+                                correctAnswer, secondOption, thirdOption, fourthOption);
 
                 myAbstractQuestions.add(abstractQuestion);
             }
