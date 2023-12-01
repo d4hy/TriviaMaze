@@ -1,5 +1,6 @@
 package model;
 
+import controller.Question;
 import org.sqlite.SQLiteDataSource;
 
 import java.sql.Connection;

@@ -5,11 +5,11 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.JOptionPane;
-import model.AbstractQuestion;
+
 import model.Door;
 import model.Maze;
 import model.MultipleChoice;
-import model.Question;
+import controller.Question;
 import model.Room;
 import model.ShortAnswer;
 import model.TrueOrFalse;

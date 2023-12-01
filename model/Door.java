@@ -4,6 +4,8 @@
  */
 package model;
 
+import controller.Question;
+
 /**
  * Class will contain information of current Door that the character is at.
  *

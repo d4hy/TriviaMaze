@@ -1,4 +1,4 @@
-package model;
+package controller;
 
 /**
  * Question interface outlines the basic methods each type of subclass

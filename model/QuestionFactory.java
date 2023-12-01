@@ -1,5 +1,7 @@
 package model;
 
+import controller.Question;
+
 import java.util.Objects;
 
 /**
@@ -29,11 +31,11 @@ public final class QuestionFactory {
      * @return The Question that is created.
      */
     public static Question createQuestion(final String theQuestionText,
-                                                  final String theQuestionType,
-                                                  final String theCorrectAnswer,
-                                                  final String theSecondOption,
-                                                  final String theThirdOption,
-                                                  final String theFourthOption) {
+                                          final String theQuestionType,
+                                          final String theCorrectAnswer,
+                                          final String theSecondOption,
+                                          final String theThirdOption,
+                                          final String theFourthOption) {
 
         Question question = null;
 

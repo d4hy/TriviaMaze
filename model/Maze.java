@@ -6,6 +6,8 @@ package model;
 
 import controller.MazeControls;
 import controller.PropertyChangedEnabledMazeControls;
+import controller.Question;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;

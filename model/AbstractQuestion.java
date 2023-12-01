@@ -4,6 +4,8 @@
  */
 package model;
 
+import controller.Question;
+
 /**
  * Class will hold the list of Questions to be answered and evaluated during game.
  *
