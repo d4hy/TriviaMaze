@@ -43,38 +43,7 @@ public class QuestionPrompt implements PropertyChangeListener {
     public QuestionPrompt(final Maze theMaze)  {
         myMaze = theMaze;
     }
-    /**
-     * Displays a question prompt to the user and processes their answer.
-     * If the answer is correct, it sets the bottom door as prompted and unlocks it.
-     * If the dialog is closed or the answer is incorrect, it sets the question as not prompted.
-     * Updates the game state accordingly.
-     *
-     * @param theDoor The door for which the question prompt is displayed.
-     */
-    private void displayQuestionBottomPrompt(Door theDoor) {
 
-        // Retrieve the associated question
-        AbstractQuestion abstractQuestion = theDoor.getMyQuestion(theDoor);
-        // Display the question prompt using JOptionPane
-
-        String userAnswer = JOptionPane.showInputDialog(null, abstractQuestion.getQuestionText());
-
-        // Process the user's answer (validate, etc.)
-        // If the answer is "OK", set the door as prompted and unlock it
-        if ("OK".equalsIgnoreCase(userAnswer.trim())) {
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
-
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        } else {
-            // If the dialog is closed or the answer is incorrect, set the question as not prompted
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.lock();
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        }
-    }
     /**
      * Displays a question prompt to the user and processes their answer.
      * If the answer is correct, it sets the bottom door as prompted and unlocks it.
