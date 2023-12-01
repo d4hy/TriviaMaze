@@ -41,10 +41,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * This variable will represent the state when we are in a paused state.
      */
     private static final int PAUSED_STATE =  2;
-    /**
-     * Font used to draw the settings menu.
-     */
-    private static Font ARIAL_40 = new Font("Arial",Font.PLAIN, 40);
+
 
     /**
      * Timer that will be used for game and question functionality.
@@ -94,11 +91,13 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         myMaze.addPropertyChangeListener(this);
         addKeyListener(this);
         setFocusable(true);
+
     }
 
     public void setUp() {
         this.setPreferredSize(new Dimension(
                 MazeControls.MY_SCREEN_WIDTH, MazeControls.MY_SCREEN_HEIGHT));
+
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         setTimer();
@@ -138,9 +137,17 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * Draws the setting menu if the myGameUi is in a paused state.
      */
     public void drawTheSettingsMenu(final Graphics2D g2) {
-        g2.setFont(ARIAL_40);
-        g2.setColor(Color.white);
 
+        g2.setColor(Color.white);
+        final float fontSize = 32F;
+        g2.setFont(g2.getFont().deriveFont(fontSize));
+
+        //SUBWINDOW
+        final int frameX = MazeControls.MY_TILE_SIZE * 6;
+        final int frameY = MazeControls.MY_TILE_SIZE;
+        final int frameWidth = MazeControls.MY_TILE_SIZE * 8;
+        final int frameHeight = MazeControls.MY_TILE_SIZE * 10;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight, g2);
         final String text = "PAUSED";
         // have to adjust the x coordinate, or else the left side of
         // this screen will be drawn from the middle all the way to the right.
@@ -148,10 +155,43 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         //length of the text.
         final int textLength = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
 
-        final int x = MazeControls.MY_SCREEN_WIDTH / 2 - textLength/2;
+        final int x = MazeControls.MY_SCREEN_WIDTH / 2 - textLength / 2;
         final int y = MazeControls.MY_SCREEN_HEIGHT / 2;
         // y indicates the baseline of the text.
         g2.drawString(text, x , y);
+    }
+
+    /**
+     * draws a sub window.
+     * @param theX coordinate of where to draw the sub window.
+     * @param theY coordinate of where to draw the sub window.
+     * @param theWidth of the sub window.
+     * @param theHeight of the sub window.
+     */
+
+    private void drawSubWindow(final int theX,
+                               final int theY, final int theWidth, final int theHeight, final Graphics2D g2) {
+        final int opacity = 210;
+        Color color = new Color(0, 0, 0, opacity);
+        g2.setColor(color);
+
+        final int innerRectWidthHeight = 35;
+        g2.fillRoundRect(theX, theY, theWidth, theHeight,
+                innerRectWidthHeight, innerRectWidthHeight);
+        final int whiteNumber = 255;
+        color  = new Color(whiteNumber, whiteNumber, whiteNumber);
+
+        //Defines the width of outlines of graphics which are rendered with a Graphics2D.
+        final int strokeWidth = 5;
+        g2.setColor(color);
+        g2.setStroke(new BasicStroke(strokeWidth));
+        final int outerRectangleX = theX + 5;
+        final int outerRectangleY = theY + 5;
+        final int outerRectangleWidth = theWidth - 10;
+        final int outerRectangleHeight = theHeight - 10;
+        final int arcWidthHeight = 25;
+        g2.drawRoundRect(outerRectangleX, outerRectangleY, outerRectangleWidth,
+                outerRectangleHeight, arcWidthHeight , arcWidthHeight);
     }
 
 

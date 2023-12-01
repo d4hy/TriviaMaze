@@ -33,7 +33,7 @@ public interface MazeControls {
      *The amount of tiles that will be represented as the rows of the screen.
      *
      */
-    int MY_MAX_SCREEN_ROW = 16;
+    int MY_MAX_SCREEN_ROW = 20;
     /**
      *The amount of tiles that will be represented as the columns of the screen.
      *
@@ -43,7 +43,7 @@ public interface MazeControls {
     /**
      * The up-scaled amount of tiles that will be represented as the width of the screen.
      */
-    int MY_SCREEN_WIDTH = MY_TILE_SIZE  * MY_MAX_SCREEN_ROW; //768 pixels.
+    int MY_SCREEN_WIDTH = MY_TILE_SIZE  * MY_MAX_SCREEN_ROW; //960 pixels.
 
     /**
      * The up-scaled amount of tiles that will be represented as the height of the screen.
