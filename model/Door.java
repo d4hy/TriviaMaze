@@ -74,7 +74,8 @@ public class Door {
 
     /**
      * Returns a boolean if the door's Question has not been prompted or has.
-     * @return true if the door's question has not been prompted, false if it has been prompted.
+     * @return true if the door's question has not been prompted, false if it
+     * has been prompted.
      */
     public boolean hasMyQuestionBeenNotPrompted() {
         return myQuestionHasNotBeenPrompted;
@@ -82,8 +83,8 @@ public class Door {
 
     /**
      * Sets the status if the door's question has not been prompted or has.
-     * @param theStatus if true, it will set door's myQuestionHasNotBeenPrompted status to true, false
-     *                  will set myQuestionHasNotBeenPrompted status to false .
+     * @param theStatus if true, it will set door's myQuestionHasNotBeenPrompted status
+     *                  to true, false will set myQuestionHasNotBeenPrompted status to false.
      */
     public void setMyQuestionNotPromptedStatus(final boolean theStatus) {
         myQuestionHasNotBeenPrompted = theStatus;

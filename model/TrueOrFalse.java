@@ -13,27 +13,17 @@ public class TrueOrFalse extends AbstractQuestion {
     /**
      * Question's text.
      */
-    private static String myQuestion;
+    private final String myQuestion;
 
     /**
      * Text of correct answer to this Question.
      */
-    private static String myAnswer;
+    private final String myAnswer;
 
     /**
      * Text of incorrect second option.
      */
-    private static String mySecondOption;
-
-    /**
-     * Text of incorrect third option.
-     */
-    private static String myThirdOption;
-
-    /**
-     * Text of incorrect fourth option.
-     */
-    private static String myFourthOption;
+    private final String mySecondOption;
 
     /**
      * Multiple choice constructor calls super to Question and takes parameters based

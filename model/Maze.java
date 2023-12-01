@@ -334,15 +334,9 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
         // Using index, will add questions to each door given by the list of questions
         // extracted from the database.
-
-//        for (Door door : myDoors) {
-//            if (!myAbstractQuestions.isBagEmpty()) {
-//                door.setQuestion((AbstractQuestion) myAbstractQuestions.grab());
-//                System.out.println(door.getMyQuestion(door).getQuestionText());
-//            }
-//        }
         for (int i = 0; i < myQuestions.size() && i < myDoors.size(); i++) {
             myDoors.get(i).setQuestion(myQuestions.get(i));
+//            System.out.println(myDoors.get(i).getMyQuestion(myDoors.get(i)).getQuestionText());
         }
 
     }

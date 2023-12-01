@@ -23,10 +23,19 @@ public abstract class AbstractQuestion implements Question {
      */
     private final String myCorrectAnswer;
 
+    /**
+     * Text of incorrect second option.
+     */
     private final String mySecondOption;
 
+    /**
+     * Text of incorrect third option.
+     */
     private final String myThirdOption;
 
+    /**
+     * Text of incorrect fourth option.
+     */
     private final String myFourthOption;
 
     /**
@@ -36,11 +45,12 @@ public abstract class AbstractQuestion implements Question {
                             final String theSecondOption, final String theThirdOption,
                             final String theFourthOption) {
 
-        myQuestion = theQuestion;
-        myCorrectAnswer = theAnswer;
-        mySecondOption = theSecondOption;
-        myThirdOption = theThirdOption;
-        myFourthOption = theFourthOption;
+        this.myQuestion = theQuestion;
+        this.myCorrectAnswer = theAnswer;
+        this.mySecondOption = theSecondOption;
+        this.myThirdOption = theThirdOption;
+        this.myFourthOption = theFourthOption;
+
     }
 
     public String getQuestionText() {

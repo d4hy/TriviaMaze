@@ -98,12 +98,7 @@ public final class QuestionDatabase {
 
                 myQuestions.add(question);
 
-//                System.out.println(question.getQuestionText());
 
-
-            }
-            for (Question question : myQuestions) {
-                System.out.println(question.getQuestionText());
             }
         } catch (final SQLException e) {
             e.printStackTrace();
