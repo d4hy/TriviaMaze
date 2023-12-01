@@ -2,11 +2,15 @@ package view;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.JOptionPane;
 import model.AbstractQuestion;
 import model.Door;
 import model.Maze;
+import model.MultipleChoice;
 import model.Room;
+import model.ShortAnswer;
 import model.TrueOrFalse;
 
 
@@ -85,10 +89,69 @@ public class QuestionPrompt implements PropertyChangeListener {
 
         if (abstractQuestion instanceof TrueOrFalse) {
             handleTrueOrFalseQuestion(theDoor, (TrueOrFalse) abstractQuestion);
-        } else {
-            handleOtherQuestion(theDoor, abstractQuestion);
+        } else if (abstractQuestion instanceof MultipleChoice) {
+            handleMultipleChoiceQuestion(theDoor, (MultipleChoice) abstractQuestion);
+        } else if (abstractQuestion instanceof ShortAnswer) {
+            handleShortAnswerQuestion(theDoor, (ShortAnswer) abstractQuestion);
         }
     }
+
+    /**
+     * Handles Multiple Choice type questions.
+     *
+     * @param theDoor The door for which the question prompt is displayed.
+     * @param theMultipleChoiceQuestion The multiple choice type question.
+     */
+    private void  handleMultipleChoiceQuestion(final Door theDoor, final MultipleChoice theMultipleChoiceQuestion) {
+        final ArrayList<String> options = new ArrayList<>();
+        options.add(theMultipleChoiceQuestion.getAnswerText());
+        options.add(theMultipleChoiceQuestion.getSecondOption());
+        options.add(theMultipleChoiceQuestion.getThirdOption());
+        options.add(theMultipleChoiceQuestion.getFourthOption());
+        Collections.shuffle(options);
+        final int userAnswerIndex = JOptionPane.showOptionDialog(
+                null,
+                theMultipleChoiceQuestion.getQuestionText(),
+                "Answer to play!",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options.toArray(),
+                options.get(0)
+        );
+        // Check if the user's answer is correct
+        if (userAnswerIndex >= 0 && userAnswerIndex < options.size()
+                && options.get(userAnswerIndex).
+                equals(theMultipleChoiceQuestion.getAnswerText())) {
+            // Handle correct answer
+            handleCorrectAnswer(theDoor);
+        } else {
+            // Handle incorrect answer
+            handleIncorrectAnswer(theDoor);
+        }
+
+    }
+    /**
+     * Handles Short Answer type questions.
+     *
+     * @param theDoor The door for which the question prompt is displayed.
+     * @param theShortAnswerQuestion The  Short Answer question.
+     */
+    private void  handleShortAnswerQuestion(final Door theDoor,
+                                            final ShortAnswer theShortAnswerQuestion) {
+        final String userInput = JOptionPane.showInputDialog(null,
+                theShortAnswerQuestion.getQuestionText());
+        // Check if the user's answer is correct
+        if (theShortAnswerQuestion.getQuestionText().equalsIgnoreCase(userInput.trim())) {
+            // Handle correct answer
+            handleCorrectAnswer(theDoor);
+        } else {
+            // Handle incorrect answer
+            handleIncorrectAnswer(theDoor);
+        }
+
+    }
+
 
     /**
      * Handles True/False type questions.
@@ -130,22 +193,6 @@ public class QuestionPrompt implements PropertyChangeListener {
 
     }
 
-    /**
-     * Handles questions other than True/False type.
-     *
-     * @param theDoor           The door for which the question prompt is displayed.
-     * @param otherQuestion The non True/False question.
-     */
-    private void handleOtherQuestion(final Door theDoor, final AbstractQuestion otherQuestion) {
-        final String userInput = JOptionPane.showInputDialog(null, otherQuestion.getQuestionText());
-
-        // Process the user's answer (validate, etc.)
-        if ("OK".equalsIgnoreCase(userInput.trim())) {
-            handleCorrectAnswer(theDoor);
-        } else {
-            handleIncorrectAnswer(theDoor);
-        }
-    }
 
     /**
      * Handles the case where the user answered the question correctly.
@@ -169,89 +216,6 @@ public class QuestionPrompt implements PropertyChangeListener {
         myMaze.setMoveTrue();
     }
 
-    /**
-     * Displays a question prompt to the user and processes their answer.
-     * If the answer is correct, it sets the Top door as prompted and unlocks it.
-     * Updates the game state accordingly.
-     * @param theDoor The door for which the question prompt is displayed.
-     */
-    private void displayQuestionTopPrompt(Door theDoor) {
-        // Display the question prompt using JOptionPane
-        String userAnswer = JOptionPane.showInputDialog(null, "Your question goes here");
-
-        // Process the user's answer (validate, etc.)
-        // If the answer is "OK", set the door as prompted and unlock it
-        if ("OK".equalsIgnoreCase(userAnswer.trim())) {
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
-
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        } else {
-            // If the dialog is closed or the answer is incorrect, set the question as not prompted
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.lock();
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        }
-    }
-
-    /**
-     * Displays a question prompt to the user and processes their answer.
-     * If the answer is correct, it sets the Left door as prompted and unlocks it.
-     * Updates the game state accordingly.
-     * @param theDoor The door for which the question prompt is displayed.
-     */
-    private void displayQuestionLeftPrompt(Door theDoor) {
-        // Display the question prompt using JOptionPane
-        String userAnswer = JOptionPane.showInputDialog(null, "Your question goes here");
-
-        // Process the user's answer (validate, etc.)
-        // If the answer is "OK", set the door as prompted and unlock it
-        if ("OK".equalsIgnoreCase(userAnswer.trim())) {
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
-
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        } else {
-            // If the dialog is closed or the answer is incorrect, set the question as not prompted
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.lock();
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        }
-    }
-
-    /**
-     * Displays a question prompt to the user and processes their answer.
-     * If the answer is correct, it sets the Right door as prompted and unlocks it.
-     * Updates the game state accordingly.
-     * @param theDoor The door for which the question prompt is displayed.
-     */
-    private void displayQuestionRightPrompt(Door theDoor) {
-        // Display the question prompt using JOptionPane
-        String userAnswer = JOptionPane.showInputDialog(null, "Your question goes here");
-
-        // Process the user's answer (validate, etc.)
-        // If the answer is "OK", set the door as prompted and unlock it
-        if ("OK".equalsIgnoreCase(userAnswer.trim())) {
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
-
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        } else {
-            // If the dialog is closed or the answer is incorrect, set the question as not prompted
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.lock();
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        }
-    }
-
-
-
 
 
     /**
@@ -266,16 +230,16 @@ public class QuestionPrompt implements PropertyChangeListener {
         final String propertyName = theEvt.getPropertyName();
         if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_BOT_DOOR)) {
             myRoom = (Room) theEvt.getNewValue();
-            displayQuestionBottomPrompt(myRoom.getBottomDoor());
+            displayQuestionPrompt(myRoom.getBottomDoor());
         } else if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_TOP_DOOR)) {
             myRoom = (Room) theEvt.getNewValue();
             displayQuestionPrompt(myRoom.getTopDoor());
         } else if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_LEFT_DOOR)) {
             myRoom = (Room) theEvt.getNewValue();
-            displayQuestionLeftPrompt(myRoom.getLeftDoor());
+            displayQuestionPrompt(myRoom.getLeftDoor());
         } else if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_RIGHT_DOOR)) {
             myRoom = (Room) theEvt.getNewValue();
-            displayQuestionRightPrompt(myRoom.getRightDoor());
+            displayQuestionPrompt(myRoom.getRightDoor());
         }
     }
 }
