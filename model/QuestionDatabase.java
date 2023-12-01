@@ -1,3 +1,7 @@
+/*
+ * TriviaMaze
+ * Fall 2023
+ */
 package model;
 
 import controller.Question;
@@ -97,6 +101,7 @@ public final class QuestionDatabase {
                         QuestionFactory.createQuestion(questionText, questionType,
                                 correctAnswer, secondOption, thirdOption, fourthOption);
 
+                // Adds the new Question depending on its type into list.
                 myQuestions.add(question);
 
 

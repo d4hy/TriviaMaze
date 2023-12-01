@@ -83,12 +83,12 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     /**
      * Width of Maze rooms.
      */
-    private int myWidth;
+    private final int myWidth;
 
     /**
      * Height of Maze rooms.
      */
-    private int myHeight;
+    private final int myHeight;
 
     /**
      * The status of the game if it is over.
@@ -103,7 +103,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     /**
      * Signals change from the model to the view.
      */
-    private PropertyChangeSupport myPcs;
+    private final PropertyChangeSupport myPcs;
 
     /**
      * Arraylist of Questions to be used throughout setup of Maze.
@@ -155,9 +155,12 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         }
         // Establishes connection to database and creates questions.
         QuestionDatabase.connectToDatabase();
+
         // Retrieves list of questions to use when creating Maze.
         myQuestions = QuestionDatabase.getQuestions();
 
+        // Shuffles the list of Question each time a new game is
+        // instantiated to have different questions to doors.
         Collections.shuffle(myQuestions);
 
         createRooms();
@@ -337,18 +340,6 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             System.out.println(myDoors.get(i).getMyQuestion(myDoors.get(i)).getQuestionText());
         }
 
-    }
-
-
-    /**
-     * Returns information about the current room Character is in.
-     * @return String info about current room.
-     */
-    public String getCurrentRoomInfo() {
-
-        final String info = "This is information";
-
-        return info;
     }
 
     /**

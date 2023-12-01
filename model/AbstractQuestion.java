@@ -41,7 +41,8 @@ public abstract class AbstractQuestion implements Question {
     private final String myFourthOption;
 
     /**
-     * Dummy constructor for Question.
+     * Constructor for all Questions that will have the basis fields for displaying
+     * the question and answer choices to view.
      */
     public AbstractQuestion(final String theQuestion, final String theAnswer,
                             final String theSecondOption, final String theThirdOption,

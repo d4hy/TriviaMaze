@@ -1,3 +1,7 @@
+/*
+ * TriviaMaze
+ * Fall 2023
+ */
 package controller;
 
 /**
