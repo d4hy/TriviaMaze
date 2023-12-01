@@ -3,10 +3,9 @@ package view;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JOptionPane;
-
+import model.AbstractQuestion;
 import model.Door;
 import model.Maze;
-import model.AbstractQuestion;
 import model.Room;
 import model.TrueOrFalse;
 
@@ -97,7 +96,7 @@ public class QuestionPrompt implements PropertyChangeListener {
      * @param theDoor         The door for which the question prompt is displayed.
      * @param trueOrFalseQuestion The True/False question.
      */
-    private void handleTrueOrFalseQuestion(Door theDoor, TrueOrFalse trueOrFalseQuestion) {
+    private void handleTrueOrFalseQuestion(final Door theDoor, final TrueOrFalse trueOrFalseQuestion) {
         final String[] options = {"True", "False"};
         final int userAnswer = JOptionPane.showOptionDialog(
                 null,
@@ -111,19 +110,23 @@ public class QuestionPrompt implements PropertyChangeListener {
         );
 
         // Process the user's answer
-        if (trueOrFalseQuestion.getAnswerText().equals("True")) {
+
+        //if the answer is true, check if the user chose true
+        if (trueOrFalseQuestion.getAnswerText().equals(options[0])) {
             if (userAnswer == JOptionPane.YES_OPTION) {
                 handleCorrectAnswer(theDoor);
             } else if (userAnswer == JOptionPane.NO_OPTION) {
                 handleIncorrectAnswer(theDoor);
             }
-        }  else if (trueOrFalseQuestion.getAnswerText().equals("False")) {
+            //if the answer is false, check if the answer chose false
+        }  else if (trueOrFalseQuestion.getAnswerText().equals(options[1])) {
             if (userAnswer == JOptionPane.NO_OPTION) {
                 handleCorrectAnswer(theDoor);
             } else if (userAnswer == JOptionPane.YES_OPTION) {
                 handleIncorrectAnswer(theDoor);
             }
         }
+
     }
 
     /**
@@ -132,7 +135,7 @@ public class QuestionPrompt implements PropertyChangeListener {
      * @param theDoor           The door for which the question prompt is displayed.
      * @param otherQuestion The non True/False question.
      */
-    private void handleOtherQuestion(Door theDoor, AbstractQuestion otherQuestion) {
+    private void handleOtherQuestion(final Door theDoor, final AbstractQuestion otherQuestion) {
         final String userInput = JOptionPane.showInputDialog(null, otherQuestion.getQuestionText());
 
         // Process the user's answer (validate, etc.)
@@ -148,7 +151,7 @@ public class QuestionPrompt implements PropertyChangeListener {
      *
      * @param theDoor The door for which the question was displayed.
      */
-    private void handleCorrectAnswer(Door theDoor) {
+    private void handleCorrectAnswer(final Door theDoor) {
         theDoor.setMyQuestionNotPromptedStatus(false);
         theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
         myMaze.setMoveTrue();
