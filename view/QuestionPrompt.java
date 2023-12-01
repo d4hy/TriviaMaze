@@ -79,9 +79,9 @@ public class QuestionPrompt implements PropertyChangeListener {
      *
      * @param theDoor The door for which the question prompt is displayed.
      */
-    private void displayQuestionPrompt(Door theDoor) {
+    private void displayQuestionPrompt(final Door theDoor) {
         // Retrieve the associated question
-        AbstractQuestion abstractQuestion = theDoor.getMyQuestion(theDoor);
+        final AbstractQuestion abstractQuestion = theDoor.getMyQuestion(theDoor);
 
         if (abstractQuestion instanceof TrueOrFalse) {
             handleTrueOrFalseQuestion(theDoor, (TrueOrFalse) abstractQuestion);
@@ -96,11 +96,11 @@ public class QuestionPrompt implements PropertyChangeListener {
      * @param theDoor         The door for which the question prompt is displayed.
      * @param trueOrFalseQuestion The True/False question.
      */
-    private void handleTrueOrFalseQuestion(final Door theDoor, final TrueOrFalse trueOrFalseQuestion) {
+    private void handleTrueOrFalseQuestion(final Door theDoor, final TrueOrFalse theTrueOrFalseQuestion) {
         final String[] options = {"True", "False"};
         final int userAnswer = JOptionPane.showOptionDialog(
                 null,
-                trueOrFalseQuestion.getQuestionText(),
+                theTrueOrFalseQuestion.getQuestionText(),
                 "Answer to play!",
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
@@ -112,14 +112,14 @@ public class QuestionPrompt implements PropertyChangeListener {
         // Process the user's answer
 
         //if the answer is true, check if the user chose true
-        if (trueOrFalseQuestion.getAnswerText().equals(options[0])) {
+        if (theTrueOrFalseQuestion.getAnswerText().equals(options[0])) {
             if (userAnswer == JOptionPane.YES_OPTION) {
                 handleCorrectAnswer(theDoor);
             } else if (userAnswer == JOptionPane.NO_OPTION) {
                 handleIncorrectAnswer(theDoor);
             }
             //if the answer is false, check if the answer chose false
-        }  else if (trueOrFalseQuestion.getAnswerText().equals(options[1])) {
+        }  else if (theTrueOrFalseQuestion.getAnswerText().equals(options[1])) {
             if (userAnswer == JOptionPane.NO_OPTION) {
                 handleCorrectAnswer(theDoor);
             } else if (userAnswer == JOptionPane.YES_OPTION) {
@@ -162,7 +162,7 @@ public class QuestionPrompt implements PropertyChangeListener {
      *
      * @param theDoor The door for which the question was displayed.
      */
-    private void handleIncorrectAnswer(Door theDoor) {
+    private void handleIncorrectAnswer(final Door theDoor) {
         theDoor.setMyQuestionNotPromptedStatus(false);
         theDoor.lock();
         myMaze.setMoveTrue();
