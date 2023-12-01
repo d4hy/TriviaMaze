@@ -11,6 +11,7 @@ import controller.Question;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 /**
@@ -157,12 +158,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         // Retrieves list of questions to use when creating Maze.
         myQuestions = QuestionDatabase.getQuestions();
 
-
-        // Shuffles the questions within ArrayList before assigning to doors.
-//        Collections.shuffle(myAbstractQuestions);
-
-        // test statements
-//        System.out.println(myAbstractQuestions.get(0).getQuestionText());
+        Collections.shuffle(myQuestions);
 
         createRooms();
         assignDoors();
@@ -338,7 +334,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         // extracted from the database.
         for (int i = 0; i < myQuestions.size() && i < myDoors.size(); i++) {
             myDoors.get(i).setQuestion(myQuestions.get(i));
-//            System.out.println(myDoors.get(i).getMyQuestion(myDoors.get(i)).getQuestionText());
+            System.out.println(myDoors.get(i).getMyQuestion(myDoors.get(i)).getQuestionText());
         }
 
     }
