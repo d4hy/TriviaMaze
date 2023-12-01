@@ -21,13 +21,29 @@ public class ShortAnswer extends AbstractQuestion {
     private static String myAnswer;
 
     /**
+     * Text of incorrect second option.
+     */
+    private static String mySecondOption;
+
+    /**
+     * Text of incorrect third option.
+     */
+    private static String myThirdOption;
+
+    /**
+     * Text of incorrect fourth option.
+     */
+    private static String myFourthOption;
+
+    /**
      * Constructor that takes question and answer Strings from database for a
      * short answer Question.
      * @param theQuestion Question for trivia.
      * @param theAnswer Answer to this question.
      */
     public ShortAnswer(final String theQuestion, final String theAnswer) {
-        super();
+
+        super(theQuestion, theAnswer, "", "", "");
 
         myQuestion = theQuestion;
         myAnswer = theAnswer;

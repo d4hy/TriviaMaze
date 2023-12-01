@@ -47,7 +47,7 @@ public class MultipleChoice extends AbstractQuestion {
     public MultipleChoice(final String theQuestion, final String theAnswer,
                           final String theSecondOption, final String theThirdOption,
                           final String theFourthOption) {
-        super();
+        super(theQuestion, theAnswer, theSecondOption, theThirdOption, theFourthOption);
 
         myQuestion = theQuestion;
         myAnswer = theAnswer;

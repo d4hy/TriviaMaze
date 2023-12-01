@@ -58,7 +58,7 @@ public  final class TriviaMaze implements PropertyChangeListener {
         //This lets the window properly close when user clicks X button.
         myWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         myWindow.setResizable(false);
-        myWindow.setTitle("Beabadobee Trivia Maze");
+        myWindow.setTitle("Beabadoobee Trivia Maze");
         //Doesn't specify the location of the window, since it is null
         // it wil be displayed in the center.
         myWindow.setLocationRelativeTo(null);

@@ -28,24 +28,24 @@ public final class QuestionFactory {
      * @param theFourthOption The incorrect fourth option to use in view.
      * @return The Question that is created.
      */
-    public static AbstractQuestion createQuestion(final String theQuestionText,
+    public static Question createQuestion(final String theQuestionText,
                                                   final String theQuestionType,
                                                   final String theCorrectAnswer,
                                                   final String theSecondOption,
                                                   final String theThirdOption,
                                                   final String theFourthOption) {
 
-        AbstractQuestion abstractQuestion = null;
+        Question question = null;
 
         if (Objects.equals(theQuestionType, "Short Answer")) {
-            abstractQuestion = new ShortAnswer(theQuestionText, theCorrectAnswer);
+            question = new ShortAnswer(theQuestionText, theCorrectAnswer);
         } else if (Objects.equals(theQuestionType, "True False")) {
-            abstractQuestion = new TrueOrFalse(theQuestionText, theCorrectAnswer, theSecondOption);
+            question = new TrueOrFalse(theQuestionText, theCorrectAnswer, theSecondOption);
         } else if (Objects.equals(theQuestionType, "Multiple Choice")) {
-            abstractQuestion = new MultipleChoice(theQuestionText, theCorrectAnswer, theSecondOption,
+            question = new MultipleChoice(theQuestionText, theCorrectAnswer, theSecondOption,
                     theThirdOption, theFourthOption);
         }
 
-        return abstractQuestion;
+        return question;
     }
 }

@@ -105,7 +105,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     /**
      * Arraylist of Questions to be used throughout setup of Maze.
      */
-    private ArrayListBag myAbstractQuestions = new ArrayListBag();
+    private ArrayList<Question> myQuestions = new ArrayList<>();
 
     /**
      * Constructor for new game of Maze, creating starting point of a Character and Rooms.
@@ -153,7 +153,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         // Establishes connection to database and creates questions.
         QuestionDatabase.connectToDatabase();
         // Retrieves list of questions to use when creating Maze.
-        myAbstractQuestions = QuestionDatabase.getQuestions();
+        myQuestions = QuestionDatabase.getQuestions();
 
 
         // Shuffles the questions within ArrayList before assigning to doors.
@@ -335,16 +335,15 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         // Using index, will add questions to each door given by the list of questions
         // extracted from the database.
 
-        for (Door door : myDoors) {
-            if (!myAbstractQuestions.isBagEmpty()) {
-                door.setQuestion((AbstractQuestion) myAbstractQuestions.grab());
-                System.out.println(door.getMyQuestion(door).getQuestionText());
-            }
-        }
-//        for (int i = 0; i < myAbstractQuestions.size() && i < myDoors.size(); i++) {
-//            myDoors.get(i).setQuestion(myAbstractQuestions.get(i));
-//            System.out.println(myDoors.get(i).getMyQuestion(myDoors.get(i)).getQuestionText());
+//        for (Door door : myDoors) {
+//            if (!myAbstractQuestions.isBagEmpty()) {
+//                door.setQuestion((AbstractQuestion) myAbstractQuestions.grab());
+//                System.out.println(door.getMyQuestion(door).getQuestionText());
+//            }
 //        }
+        for (int i = 0; i < myQuestions.size() && i < myDoors.size(); i++) {
+            myDoors.get(i).setQuestion(myQuestions.get(i));
+        }
 
     }
 

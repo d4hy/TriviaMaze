@@ -37,7 +37,7 @@ public final class QuestionDatabase {
      * Arraylist stores collection of Question object with respective information
      * needed to distribute and use in Trivia Maze.
      */
-    private static ArrayListBag myAbstractQuestions = new ArrayListBag();
+    private static final ArrayList<Question> myQuestions = new ArrayList<>();
 
     /**
      * Private, empty constructor to ensure this remains a utility class.
@@ -92,11 +92,18 @@ public final class QuestionDatabase {
 
                 // Depending on the type of question, QuestionFactory will create a specified
                 // question with its applicable fields.
-                final AbstractQuestion abstractQuestion =
+                final Question question =
                         QuestionFactory.createQuestion(questionText, questionType,
                                 correctAnswer, secondOption, thirdOption, fourthOption);
 
-                myAbstractQuestions.add(abstractQuestion);
+                myQuestions.add(question);
+
+//                System.out.println(question.getQuestionText());
+
+
+            }
+            for (Question question : myQuestions) {
+                System.out.println(question.getQuestionText());
             }
         } catch (final SQLException e) {
             e.printStackTrace();
@@ -109,7 +116,7 @@ public final class QuestionDatabase {
      * using SQLite.
      * @return arraylist of Question objects.
      */
-    public static ArrayListBag getQuestions() {
-        return myAbstractQuestions;
+    public static ArrayList<Question> getQuestions() {
+        return myQuestions;
     }
 }

@@ -9,6 +9,7 @@ import model.AbstractQuestion;
 import model.Door;
 import model.Maze;
 import model.MultipleChoice;
+import model.Question;
 import model.Room;
 import model.ShortAnswer;
 import model.TrueOrFalse;
@@ -54,14 +55,14 @@ public class QuestionPrompt implements PropertyChangeListener {
      */
     private void displayQuestionPrompt(final Door theDoor) {
         // Retrieve the associated question
-        final AbstractQuestion abstractQuestion = theDoor.getMyQuestion(theDoor);
+        final Question question = theDoor.getMyQuestion(theDoor);
 
-        if (abstractQuestion instanceof TrueOrFalse) {
-            handleTrueOrFalseQuestion(theDoor, (TrueOrFalse) abstractQuestion);
-        } else if (abstractQuestion instanceof MultipleChoice) {
-            handleMultipleChoiceQuestion(theDoor, (MultipleChoice) abstractQuestion);
-        } else if (abstractQuestion instanceof ShortAnswer) {
-            handleShortAnswerQuestion(theDoor, (ShortAnswer) abstractQuestion);
+        if (question instanceof TrueOrFalse) {
+            handleTrueOrFalseQuestion(theDoor, (TrueOrFalse) question);
+        } else if (question instanceof MultipleChoice) {
+            handleMultipleChoiceQuestion(theDoor, (MultipleChoice) question);
+        } else if (question instanceof ShortAnswer) {
+            handleShortAnswerQuestion(theDoor, (ShortAnswer) question);
         }
     }
 

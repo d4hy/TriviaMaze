@@ -11,33 +11,37 @@ package model;
  * @author David Hoang
  * @version Fall 2023
  */
-public abstract class AbstractQuestion {
+public abstract class AbstractQuestion implements Question {
 
     /**
      * Question to be answered in Maze.
      */
-    private String myQuestion;
-
-    /**
-     * String describing the type of Question listed.
-     */
-    private String myQuestionType;
+    private final String myQuestion;
 
     /**
      * Correct answer to Question that is to be expected.
      */
-    private String myCorrectAnswer;
+    private final String myCorrectAnswer;
 
-    private String mySecondOption;
+    private final String mySecondOption;
 
-    private String myThirdOption;
+    private final String myThirdOption;
 
-    private String myFourthOption;
+    private final String myFourthOption;
 
     /**
      * Dummy constructor for Question.
      */
-    public AbstractQuestion() {    }
+    public AbstractQuestion(final String theQuestion, final String theAnswer,
+                            final String theSecondOption, final String theThirdOption,
+                            final String theFourthOption) {
+
+        myQuestion = theQuestion;
+        myCorrectAnswer = theAnswer;
+        mySecondOption = theSecondOption;
+        myThirdOption = theThirdOption;
+        myFourthOption = theFourthOption;
+    }
 
     public String getQuestionText() {
         return myQuestion;

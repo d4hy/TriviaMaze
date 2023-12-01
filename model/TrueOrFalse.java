@@ -26,6 +26,16 @@ public class TrueOrFalse extends AbstractQuestion {
     private static String mySecondOption;
 
     /**
+     * Text of incorrect third option.
+     */
+    private static String myThirdOption;
+
+    /**
+     * Text of incorrect fourth option.
+     */
+    private static String myFourthOption;
+
+    /**
      * Multiple choice constructor calls super to Question and takes parameters based
      * on the information pertaining to this specific type of question.
      * @param theQuestion String text of the question to be displayed.
@@ -34,7 +44,7 @@ public class TrueOrFalse extends AbstractQuestion {
      */
     public TrueOrFalse(final String theQuestion, final String theAnswer,
                        final String theIncorrectAnswer) {
-        super();
+        super(theQuestion, theAnswer, theIncorrectAnswer, "", "");
 
         myQuestion = theQuestion;
         myAnswer = theAnswer;
