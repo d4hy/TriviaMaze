@@ -94,9 +94,10 @@ public class QuestionPrompt implements PropertyChangeListener {
      * Handles True/False type questions.
      *
      * @param theDoor         The door for which the question prompt is displayed.
-     * @param trueOrFalseQuestion The True/False question.
+     * @param theTrueOrFalseQuestion The True/False question.
      */
-    private void handleTrueOrFalseQuestion(final Door theDoor, final TrueOrFalse theTrueOrFalseQuestion) {
+    private void handleTrueOrFalseQuestion(final Door theDoor,
+                                           final TrueOrFalse theTrueOrFalseQuestion) {
         final String[] options = {"True", "False"};
         final int userAnswer = JOptionPane.showOptionDialog(
                 null,
