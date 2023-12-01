@@ -98,8 +98,8 @@ public class QuestionPrompt implements PropertyChangeListener {
      * @param trueOrFalseQuestion The True/False question.
      */
     private void handleTrueOrFalseQuestion(Door theDoor, TrueOrFalse trueOrFalseQuestion) {
-        String[] options = {"True", "False"};
-        int userAnswer = JOptionPane.showOptionDialog(
+        final String[] options = {"True", "False"};
+        final int userAnswer = JOptionPane.showOptionDialog(
                 null,
                 trueOrFalseQuestion.getQuestionText(),
                 "Answer to play!",
@@ -111,10 +111,18 @@ public class QuestionPrompt implements PropertyChangeListener {
         );
 
         // Process the user's answer
-        if (userAnswer == JOptionPane.YES_OPTION && trueOrFalseQuestion.getAnswerText().equals("True")) {
-            handleCorrectAnswer(theDoor);
-        } else {
-            handleIncorrectAnswer(theDoor);
+        if (trueOrFalseQuestion.getAnswerText().equals("True")) {
+            if (userAnswer == JOptionPane.YES_OPTION) {
+                handleCorrectAnswer(theDoor);
+            } else if (userAnswer == JOptionPane.NO_OPTION) {
+                handleIncorrectAnswer(theDoor);
+            }
+        }  else if (trueOrFalseQuestion.getAnswerText().equals("False")) {
+            if (userAnswer == JOptionPane.NO_OPTION) {
+                handleCorrectAnswer(theDoor);
+            } else if (userAnswer == JOptionPane.YES_OPTION) {
+                handleIncorrectAnswer(theDoor);
+            }
         }
     }
 
@@ -125,7 +133,7 @@ public class QuestionPrompt implements PropertyChangeListener {
      * @param otherQuestion The non True/False question.
      */
     private void handleOtherQuestion(Door theDoor, AbstractQuestion otherQuestion) {
-        String userInput = JOptionPane.showInputDialog(null, otherQuestion.getQuestionText());
+        final String userInput = JOptionPane.showInputDialog(null, otherQuestion.getQuestionText());
 
         // Process the user's answer (validate, etc.)
         if ("OK".equalsIgnoreCase(userInput.trim())) {
