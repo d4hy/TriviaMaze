@@ -141,8 +141,9 @@ public class QuestionPrompt implements PropertyChangeListener {
                                             final ShortAnswer theShortAnswerQuestion) {
         final String userInput = JOptionPane.showInputDialog(null,
                 theShortAnswerQuestion.getQuestionText());
+        System.out.println(theShortAnswerQuestion.getAnswerText());
         // Check if the user's answer is correct
-        if (theShortAnswerQuestion.getQuestionText().equalsIgnoreCase(userInput.trim())) {
+        if (theShortAnswerQuestion.getAnswerText().trim().equals(userInput.trim())) {
             // Handle correct answer
             handleCorrectAnswer(theDoor);
         } else {
