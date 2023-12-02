@@ -184,9 +184,11 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                         +
                         mySettingsSubMenuOption);
         }
+        enterPressed = false;
     }
 
     private void optionsTop(final int theFrameX, final int theFrameY, final Graphics2D g2) {
+        repaint();
         int textX;
         int textY;
         String text = "Settings menu";
@@ -206,9 +208,14 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         textY += MazeControls.MY_TILE_SIZE * 2;
         g2.drawString("Save", textX, textY);
         if (mySettingsMenuCommand == 0) {
+
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
+            //TODO handle the case so you can save
+            if (enterPressed) {
+                System.out.println("You clicked the enter key!");
+            }
 
         }
 
@@ -219,6 +226,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
+            //TODO handle the case so you can load
+            if (enterPressed) {
+                System.out.println("You clicked the enter key!");
+            }
         }
         //Exit
         textY += MazeControls.MY_TILE_SIZE;
@@ -227,6 +238,12 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
+            //TODO handle the case so you can Exit
+            if (enterPressed) {
+                System.out.println("You clicked the enter key!");
+                myGameUI = NORMAL_STATE;
+
+            }
         }
 
         //
@@ -550,8 +567,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         if (theEvent.getKeyCode() == KeyEvent.VK_SPACE) {
             handleSpaceKey();
 
-        } else if (theEvent.getKeyCode() == KeyEvent.VK_ENTER) {
-            enterPressed = true;
         }
         if (myGameUI == PAUSED_STATE && mySettingsSubMenuOption == 0) {
             handleSettingsOptions(theEvent.getKeyCode());
@@ -587,8 +602,11 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             }
 
 
-
+        } else if (theEventCode == KeyEvent.VK_ENTER) {
+            enterPressed = true;
         }
+
+
 
 
 
@@ -598,9 +616,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
     @Override
     public void keyTyped(final KeyEvent theE) {
-        if (theE.getKeyCode() == KeyEvent.VK_ENTER) {
-            enterPressed = false;
-        }
+
     }
 
     @Override
