@@ -600,59 +600,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
                 //check  within bounds if the room has not been visited yet, is not a deadend.
                 && !theVisited[theRow][theCol] && !theCopyOfRooms[theRow][theCol].isDeadEnd();
     }
-    /**
-     * Checks if the room's on top and left of to the bottom right
-     * are traversable, if not then setTheGameOverStatus to be false.
-     */
-    private void checkRoomOnTopAndLeftBottomRightRoom() {
-        int bottomRightRow = myRooms.length;
-        int bottomRightCol = myRooms[0].length;
 
-        //Checking the bottom right room's left and top door if they are prompted and answered correctly
-        final Room bottomRight = myRooms[bottomRightRow -1][bottomRightCol - 1 ];
-
-        final  boolean leftDoorStatus = bottomRight.getLeftDoor() == null || (!bottomRight.getLeftDoor().hasMyQuestionBeenNotPrompted())
-                && (!bottomRight.getLeftDoor().hasMyQuestionBeenAnsweredCorrectly());
-        final boolean rightTopStatus = bottomRight.getTopDoor() == null || (!bottomRight.getTopDoor().hasMyQuestionBeenNotPrompted())
-               && (!bottomRight.getTopDoor().hasMyQuestionBeenAnsweredCorrectly());
-        if (leftDoorStatus && rightTopStatus) {
-            setMyGameOverStatus(true);
-        }
-
-
-
-    }
-
-
-
-    /**
-     * Checks if all the right doors in each column are incorrectly answered,
-     * setting the game over status if all paths to the bottom-right room are unreachable.
-     */
-    private void checkAllColumnsRightDoors() {
-        // Iterate over each column
-        final int whenColumnsRightDoorsAnswersWrong = 4;
-        for (int col = 0; col < myRooms[0].length-1; col++) {
-            int columnsAmountOfWrongAnswers = 0;
-
-            // Iterate over each room in the column
-            for (int row = 0; row < myRooms.length; row++) {
-                final  Room currentRoom = myRooms[row][col];
-                // Check if all doors in the right direction are incorrectly answered
-                    if (!currentRoom.getRightDoor().hasMyQuestionBeenAnsweredCorrectly() &&
-                            !currentRoom.getRightDoor().hasMyQuestionBeenNotPrompted()) {
-                        columnsAmountOfWrongAnswers++;
-
-                }
-            }
-
-            // If an entire column's right doors are answered incorrectly, set the gameOver status to be true.
-            if (columnsAmountOfWrongAnswers == whenColumnsRightDoorsAnswersWrong) {
-                setMyGameOverStatus(true);
-                return; // No need to check other columns once one is found to be unreachable
-            }
-        }
-    }
     /**
      * Checks if all doors in the current room have been prompted and answered incorrectly.
      * If so, sets myGameOverStatus to true and fires the corresponding property change.
@@ -680,13 +628,6 @@ public class Maze implements PropertyChangedEnabledMazeControls {
          setMyGameOverStatus(true);
         }
     }
-
-
-
-
-
-
-
     /**
      * Method that returns the current row that is the current room.
      * @return -1 if the room doesn't exist, otherwise a value >= 0
