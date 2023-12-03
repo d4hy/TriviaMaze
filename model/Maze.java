@@ -96,6 +96,11 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     private boolean  myGameOverStatus;
 
     /**
+     * The status of the game if the user won.
+     */
+    private boolean myGameWonStatus;
+
+    /**
      * Character that is in Maze.
      */
     private Character myCharacter;
@@ -389,10 +394,19 @@ public class Maze implements PropertyChangedEnabledMazeControls {
 
     /**
      * Returns if the game is lost or not.
+     * @return true if the game is lost, false if the game is not lost.
      */
     public boolean isGameLost() {
 
         return myGameOverStatus;
+    }
+
+    /**
+     * Returns if the game is won or not.
+     * @return True if the game is won, false if the game is not won.
+     */
+    public boolean isMyGameWon(){
+        return myGameWonStatus;
     }
 
     /**
@@ -436,6 +450,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         createMaze();
 
         setMyGameOverStatus(false);
+        myGameWonStatus = false;
 
 
         myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
@@ -478,6 +493,12 @@ public class Maze implements PropertyChangedEnabledMazeControls {
         // Move to the new room if the move is valid
         if (isValidMove) {
             myCurrentRoom = myRooms[newRow][newCol];
+            //If we are at the bottom right room fire the property that the user won
+            // and set the myGameWonn status to true
+            if (newRow == ENDPOINT && newCol == ENDPOINT) {
+                myGameWonStatus = true;
+                myPcs.firePropertyChange(PROPERTY_GAME_WON, null, true);
+            }
             myCharacter.resetToMiddle();
             System.out.println("row:"+ getCurrentRoomRow() + ",col:"+ getCurrentRoomCol());
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
@@ -696,9 +717,11 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             if (shouldHandleDoorInteraction(door, doorDirection)) {
                 System.out.println("At " + doorDirection + " door");
 
+
                 // Handle unprompted door
                 if (door.hasMyQuestionBeenNotPrompted()) {
                     handleUnpromptedDoor(door, doorDirection);
+
                     // Handle answered door
                 } else if (!door.hasMyQuestionBeenNotPrompted() && door.hasMyQuestionBeenAnsweredCorrectly()) {
                     handleAnsweredDoor(doorDirection);
@@ -755,6 +778,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     private void handleUnpromptedDoor(final Door theDoor, final String theDoorDirection) {
         if (theDoor.hasMyQuestionBeenNotPrompted()) {
+            System.out.println(theDoor.getMyQuestion(theDoor).getQuestionText());
             setMoveFalse();
             // Fire property change event to prompt the question
             myPcs.firePropertyChange(getPromptQuestionPropertyName(theDoorDirection),

@@ -20,31 +20,17 @@ public interface PropertyChangedEnabledMazeControls extends MazeControls {
      * A property name for the current GAME_OVER property in the game.
      */
     String PROPERTY_GAME_OVER = "GAME_OVER";
+    /**
+     * A property name for the current game won status.
+     */
+    String PROPERTY_GAME_WON ="GAME_WON";
 
     /**
      * A property name for the current position of the character status.
      */
     String PROPERTY_CHARACTER_MOVE = "CHAR_MOVED";
 
-    /**
-     * Fires property change that the  character is at the bottom door.
-     */
-     String PROPERTY_AT_BOT_DOOR = "Character is at the bottom door.";
 
-    /**
-     *Fires property change that the  character is at the right door.
-     */
-     String PROPERTY_AT_RIGHT_DOOR = "Character is at the Right door";
-
-    /**
-     * Fires property change that the  character is at the left door.
-     */
-     String PROPERTY_AT_LEFT_DOOR = "Character is at the left.";
-
-    /**
-     *Fires property change that the  character is at the top door.
-     */
-     String PROPERTY_AT_TOP_DOOR= "Character is at the top door";
 
     /**
      *  String to fire when the current room has changed.

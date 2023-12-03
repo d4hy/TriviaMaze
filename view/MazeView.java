@@ -48,6 +48,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private static final int PAUSED_STATE =  2;
 
 
+
+
     /**
      * Timer that will be used for game and question functionality.
      */
@@ -149,9 +151,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             drawCharacter(g2);
         }
 
-        if (myGameUI == PAUSED_STATE) {
+        if (myGameUI == PAUSED_STATE ) {
             drawTheSettingsMenu(g2);
         }
+
 
         g2.dispose();
     }
@@ -194,6 +197,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         String text = "Settings menu";
         if (myMaze.isGameLost()) {
             text = "You lost!";
+        } else if (myMaze.isMyGameWon()) {
+            text = "You Won!";
         }
             // have to adjust the x coordinate, or else the left side of
             // this screen will be drawn from the middle all the way to the right.
@@ -240,7 +245,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can Exit
             if (enterPressed) {
-                System.out.println("You clicked the enter key!");
+                //System.out.println("You clicked the enter key!");
                 myGameUI = NORMAL_STATE;
 
             }
@@ -541,6 +546,22 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         } else if (propertyName.equals(myMaze.PROPERTY_ROOM_CHANGE)) {
             myRoom = (Room) theEvt.getNewValue();
             repaint();
+
+        } else if (propertyName.equals(myMaze.PROPERTY_GAME_WON)) {
+            final boolean gameWon = (Boolean) theEvt.getNewValue();
+            if (gameWon) {
+                myGameUI = PAUSED_STATE;
+                repaint();
+            }
+            repaint();
+
+        } else if (propertyName.equals(myMaze.PROPERTY_GAME_OVER)) {
+            final boolean gameOver = (Boolean) theEvt.getNewValue();
+            if (gameOver) {
+                myGameUI = PAUSED_STATE;
+                repaint();
+            }
+
 
         }
 
