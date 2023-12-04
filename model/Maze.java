@@ -405,7 +405,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      * Returns if the game is won or not.
      * @return True if the game is won, false if the game is not won.
      */
-    public boolean isMyGameWon(){
+    public boolean isMyGameWon() {
         return myGameWonStatus;
     }
 
@@ -423,7 +423,7 @@ public class Maze implements PropertyChangedEnabledMazeControls {
      */
     private void setMyGameOverStatus(final boolean theStatus) {
         myGameOverStatus = theStatus;
-        if(theStatus ) {
+        if(theStatus) {
 
             System.out.println("GameOver");
         }
