@@ -10,6 +10,7 @@ import controller.Question;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -21,7 +22,7 @@ import java.util.Collections;
  * @author David Hoang
  * @version Fall 2023
  */
-public class Maze implements PropertyChangedEnabledMazeControls {
+public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
 
     /**
      * Constant to use for assigning right door in rooms.
@@ -344,6 +345,16 @@ public class Maze implements PropertyChangedEnabledMazeControls {
             myDoors.get(i).setQuestion(myQuestions.get(i));
             System.out.println(myDoors.get(i).getMyQuestion(myDoors.get(i)).getQuestionText());
         }
+
+    }
+
+    public Memento saveToMemento() {
+        System.out.println("Originator: Saving to Memento. ");
+        return new Memento(myRooms, myCurrentRoom, myCharacter, myDoors,
+                myWidth, myHeight, myGameOverStatus, myGameWonStatus);
+    }
+
+    public void restoreFromMemento(final Memento theMemento) {
 
     }
 
@@ -912,5 +923,44 @@ public class Maze implements PropertyChangedEnabledMazeControls {
     public void removePropertyChangeListener(final String thePropertyName,
                                              final PropertyChangeListener theListener) {
         myPcs.removePropertyChangeListener(thePropertyName, theListener);
+    }
+
+    public class Memento {
+
+        private Room[][] myRooms;
+
+        private Room myCurrentRoom;
+
+        private Character myCharacter;
+
+        private ArrayList<Door> myDoors;
+
+        private int myWidth;
+
+        private int myHeight;
+
+        private boolean myGameOverStatus;
+
+        private boolean myGameWonStatus;
+        private Memento(final Room[][] theRooms, final Room theCurrentRoom,
+                        final Character theCharacter, final ArrayList<Door> theDoors,
+                        final int theWidth, final int theHeight,
+                        final boolean theGameOverStatus, final boolean theGameWon) {
+
+            this.myRooms = theRooms;
+            this.myCurrentRoom = theCurrentRoom;
+            this.myCharacter = theCharacter;
+            this.myDoors = theDoors;
+            this.myWidth = theWidth;
+            this.myHeight = theHeight;
+            this.myGameOverStatus = theGameOverStatus;
+            this.myGameWonStatus = theGameWon;
+
+        }
+
+        private String getSavedState() {
+            return null;
+        }
+
     }
 }

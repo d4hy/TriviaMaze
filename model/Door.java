@@ -6,6 +6,8 @@ package model;
 
 import controller.Question;
 
+import java.io.Serializable;
+
 /**
  * Class will contain information of current Door that the character is at.
  *
@@ -13,12 +15,7 @@ import controller.Question;
  * @author David Hoang
  * @version Fall 2023
  */
-public class Door {
-
-    /**
-     * Description of directional door in a room.
-     */
-    private String myDoorDescription;
+public class Door implements Serializable {
 
     /**
      * Whether Door is locked or not.
@@ -47,7 +44,6 @@ public class Door {
     public Door(final String theDoorDescription) {
         myQuestionHasNotBeenPrompted = true;
         myQuestionHasBeenAnsweredCorrectly = false;
-        myDoorDescription = theDoorDescription;
 
     }
 
