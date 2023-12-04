@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
  */
 
 
- class QuestionFactoryTest {
+class QuestionFactoryTest {
 
     /**
      * The true or false question type.
