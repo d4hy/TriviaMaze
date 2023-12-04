@@ -1,5 +1,7 @@
 package model;
 
+import controller.Question;
+
 import java.util.Objects;
 
 /**
@@ -34,13 +36,14 @@ public final class QuestionFactory {
                                           final String theSecondOption,
                                           final String theThirdOption,
                                           final String theFourthOption) {
+
         Question question = null;
 
-        if (theQuestionType.equals("Short Answer")) {
+        if (Objects.equals(theQuestionType, "Short Answer")) {
             question = new ShortAnswer(theQuestionText, theCorrectAnswer);
-        } else if (theQuestionType.equals("True False")) {
+        } else if (Objects.equals(theQuestionType, "True False")) {
             question = new TrueOrFalse(theQuestionText, theCorrectAnswer, theSecondOption);
-        } else if (theQuestionType.equals("Multiple Choice")) {
+        } else if (Objects.equals(theQuestionType, "Multiple Choice")) {
             question = new MultipleChoice(theQuestionText, theCorrectAnswer, theSecondOption,
                     theThirdOption, theFourthOption);
         }

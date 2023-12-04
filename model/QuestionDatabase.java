@@ -1,5 +1,10 @@
+/*
+ * TriviaMaze
+ * Fall 2023
+ */
 package model;
 
+import controller.Question;
 import org.sqlite.SQLiteDataSource;
 
 import java.sql.Connection;
@@ -37,7 +42,7 @@ public final class QuestionDatabase {
      * Arraylist stores collection of Question object with respective information
      * needed to distribute and use in Trivia Maze.
      */
-    private static ArrayList<Question> myQuestions = new ArrayList<>();
+    private static final ArrayList<Question> myQuestions = new ArrayList<>();
 
     /**
      * Private, empty constructor to ensure this remains a utility class.
@@ -92,10 +97,14 @@ public final class QuestionDatabase {
 
                 // Depending on the type of question, QuestionFactory will create a specified
                 // question with its applicable fields.
-                final Question question = QuestionFactory.createQuestion(questionText, questionType, correctAnswer,
-                        secondOption, thirdOption, fourthOption);
+                final Question question =
+                        QuestionFactory.createQuestion(questionText, questionType,
+                                correctAnswer, secondOption, thirdOption, fourthOption);
 
+                // Adds the new Question depending on its type into list.
                 myQuestions.add(question);
+
+
             }
         } catch (final SQLException e) {
             e.printStackTrace();

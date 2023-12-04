@@ -2,12 +2,17 @@ package view;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.JOptionPane;
 
 import model.Door;
 import model.Maze;
-import model.Question;
+import model.MultipleChoice;
+import controller.Question;
 import model.Room;
+import model.ShortAnswer;
+import model.TrueOrFalse;
 
 
 /**
@@ -39,6 +44,7 @@ public class QuestionPrompt implements PropertyChangeListener {
     public QuestionPrompt(final Maze theMaze)  {
         myMaze = theMaze;
     }
+
     /**
      * Displays a question prompt to the user and processes their answer.
      * If the answer is correct, it sets the bottom door as prompted and unlocks it.
@@ -47,113 +53,139 @@ public class QuestionPrompt implements PropertyChangeListener {
      *
      * @param theDoor The door for which the question prompt is displayed.
      */
-    private void displayQuestionBottomPrompt(Door theDoor) {
-
+    private void displayQuestionPrompt(final Door theDoor) {
         // Retrieve the associated question
-        Question question = theDoor.getMyQuestion(theDoor);
-        // Display the question prompt using JOptionPane
+        final Question question = theDoor.getMyQuestion(theDoor);
 
-        String userAnswer = JOptionPane.showInputDialog(null, question.getQuestionText());
-
-        // Process the user's answer (validate, etc.)
-        // If the answer is "OK", set the door as prompted and unlock it
-        if ("OK".equalsIgnoreCase(userAnswer.trim())) {
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
-
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        } else {
-            // If the dialog is closed or the answer is incorrect, set the question as not prompted
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.lock();
-            // Set the character to move again
-            myMaze.setMoveTrue();
+        if (question instanceof TrueOrFalse) {
+            handleTrueOrFalseQuestion(theDoor, (TrueOrFalse) question);
+        } else if (question instanceof MultipleChoice) {
+            handleMultipleChoiceQuestion(theDoor, (MultipleChoice) question);
+        } else if (question instanceof ShortAnswer) {
+            handleShortAnswerQuestion(theDoor, (ShortAnswer) question);
         }
     }
 
     /**
-     * Displays a question prompt to the user and processes their answer.
-     * If the answer is correct, it sets the Top door as prompted and unlocks it.
-     * Updates the game state accordingly.
+     * Handles Multiple Choice type questions.
+     *
      * @param theDoor The door for which the question prompt is displayed.
+     * @param theMultipleChoiceQuestion The multiple choice type question.
      */
-    private void displayQuestionTopPrompt(Door theDoor) {
-        // Display the question prompt using JOptionPane
-        String userAnswer = JOptionPane.showInputDialog(null, "Your question goes here");
-
-        // Process the user's answer (validate, etc.)
-        // If the answer is "OK", set the door as prompted and unlock it
-        if ("OK".equalsIgnoreCase(userAnswer.trim())) {
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
-
-            // Set the character to move again
-            myMaze.setMoveTrue();
+    private void  handleMultipleChoiceQuestion(final Door theDoor, final MultipleChoice theMultipleChoiceQuestion) {
+        final ArrayList<String> options = new ArrayList<>();
+        options.add(theMultipleChoiceQuestion.getAnswerText());
+        options.add(theMultipleChoiceQuestion.getSecondOption());
+        options.add(theMultipleChoiceQuestion.getThirdOption());
+        options.add(theMultipleChoiceQuestion.getFourthOption());
+        Collections.shuffle(options);
+        final int userAnswerIndex = JOptionPane.showOptionDialog(
+                null,
+                theMultipleChoiceQuestion.getQuestionText(),
+                "Answer to play!",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options.toArray(),
+                options.get(0)
+        );
+        // Check if the user's answer is correct
+        if (userAnswerIndex >= 0 && userAnswerIndex < options.size()
+                && options.get(userAnswerIndex).
+                equals(theMultipleChoiceQuestion.getAnswerText())) {
+            // Handle correct answer
+            handleCorrectAnswer(theDoor);
         } else {
-            // If the dialog is closed or the answer is incorrect, set the question as not prompted
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.lock();
-            // Set the character to move again
-            myMaze.setMoveTrue();
+            // Handle incorrect answer
+            handleIncorrectAnswer(theDoor);
         }
+
+    }
+    /**
+     * Handles Short Answer type questions.
+     *
+     * @param theDoor The door for which the question prompt is displayed.
+     * @param theShortAnswerQuestion The  Short Answer question.
+     */
+    private void  handleShortAnswerQuestion(final Door theDoor,
+                                            final ShortAnswer theShortAnswerQuestion) {
+        final String userInput = JOptionPane.showInputDialog(null,
+                theShortAnswerQuestion.getQuestionText());
+        System.out.println(theShortAnswerQuestion.getAnswerText());
+        // Check if the user's answer is correct
+        if (theShortAnswerQuestion.getAnswerText().trim().equals(userInput.trim())) {
+            // Handle correct answer
+            handleCorrectAnswer(theDoor);
+        } else {
+            // Handle incorrect answer
+            handleIncorrectAnswer(theDoor);
+        }
+
+    }
+
+
+    /**
+     * Handles True/False type questions.
+     *
+     * @param theDoor         The door for which the question prompt is displayed.
+     * @param theTrueOrFalseQuestion The True/False question.
+     */
+    private void handleTrueOrFalseQuestion(final Door theDoor,
+                                           final TrueOrFalse theTrueOrFalseQuestion) {
+        final String[] options = {"True", "False"};
+        final int userAnswer = JOptionPane.showOptionDialog(
+                null,
+                theTrueOrFalseQuestion.getQuestionText(),
+                "Answer to play!",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        // Process the user's answer
+
+        //if the answer is true, check if the user chose true
+        if (theTrueOrFalseQuestion.getAnswerText().equals(options[0])) {
+            if (userAnswer == JOptionPane.YES_OPTION) {
+                handleCorrectAnswer(theDoor);
+            } else if (userAnswer == JOptionPane.NO_OPTION) {
+                handleIncorrectAnswer(theDoor);
+            }
+            //if the answer is false, check if the answer chose false
+        }  else if (theTrueOrFalseQuestion.getAnswerText().equals(options[1])) {
+            if (userAnswer == JOptionPane.NO_OPTION) {
+                handleCorrectAnswer(theDoor);
+            } else if (userAnswer == JOptionPane.YES_OPTION) {
+                handleIncorrectAnswer(theDoor);
+            }
+        }
+
+    }
+
+
+    /**
+     * Handles the case where the user answered the question correctly.
+     *
+     * @param theDoor The door for which the question was displayed.
+     */
+    private void handleCorrectAnswer(final Door theDoor) {
+        theDoor.setMyQuestionNotPromptedStatus(false);
+        theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
+        myMaze.setMoveTrue();
     }
 
     /**
-     * Displays a question prompt to the user and processes their answer.
-     * If the answer is correct, it sets the Left door as prompted and unlocks it.
-     * Updates the game state accordingly.
-     * @param theDoor The door for which the question prompt is displayed.
+     * Handles the case where the user answered the question incorrectly or closed the dialog.
+     *
+     * @param theDoor The door for which the question was displayed.
      */
-    private void displayQuestionLeftPrompt(Door theDoor) {
-        // Display the question prompt using JOptionPane
-        String userAnswer = JOptionPane.showInputDialog(null, "Your question goes here");
-
-        // Process the user's answer (validate, etc.)
-        // If the answer is "OK", set the door as prompted and unlock it
-        if ("OK".equalsIgnoreCase(userAnswer.trim())) {
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
-
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        } else {
-            // If the dialog is closed or the answer is incorrect, set the question as not prompted
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.lock();
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        }
+    private void handleIncorrectAnswer(final Door theDoor) {
+        theDoor.setMyQuestionNotPromptedStatus(false);
+        theDoor.lock();
+        myMaze.setMoveTrue();
     }
-
-    /**
-     * Displays a question prompt to the user and processes their answer.
-     * If the answer is correct, it sets the Right door as prompted and unlocks it.
-     * Updates the game state accordingly.
-     * @param theDoor The door for which the question prompt is displayed.
-     */
-    private void displayQuestionRightPrompt(Door theDoor) {
-        // Display the question prompt using JOptionPane
-        String userAnswer = JOptionPane.showInputDialog(null, "Your question goes here");
-
-        // Process the user's answer (validate, etc.)
-        // If the answer is "OK", set the door as prompted and unlock it
-        if ("OK".equalsIgnoreCase(userAnswer.trim())) {
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
-
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        } else {
-            // If the dialog is closed or the answer is incorrect, set the question as not prompted
-            theDoor.setMyQuestionNotPromptedStatus(false);
-            theDoor.lock();
-            // Set the character to move again
-            myMaze.setMoveTrue();
-        }
-    }
-
-
 
 
 
@@ -169,16 +201,16 @@ public class QuestionPrompt implements PropertyChangeListener {
         final String propertyName = theEvt.getPropertyName();
         if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_BOT_DOOR)) {
             myRoom = (Room) theEvt.getNewValue();
-            displayQuestionBottomPrompt(myRoom.getBottomDoor());
+            displayQuestionPrompt(myRoom.getBottomDoor());
         } else if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_TOP_DOOR)) {
             myRoom = (Room) theEvt.getNewValue();
-            displayQuestionTopPrompt(myRoom.getTopDoor());
+            displayQuestionPrompt(myRoom.getTopDoor());
         } else if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_LEFT_DOOR)) {
             myRoom = (Room) theEvt.getNewValue();
-            displayQuestionLeftPrompt(myRoom.getLeftDoor());
+            displayQuestionPrompt(myRoom.getLeftDoor());
         } else if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_RIGHT_DOOR)) {
             myRoom = (Room) theEvt.getNewValue();
-            displayQuestionRightPrompt(myRoom.getRightDoor());
+            displayQuestionPrompt(myRoom.getRightDoor());
         }
     }
 }

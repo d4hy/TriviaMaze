@@ -1,12 +1,11 @@
 package view;
 
 import controller.MazeControls;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -33,6 +32,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * The initial delay that the timer has.
      */
     private static final int TIMER_DELAY = 1000;
+    /**
+     * The String that will be used as the cursor.
+     */
+    private static final String  CURSOR_TEXT = "-";
 
     /**
      * This variable will represent the state when we are in a playable state.
@@ -43,6 +46,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * This variable will represent the state when we are in a paused state.
      */
     private static final int PAUSED_STATE =  2;
+
+
+
 
     /**
      * Timer that will be used for game and question functionality.
@@ -76,6 +82,21 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      */
     private int myGameUI;
 
+    /**
+     * This field will represent which option they chose during the settings menu.
+     */
+    private int mySettingsMenuCommand;
+
+    /**
+     * This field will represent which sub menu option we are at.
+     *
+     */
+    private int mySettingsSubMenuOption;
+    /**
+     * A boolean representing if enter key has been pressed
+     */
+    private boolean enterPressed;
+
 
 
     /**
@@ -86,17 +107,22 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             myDown2, myLeft1, myLeft2, myRight1, myRight2;
 
     MazeView(final Maze theMaze) {
+        myGameUI = NORMAL_STATE;
+        mySettingsMenuCommand = 0;
+        mySettingsSubMenuOption = 0;
+        enterPressed = false;
         this.myMaze = theMaze;
         setUp();
         myMaze.addPropertyChangeListener(this);
-        myMaze.newGame();
         addKeyListener(this);
         setFocusable(true);
+
     }
 
     public void setUp() {
         this.setPreferredSize(new Dimension(
                 MazeControls.MY_SCREEN_WIDTH, MazeControls.MY_SCREEN_HEIGHT));
+
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         setTimer();
@@ -125,8 +151,157 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             drawCharacter(g2);
         }
 
+        if (myGameUI == PAUSED_STATE ) {
+            drawTheSettingsMenu(g2);
+        }
+
+
         g2.dispose();
     }
+
+    /**
+     * Draws the setting menu if the myGameUi is in a paused state.
+     */
+    public void drawTheSettingsMenu(final Graphics2D g2) {
+
+        g2.setColor(Color.white);
+        final float fontSize = 30F;
+        g2.setFont(g2.getFont().deriveFont(fontSize));
+
+        //SUBWINDOW
+        final int frameX = MazeControls.MY_TILE_SIZE * 6;
+        final int frameY = MazeControls.MY_TILE_SIZE;
+        final int frameWidth = MazeControls.MY_TILE_SIZE * 8;
+        final int frameHeight = MazeControls.MY_TILE_SIZE * 10;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight, g2);
+
+
+
+
+        switch (mySettingsSubMenuOption) {
+            case 0: optionsTop(frameX, frameY, g2);
+            case 1: break;
+            case 2: break;
+            default:
+                throw new IllegalStateException("Unexpected value: "
+                        +
+                        mySettingsSubMenuOption);
+        }
+        enterPressed = false;
+    }
+
+    private void optionsTop(final int theFrameX, final int theFrameY, final Graphics2D g2) {
+        repaint();
+        int textX;
+        int textY;
+        String text = "Settings menu";
+        if (myMaze.isGameLost()) {
+            text = "You lost!";
+        } else if (myMaze.isMyGameWon()) {
+            text = "You Won!";
+        }
+            // have to adjust the x coordinate, or else the left side of
+            // this screen will be drawn from the middle all the way to the right.
+
+
+        textX = getXForCenteredText(text, g2);
+        textY = theFrameY + MazeControls.MY_TILE_SIZE;
+        // y indicates the baseline of the text.
+        g2.drawString(text, textX, textY);
+        //Save
+        textX = theFrameX + MazeControls.MY_TILE_SIZE;
+        textY += MazeControls.MY_TILE_SIZE * 2;
+        g2.drawString("Save", textX, textY);
+        if (mySettingsMenuCommand == 0) {
+
+            // this is the cursor
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+            //TODO handle the case so you can save
+            if (enterPressed) {
+                System.out.println("You clicked the enter key!");
+            }
+
+        }
+
+        //Load
+        textY += MazeControls.MY_TILE_SIZE;
+        g2.drawString("Load", textX, textY);
+        if (mySettingsMenuCommand == 1) {
+            // this is the cursor
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+            //TODO handle the case so you can load
+            if (enterPressed) {
+                System.out.println("You clicked the enter key!");
+            }
+        }
+        //Exit
+        textY += MazeControls.MY_TILE_SIZE;
+        g2.drawString("Exit", textX, textY);
+        if (mySettingsMenuCommand == 2) {
+            // this is the cursor
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+            //TODO handle the case so you can Exit
+            if (enterPressed) {
+                //System.out.println("You clicked the enter key!");
+                myGameUI = NORMAL_STATE;
+
+            }
+        }
+
+        //
+    }
+
+    /**
+     *  Helper method to get X coordinate of the text you are trying to get to the center of.
+     * @param theText of which you are getting the coordinates for
+     * @param g2 the drawing object
+     * @return x coordinate for which you are trying to get centered text for.
+     */
+    private int getXForCenteredText(final String theText, final Graphics2D g2) {
+
+        final int textLength = (int) g2.getFontMetrics().
+                getStringBounds(theText, g2).getWidth();
+        return MazeControls.MY_SCREEN_WIDTH / 2 - textLength / 2;
+
+    }
+
+    /**
+     * draws a sub window.
+     * @param theX coordinate of where to draw the sub window.
+     * @param theY coordinate of where to draw the sub window.
+     * @param theWidth of the sub window.
+     * @param theHeight of the sub window.
+     */
+
+    private void drawSubWindow(final int theX,
+                               final int theY,
+                               final int theWidth, final int theHeight, final Graphics2D g2) {
+        final int opacity = 210;
+        Color color = new Color(0, 0, 0, opacity);
+        g2.setColor(color);
+
+        final int innerRectWidthHeight = 35;
+        g2.fillRoundRect(theX, theY, theWidth, theHeight,
+                innerRectWidthHeight, innerRectWidthHeight);
+        final int whiteNumber = 255;
+        color  = new Color(whiteNumber, whiteNumber, whiteNumber);
+
+        //Defines the width of outlines of graphics which are rendered with a Graphics2D.
+        final int strokeWidth = 5;
+        g2.setColor(color);
+        g2.setStroke(new BasicStroke(strokeWidth));
+        final int outerRectangleX = theX + 5;
+        final int outerRectangleY = theY + 5;
+        final int outerRectangleWidth = theWidth - 10;
+        final int outerRectangleHeight = theHeight - 10;
+        final int arcWidthHeight = 25;
+        g2.drawRoundRect(outerRectangleX, outerRectangleY, outerRectangleWidth,
+                outerRectangleHeight, arcWidthHeight , arcWidthHeight);
+    }
+
 
     /**
      * Method used to draw the room's doors.
@@ -251,10 +426,12 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             return null;
         }
     }
+
+
     /**
      * Draw the characters, based on their current position.
      */
-    public void drawCharacter(final Graphics2D g2) {
+    private void drawCharacter(final Graphics2D g2) {
         getPlayerImage();
         //the x and y coordinates of the character.
         int x = myCharacter.getCurrentPosition().x;
@@ -262,7 +439,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
         // Ensure the rectangle is within the panel's boundaries
         x = Math.max(0, Math.min(x, MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE));
-        y = Math.max(0, Math.min(y,  MazeControls.MY_SCREEN_HEIGHT- MazeControls.MY_TILE_SIZE));
+        y = Math.max(0, Math.min(y,  MazeControls.MY_SCREEN_HEIGHT
+                - MazeControls.MY_TILE_SIZE));
 
 
         final BufferedImage image = getSpriteImage();
@@ -369,6 +547,22 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             myRoom = (Room) theEvt.getNewValue();
             repaint();
 
+        } else if (propertyName.equals(myMaze.PROPERTY_GAME_WON)) {
+            final boolean gameWon = (Boolean) theEvt.getNewValue();
+            if (gameWon) {
+                myGameUI = PAUSED_STATE;
+                repaint();
+            }
+            repaint();
+
+        } else if (propertyName.equals(myMaze.PROPERTY_GAME_OVER)) {
+            final boolean gameOver = (Boolean) theEvt.getNewValue();
+            if (gameOver) {
+                myGameUI = PAUSED_STATE;
+                repaint();
+            }
+
+
         }
 
     }
@@ -377,24 +571,78 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
     @Override
     public void keyPressed(final KeyEvent theEvent) {
-        switch (theEvent.getKeyCode()) {
-            case KeyEvent.VK_W, KeyEvent.VK_UP -> handleUpKey();
-            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> handleDownKey();
-            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
-            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
-            case KeyEvent.VK_SPACE -> handleSpaceKey();
-            default ->  { }
+        //if the game isn't a paused state listen to all the other keys.
+        if (myGameUI == NORMAL_STATE) {
+            switch (theEvent.getKeyCode()) {
+                case KeyEvent.VK_W, KeyEvent.VK_UP -> handleUpKey();
+                case KeyEvent.VK_S, KeyEvent.VK_DOWN -> handleDownKey();
+                case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
+                case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
+
+                default -> {
+                }
+            }
+
+        }
+        //pauses the screen if it is this keycode.
+        if (theEvent.getKeyCode() == KeyEvent.VK_SPACE) {
+            handleSpaceKey();
+
+        }
+        if (myGameUI == PAUSED_STATE && mySettingsSubMenuOption == 0) {
+            handleSettingsOptions(theEvent.getKeyCode());
+
+
         }
     }
 
+    /**
+     * Helper method that helps us display and update within the mainSettings menu.
+     * @param theEventCode that we are calling for.
+     */
+    private void handleSettingsOptions(final  int theEventCode) {
+        repaint();
+        // in the main settings menu, after hitting pause
+
+            //3 means we are at the 1st option out of 3.
+        final int maxCommandNum = 2;
+
+        if (theEventCode == KeyEvent.VK_W || theEventCode == KeyEvent.VK_UP) {
+            mySettingsMenuCommand--;
+            if (mySettingsMenuCommand < 0) {
+                mySettingsMenuCommand = maxCommandNum;
+            }
+
+
+
+
+        } else if (theEventCode == KeyEvent.VK_S || theEventCode == KeyEvent.VK_DOWN) {
+            mySettingsMenuCommand++;
+            if (mySettingsMenuCommand > maxCommandNum) {
+                mySettingsMenuCommand = 0;
+            }
+
+
+        } else if (theEventCode == KeyEvent.VK_ENTER) {
+            enterPressed = true;
+        }
+
+
+
+
+
+    }
+
+
+
     @Override
     public void keyTyped(final KeyEvent theE) {
-        // Not needed for this example
+
     }
 
     @Override
     public void keyReleased(final KeyEvent theE) {
-        // Not needed for this example
+        // Not needed for
     }
     private void handleUpKey() {
         myMaze.moveUp();
@@ -421,6 +669,12 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
     }
 
+    private void handleEnterKey() {
+
+
+
+    }
+
     /**
      * Will be used to pause and unpause the game.
      */
@@ -429,12 +683,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         if (myGameUI == NORMAL_STATE) {
 
             myGameUI = PAUSED_STATE;
-
         } else if (myGameUI == PAUSED_STATE) {
             myGameUI = NORMAL_STATE;
         }
-
-
-
+        repaint();
     }
 }

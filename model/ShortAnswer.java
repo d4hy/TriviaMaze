@@ -8,22 +8,46 @@ package model;
  * @author David Hoang
  * @version Fall 2023
  */
-public class ShortAnswer extends Question {
+public class ShortAnswer extends AbstractQuestion {
 
     /**
      * Question's text.
      */
-    private static String myQuestion;
+    private final String myQuestion;
 
     /**
      * Text of correct answer to this Question.
      */
-    private static String myAnswer;
+    private final String myAnswer;
 
+
+    /**
+     * Constructor that takes question and answer Strings from database for a
+     * short answer Question.
+     * @param theQuestion Question for trivia.
+     * @param theAnswer Answer to this question.
+     */
     public ShortAnswer(final String theQuestion, final String theAnswer) {
-        super();
+
+        super(theQuestion, theAnswer, "", "", "");
 
         myQuestion = theQuestion;
         myAnswer = theAnswer;
+    }
+
+    /**
+     * Returns the text of the specific question that will be displayed in view.
+     * @return String Text of the question.
+     */
+    public String getQuestionText() {
+        return myQuestion;
+    }
+
+    /**
+     * Returns the text of the answer to this question that will be displayed in view.
+     * @return String Text of the answer.
+     */
+    public String getAnswerText() {
+        return myAnswer;
     }
 }
