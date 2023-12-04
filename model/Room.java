@@ -8,6 +8,7 @@ import controller.MazeControls;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Objects;
 import javax.imageio.ImageIO;
 
@@ -19,7 +20,7 @@ import javax.imageio.ImageIO;
  * @author David Hoang
  * @version Fall 2023
  */
-public class Room {
+public class Room implements Serializable {
 
     /**
      * Left door in Room.

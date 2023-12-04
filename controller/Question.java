@@ -4,6 +4,8 @@
  */
 package controller;
 
+import java.io.Serializable;
+
 /**
  * Question interface outlines the basic methods each type of subclass
  * of Question will have.
@@ -12,7 +14,7 @@ package controller;
  * @author David Hoang
  * @version Fall 2023
  */
-public interface Question {
+public interface Question extends Serializable {
 
     String getQuestionText();
 
