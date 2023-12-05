@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import controller.Question;
 import model.QuestionFactory;
+import model.ShortAnswer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,6 +41,11 @@ class QuestionFactoryTest {
      */
     private static final String TRUE = "True";
 
+    /**
+     * The short answer question type.
+     */
+    private static final String SHORT_ANSWER = "Short Answer";
+
 
 
     /**
@@ -67,17 +73,27 @@ class QuestionFactoryTest {
      */
     private static final String SHOULD_NOT_BE_SAME = "This should not be the same";
 
+    /**
+     * A test question fixture.
+     */
+    private static final String FIVE_FOUR = "5 feet 4 inches";
+
+    private static final String LOVE_BEA = "Do you love Beabadobee?";
 
 
     /**
-     * Text fixture of a true false question type.
+     * Test fixture of a true false question type.
      */
     private  Question myTrueFalseQuestionTest;
 
     /**
-     * A test question fixture.
+     * Test fixture of a short answer question type.
      */
-    private String FIVE_FOUR = "5 feet 4 inches";
+    private Question myShortAnswerTest;
+
+
+
+
 
 
     /**
@@ -91,7 +107,9 @@ class QuestionFactoryTest {
                 QuestionFactory.createQuestion(BEA_BEST, TRUE_FALSE,
                         TRUE, FALSE, FALSE, FALSE);
         myMultipleChoiceQuestionTest = QuestionFactory.createQuestion(BEA_HEIGHT,
-                MULTIPLE_CHOICE, FIVE_FOUR, FALSE, FALSE, FALSE );
+                MULTIPLE_CHOICE, FIVE_FOUR, FALSE, FALSE, FALSE);
+        myShortAnswerTest = QuestionFactory.createQuestion(LOVE_BEA, SHORT_ANSWER, TRUE,
+                null, null, null);
 
     }
     @Test
@@ -139,5 +157,38 @@ class QuestionFactoryTest {
 
 
     }
+    @Test
+    void testMultipleChoiceNotSameQuestionTestAndAnswer()  {
+        final Question multipleChoiceQuestion =
+                QuestionFactory.createQuestion(BEA_BEST, MULTIPLE_CHOICE,
+                        TRUE, TRUE, TRUE, TRUE);
+        assertNotEquals(multipleChoiceQuestion.getQuestionText(),
+                myMultipleChoiceQuestionTest.getQuestionText(), SHOULD_NOT_BE_SAME);
+        assertNotEquals(multipleChoiceQuestion.getAnswerText(),
+                myMultipleChoiceQuestionTest.getAnswerText(), SHOULD_NOT_BE_SAME);
+        assertNotEquals(multipleChoiceQuestion.getSecondOption(),
+                myMultipleChoiceQuestionTest.getSecondOption(), SHOULD_NOT_BE_SAME);
+        assertNotEquals(multipleChoiceQuestion.getThirdOption(),
+                myMultipleChoiceQuestionTest.getThirdOption(), SHOULD_NOT_BE_SAME);
+        assertNotEquals(multipleChoiceQuestion.getFourthOption(),
+                myMultipleChoiceQuestionTest.getFourthOption(), SHOULD_NOT_BE_SAME);
+
+
+
+    }
+    @Test
+    void testShortAnswerSameQuestionTestAndAnswer()  {
+        final Question shortAnswerQuestion =
+                QuestionFactory.createQuestion(LOVE_BEA, SHORT_ANSWER,
+                        TRUE, null, null, null);
+        assertEquals(shortAnswerQuestion.getQuestionText(),
+                myShortAnswerTest.getQuestionText(), SHOULD_BE_SAME);
+        assertEquals(shortAnswerQuestion.getAnswerText(),
+                myShortAnswerTest.getAnswerText(), SHOULD_BE_SAME);
+
+
+
+    }
+
 
 }
