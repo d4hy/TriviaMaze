@@ -190,5 +190,19 @@ class QuestionFactoryTest {
 
     }
 
+    @Test
+    void testShortAnswerNotSameQuestionTestAndAnswer()  {
+        final Question shortAnswerQuestion =
+                QuestionFactory.createQuestion(BEA_BEST, SHORT_ANSWER,
+                        TRUE_FALSE, null, null, null);
+        assertNotEquals(shortAnswerQuestion.getQuestionText(),
+                myShortAnswerTest.getQuestionText(), SHOULD_NOT_BE_SAME);
+        assertNotEquals(shortAnswerQuestion.getAnswerText(),
+                myShortAnswerTest.getAnswerText(), SHOULD_NOT_BE_SAME);
+
+
+
+    }
+
 
 }
