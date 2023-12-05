@@ -29,6 +29,10 @@ class QuestionFactoryTest {
      * The true or false question type.
      */
     private static final String TRUE_FALSE = "True False";
+    /**
+     * The multiple choice question type.
+     */
+    private static final String MULTIPLE_CHOICE = "Multiple Choice";
 
 
     /**
@@ -49,6 +53,11 @@ class QuestionFactoryTest {
     private static final String BEA_BEST = "Is Beabadoobee the best?";
 
     /**
+     * A test question text fixture.
+     */
+
+    private static final String BEA_HEIGHT = "How tall is Bea?";
+    /**
      * A test fixture for the same results.
      */
     private static final String SHOULD_BE_SAME = "This should be the same";
@@ -64,11 +73,25 @@ class QuestionFactoryTest {
      * Text fixture of a true false question type.
      */
     private  Question myTrueFalseQuestionTest;
+
+    /**
+     * A test question fixture.
+     */
+    private String FIVE_FOUR = "5 feet 4 inches";
+
+
+    /**
+     * Text fixture of a Multiple Choice Question type.
+     */
+    private  Question myMultipleChoiceQuestionTest;
     @BeforeEach
   void setUp() throws Exception {
+
         myTrueFalseQuestionTest =
                 QuestionFactory.createQuestion(BEA_BEST, TRUE_FALSE,
                         TRUE, FALSE, FALSE, FALSE);
+        myMultipleChoiceQuestionTest = QuestionFactory.createQuestion(BEA_HEIGHT,
+                MULTIPLE_CHOICE, FIVE_FOUR, FALSE, FALSE, FALSE );
 
     }
     @Test
@@ -98,6 +121,23 @@ class QuestionFactoryTest {
 
 
     }
+    @Test
+    void testTMultipleChoiceSameQuestionTestAndAnswer()  {
+        final Question multipleChoiceQuestion =
+                QuestionFactory.createQuestion(BEA_HEIGHT, MULTIPLE_CHOICE,
+                        FIVE_FOUR, FALSE, FALSE, FALSE);
+        assertEquals(multipleChoiceQuestion.getQuestionText(),
+                myMultipleChoiceQuestionTest.getQuestionText(), SHOULD_BE_SAME);
+        assertEquals(multipleChoiceQuestion.getAnswerText(),
+                myMultipleChoiceQuestionTest.getAnswerText(), SHOULD_BE_SAME);
+        assertEquals(multipleChoiceQuestion.getSecondOption(),
+                myMultipleChoiceQuestionTest.getSecondOption(), SHOULD_BE_SAME);
+        assertEquals(multipleChoiceQuestion.getThirdOption(),
+                myMultipleChoiceQuestionTest.getThirdOption(), SHOULD_BE_SAME);
+        assertEquals(multipleChoiceQuestion.getFourthOption(),
+                myMultipleChoiceQuestionTest.getFourthOption(), SHOULD_BE_SAME);
 
+
+    }
 
 }
