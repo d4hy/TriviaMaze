@@ -55,7 +55,7 @@ public class QuestionPrompt implements PropertyChangeListener {
      */
     private void displayQuestionPrompt(final Door theDoor) {
         // Retrieve the associated question
-        final Question question = theDoor.getMyQuestion(theDoor);
+        final Question question = theDoor.getMyQuestion();
 
         if (question instanceof TrueOrFalse) {
             handleTrueOrFalseQuestion(theDoor, (TrueOrFalse) question);

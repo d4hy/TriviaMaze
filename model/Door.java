@@ -49,7 +49,11 @@ public class Door implements Serializable {
 
     }
 
-    public Question getMyQuestion(final Door theDoor) {
+    /**
+     * returns the question of the door.
+     * @return a question object.
+     */
+    public Question getMyQuestion() {
 
         return myQuestion;
     }

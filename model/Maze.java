@@ -343,7 +343,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         // extracted from the database.
         for (int i = 0; i < myQuestions.size() && i < myDoors.size(); i++) {
             myDoors.get(i).setQuestion(myQuestions.get(i));
-            System.out.println(myDoors.get(i).getMyQuestion(myDoors.get(i)).getQuestionText());
+            System.out.println(myDoors.get(i).getMyQuestion().getQuestionText());
         }
 
     }
@@ -789,7 +789,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      */
     private void handleUnpromptedDoor(final Door theDoor, final String theDoorDirection) {
         if (theDoor.hasMyQuestionBeenNotPrompted()) {
-            System.out.println(theDoor.getMyQuestion(theDoor).getQuestionText());
+            System.out.println(theDoor.getMyQuestion().getQuestionText());
             setMoveFalse();
             // Fire property change event to prompt the question
             myPcs.firePropertyChange(getPromptQuestionPropertyName(theDoorDirection),

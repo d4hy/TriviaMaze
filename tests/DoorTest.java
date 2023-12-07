@@ -9,7 +9,8 @@ import model.QuestionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -21,18 +22,32 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  */
 class DoorTest {
+    /**
+     * A test fixture for the true results.
+     */
+    private static final String SHOULD_BE_TRUE = "This should be true";
 
     /**
      * Test fixture of a Door to be used for tests.
      */
     private Door myTestDoor;
+
+
     @BeforeEach
     void setUp() {
         myTestDoor = new Door();
     }
     @Test
-    void testTrueFalseSameQuestionTestAndAnswer()  {
+    void testTrueForLocked()  {
+        myTestDoor.lock();
+        assertTrue(myTestDoor.isLocked(), SHOULD_BE_TRUE);
 
+
+    }
+    @Test
+    void testFalseForLocked()  {
+
+        assertFalse(myTestDoor.isLocked(), SHOULD_BE_TRUE);
 
 
     }
