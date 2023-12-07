@@ -5,7 +5,6 @@
 package model;
 
 import controller.Question;
-
 import java.io.Serializable;
 
 /**
@@ -59,8 +58,9 @@ public class Door implements Serializable {
     }
 
     /**
-     * Takes a Question from the database to assign to this door.
-     * @param theQuestion
+     * Takes a Question from the database to assign to this door(we set it like this).
+     * Otherwise, assigns a question based on the parameter.
+     * @param theQuestion the question object you are setting for the door.
      */
     public void setQuestion(final Question theQuestion) {
         myQuestion = theQuestion;
@@ -89,7 +89,7 @@ public class Door implements Serializable {
 
     /**
      *  Returns if the door's questions has been answered correclty or not.
-     * @return boolean if the question is answered or not.
+     * @return  true if the question is answered correctly, false otherwise
      */
     public boolean hasMyQuestionBeenAnsweredCorrectly() {
         return myQuestionHasBeenAnsweredCorrectly;
