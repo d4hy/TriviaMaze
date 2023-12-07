@@ -62,14 +62,6 @@ public class Door implements Serializable {
         myQuestion = theQuestion;
     }
 
-    /**
-     * Method used for testing to know if Door has a question assigned to it.
-     * @param theDoor specific Door in room.
-     * @return boolean if question is null.
-     */
-    public boolean hasQuestion(final Door theDoor) {
-        return myQuestion != null;
-    }
 
 
     /**
