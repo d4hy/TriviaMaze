@@ -101,7 +101,7 @@ class QuestionFactoryTest {
      */
     private  Question myMultipleChoiceQuestionTest;
     @BeforeEach
-  void setUp() throws Exception {
+  void setUp() {
 
         myTrueFalseQuestionTest =
                 QuestionFactory.createQuestion(BEA_BEST, TRUE_FALSE,

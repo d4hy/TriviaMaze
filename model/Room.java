@@ -79,13 +79,13 @@ public class Room implements Serializable {
     public void setDoor(final String theDoor) {
 
         if (Objects.equals(theDoor, "Left")) {
-            myLeftDoor = new Door("Left Door");
+            myLeftDoor = new Door();
         } else if (Objects.equals(theDoor, "Right")) {
-            myRightDoor = new Door("Right Door");
+            myRightDoor = new Door();
         } else if (Objects.equals(theDoor, "Top")) {
-            myTopDoor = new Door("Top Door");
+            myTopDoor = new Door();
         } else if (Objects.equals(theDoor, "Bottom")) {
-            myBottomDoor = new Door("Bottom Door");
+            myBottomDoor = new Door();
         }
 
     }

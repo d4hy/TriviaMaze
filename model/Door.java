@@ -38,10 +38,12 @@ public class Door implements Serializable {
      */
     private Question myQuestion;
 
+
     /**
-     * Constructor for Door.
+     * Constructor for the door.
+     *
      */
-    public Door(final String theDoorDescription) {
+    public Door() {
         myQuestionHasNotBeenPrompted = true;
         myQuestionHasBeenAnsweredCorrectly = false;
 
