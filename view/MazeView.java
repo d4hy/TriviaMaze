@@ -236,10 +236,25 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 System.out.println("You clicked the enter key!");
             }
         }
+        //NewGame
+        textY += MazeControls.MY_TILE_SIZE;
+        g2.drawString("New Game", textX, textY);
+        if (mySettingsMenuCommand == 2) {
+            // this is the cursor
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+
+            if (enterPressed) {
+                myMaze.newGame();
+                System.out.println("You clicked the enter key!");
+                myGameUI = NORMAL_STATE;
+            }
+        }
+
         //Exit
         textY += MazeControls.MY_TILE_SIZE;
         g2.drawString("Exit", textX, textY);
-        if (mySettingsMenuCommand == 2) {
+        if (mySettingsMenuCommand == 3) {
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
@@ -605,7 +620,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         // in the main settings menu, after hitting pause
 
             //3 means we are at the 1st option out of 3.
-        final int maxCommandNum = 2;
+        final int maxCommandNum = 3;
 
         if (theEventCode == KeyEvent.VK_W || theEventCode == KeyEvent.VK_UP) {
             mySettingsMenuCommand--;
