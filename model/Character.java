@@ -220,18 +220,4 @@ public class Character implements Serializable {
         System.out.println("Added " + theItem.getName() + " to the inventory.");
     }
 
-    /**
-     * Method to set if the user can move or not.
-     */
-    // Setter method to directly set whether the user can move or not
-    public void setCanMove(final boolean theMobility) {
-        myMobility = theMobility;
-        System.out.println("User can");
-
-        if (theMobility) {
-            System.out.println("User can move");
-        } else {
-            System.out.println("User can not move");
-        }
-    }
 }
