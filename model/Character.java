@@ -95,7 +95,7 @@ public class Character implements Serializable {
     /**
      * Resets the character's position to where they spawned.
      */
-    public void resetToMiddle() {
+    public void resetToSpawn() {
         myCurrentPosition = new Point(myStartX,  myStartY);
     }
 

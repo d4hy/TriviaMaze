@@ -116,8 +116,13 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      */
     private ArrayList<Question> myQuestions = new ArrayList<>();
 
+
     /**
+     *
      * Constructor for new game of Maze, creating starting point of a Character and Rooms.
+     *
+     * @param theWidth of how many rooms there are wide.
+     * @param theHeight of many rooms there are tall.
      */
     public Maze(final int theWidth, final int theHeight) {
         super();
@@ -510,7 +515,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                 myGameWonStatus = true;
                 myPcs.firePropertyChange(PROPERTY_GAME_WON, null, true);
             }
-            myCharacter.resetToMiddle();
+            myCharacter.resetToSpawn();
             System.out.println("row:"+ getCurrentRoomRow() + ",col:"+ getCurrentRoomCol());
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
             myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);

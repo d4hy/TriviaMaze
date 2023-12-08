@@ -453,6 +453,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         int y = myCharacter.getCurrentPosition().y;
 
         // Ensure the rectangle is within the panel's boundaries
+        // the entire character is visible within the panel.
         x = Math.max(0, Math.min(x, MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE));
         y = Math.max(0, Math.min(y,  MazeControls.MY_SCREEN_HEIGHT
                 - MazeControls.MY_TILE_SIZE));
