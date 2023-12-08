@@ -25,10 +25,6 @@ public class Character implements Serializable {
      */
     private Point myCurrentPosition;
 
-    /**
-     * An arrayList serving as what items the user has collected.
-     */
-    private ArrayList<AbstractItem> myInventory;
 
     /**
      * This field will be the bounds for which rows the user can enter.
@@ -41,11 +37,7 @@ public class Character implements Serializable {
     private final  int myMaxCols;
 
 
-    /**
-     * This instance field will be used to pause the player from moving, such
-     * as when answering a question.
-     */
-    private boolean myMobility;
+
 
     /**
      * The starting X coordinate of where the user spawned within the room.
@@ -64,16 +56,10 @@ public class Character implements Serializable {
      */
     private final int mySpeed = 16;
 
-    /**
-     * Counter for how many steps has taken the sprite alternates.
-     */
-    private int mySpriteCounter;
 
 
-    /**
-     * Counter for which walking animation to choose.
-     */
-    private int mySpriteNumber = 1;
+
+
 
     /**
      * The direction that the character is facing.
@@ -93,11 +79,8 @@ public class Character implements Serializable {
         myStartX = theStartX;
         myStartY = theStartY;
         myCurrentPosition = new Point(theStartX, theStartY);
-        myMobility = true;
         myMaxRows = theMaxRows;
         myMaxCols = theMaxCols;
-        myInventory = new ArrayList<>(); // Add this line to initialize myInventory
-
     }
 
 
@@ -105,7 +88,7 @@ public class Character implements Serializable {
      * The direction which the character is facing
      * @return a String that represents which direction the character is facing.
      */
-    public String getMyDirection(){
+    public String getMyDirection() {
         return myDirection;
     }
 
@@ -129,7 +112,7 @@ public class Character implements Serializable {
             // If already at or above the top boundary, set Y-coordinate to 0
             myCurrentPosition.setLocation(myCurrentPosition.getX(), 0);
         }
-        alternateWalkingSprite();
+
     }
 
     /**
@@ -147,7 +130,7 @@ public class Character implements Serializable {
             myCurrentPosition.setLocation(myCurrentPosition.getX(),
                     myMaxCols - MazeControls.MY_TILE_SIZE);
         }
-        alternateWalkingSprite();
+
     }
 
     /**
@@ -164,7 +147,7 @@ public class Character implements Serializable {
             myCurrentPosition.setLocation(myMaxRows - MazeControls.MY_TILE_SIZE,
                     myCurrentPosition.getY());
         }
-        alternateWalkingSprite();
+
     }
 
 
@@ -181,23 +164,9 @@ public class Character implements Serializable {
             // If already at or beyond the left boundary, set X-coordinate to 0
             myCurrentPosition.setLocation(0, myCurrentPosition.getY());
         }
-        alternateWalkingSprite();
+
     }
-    /**
-     * Alternates the walking animation of the character.
-     */
-    private void alternateWalkingSprite() {
-        mySpriteCounter++;
-        //every 10 movements, change the walking animation
-        if (mySpriteCounter > 1) {
-            if (mySpriteNumber == 1) {
-                mySpriteNumber = 2;
-            } else if (mySpriteNumber == 2) {
-                mySpriteNumber = 1;
-            }
-            mySpriteCounter = 0;
-        }
-    }
+
 
 
 
@@ -211,13 +180,5 @@ public class Character implements Serializable {
         return new Point(myCurrentPosition);
     }
 
-    /**
-     * Method adds item to the inventory of the user.
-     * @param theItem to add the inventory of the user.
-     */
-    public void addToInventory(final AbstractItem theItem) {
-        myInventory.add(theItem);
-        System.out.println("Added " + theItem.getName() + " to the inventory.");
-    }
 
 }
