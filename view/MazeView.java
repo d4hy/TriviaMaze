@@ -449,18 +449,12 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private void drawCharacter(final Graphics2D g2) {
         getPlayerImage();
         //the x and y coordinates of the character.
-        int x = myCharacter.getCurrentPosition().x;
-        int y = myCharacter.getCurrentPosition().y;
+        final int x = myCharacter.getCurrentPosition().x;
+        final int y = myCharacter.getCurrentPosition().y;
 
-        // Ensure the rectangle is within the panel's boundaries
-        // the entire character is visible within the panel.
-        x = Math.max(0, Math.min(x, MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE));
-        y = Math.max(0, Math.min(y,  MazeControls.MY_SCREEN_HEIGHT
-                - MazeControls.MY_TILE_SIZE));
 
 
         final BufferedImage image = getSpriteImage();
-
         g2.drawImage(image, x, y, MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
 
     }

@@ -1,6 +1,7 @@
 package tests;
 
 import controller.MazeControls;
+import model.Maze;
 import org.junit.jupiter.api.BeforeEach;
 import model.Character;
 import org.junit.jupiter.api.Test;
@@ -66,7 +67,125 @@ class CharacterTest {
         myTestCharacter.moveRight();
         assertEquals(MazeControls.MY_ORIGINAL_TILE_SIZE,
                myTestCharacter.getCurrentPosition().x , SHOULD_BE_SAME);
+        //moving right until the max boundary of the right side.
+        final int move3Times = 3;
+        for (int i = 0; i < move3Times; i++) {
+            myTestCharacter.moveRight();
+        }
+        final String expectedDirection = "right";
+        assertEquals(expectedDirection,
+                myTestCharacter.getMyDirection() , SHOULD_BE_SAME);
+
+        //because we have to boundary check the boundary of x and y will always be
+        //(0,0) - (WIDTH-TILE-SIZE, HEIGHT-TILE-SIZE)
+        final int expected = MY_WIDTH_HEIGHT - MazeControls.MY_TILE_SIZE;
+        assertEquals(expected,
+                myTestCharacter.getCurrentPosition().x , SHOULD_BE_SAME);
 
     }
+    @Test
+    void testMoveLeft()  {
+
+        assertEquals(MY_START_X,
+                myTestCharacter.getCurrentPosition().x, SHOULD_BE_SAME);
+        myTestCharacter.moveLeft();
+        assertEquals(0,
+                myTestCharacter.getCurrentPosition().x , SHOULD_BE_SAME);
+        //moving right until the max boundary of the right side.
+        final int move4Times = 4;
+        for (int i = 0; i < move4Times; i++) {
+            myTestCharacter.moveRight();
+        }
+        final int expected = MY_WIDTH_HEIGHT - MazeControls.MY_TILE_SIZE;
+        assertEquals(expected,
+                myTestCharacter.getCurrentPosition().x , SHOULD_BE_SAME);
+        for (int i = 0; i < move4Times; i++) {
+            myTestCharacter.moveLeft();
+        }
+        final String expectedDirection = "left";
+        assertEquals(expectedDirection,
+                myTestCharacter.getMyDirection() , SHOULD_BE_SAME);
+        //going back to the left boundary after moving to the right boundary
+        assertEquals(0,
+                myTestCharacter.getCurrentPosition().x , SHOULD_BE_SAME);
+
+    }
+    @Test
+    void testMoveDown()  {
+
+        assertEquals(MY_START_Y,
+                myTestCharacter.getCurrentPosition().y, SHOULD_BE_SAME);
+        myTestCharacter.moveDown();
+        assertEquals(MazeControls.MY_ORIGINAL_TILE_SIZE,
+                myTestCharacter.getCurrentPosition().y , SHOULD_BE_SAME);
+        //moving down until the max boundary of the  bottom side.
+        final int move4Times = 4;
+        for (int i = 0; i < move4Times; i++) {
+            myTestCharacter.moveDown();
+        }
+        final String expectedDirection = "down";
+        assertEquals(expectedDirection,
+                myTestCharacter.getMyDirection() , SHOULD_BE_SAME);
+        //because we have to boundary check the boundary of x and y will always be
+        //(0,0) - (WIDTH-TILE-SIZE, HEIGHT-TILE-SIZE)
+        final int expected = MY_WIDTH_HEIGHT - MazeControls.MY_TILE_SIZE;
+        assertEquals(expected,
+                myTestCharacter.getCurrentPosition().y , SHOULD_BE_SAME);
+
+    }
+
+    @Test
+    void testMoveUp()  {
+
+        assertEquals(MY_START_X,
+                myTestCharacter.getCurrentPosition().y, SHOULD_BE_SAME);
+        myTestCharacter.moveDown();
+        assertEquals(MazeControls.MY_ORIGINAL_TILE_SIZE,
+                myTestCharacter.getCurrentPosition().y , SHOULD_BE_SAME);
+        //moving right until the max boundary of the right side.
+        final int move4Times = 4;
+        for (int i = 0; i < move4Times; i++) {
+            myTestCharacter.moveDown();
+        }
+        //because we have to boundary check the boundary of x and y will always be
+        //(0,0) - (WIDTH-TILE-SIZE, HEIGHT-TILE-SIZE)
+        final int expected = MY_WIDTH_HEIGHT - MazeControls.MY_TILE_SIZE;
+        assertEquals(expected,
+                myTestCharacter.getCurrentPosition().y , SHOULD_BE_SAME);
+        for (int i = 0; i < move4Times; i++) {
+            myTestCharacter.moveUp();
+        }
+        final String expectedDirection = "up";
+        assertEquals(expectedDirection,
+                myTestCharacter.getMyDirection() , SHOULD_BE_SAME);
+        assertEquals(0,
+                myTestCharacter.getCurrentPosition().y , SHOULD_BE_SAME);
+
+
+    }
+    @Test
+    void testResetToSpawn() {
+        assertEquals(MY_START_X,
+                myTestCharacter.getCurrentPosition().y, SHOULD_BE_SAME);
+        myTestCharacter.moveDown();
+        assertEquals(MazeControls.MY_ORIGINAL_TILE_SIZE,
+                myTestCharacter.getCurrentPosition().y , SHOULD_BE_SAME);
+        //moving right until the max boundary of the right side.
+        final int move4Times = 4;
+        for (int i = 0; i < move4Times; i++) {
+            myTestCharacter.moveDown();
+        }
+        //because we have to boundary check the boundary of x and y will always be
+        //(0,0) - (WIDTH-TILE-SIZE, HEIGHT-TILE-SIZE)
+        final int expected = MY_WIDTH_HEIGHT - MazeControls.MY_TILE_SIZE;
+        assertEquals(expected,
+                myTestCharacter.getCurrentPosition().y , SHOULD_BE_SAME);
+        myTestCharacter.resetToSpawn();
+        assertEquals(0,
+                myTestCharacter.getCurrentPosition().y , SHOULD_BE_SAME);
+
+    }
+
+
 
 }
