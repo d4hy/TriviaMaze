@@ -54,14 +54,14 @@ class MazeTest {
     void testAnsweringCorrectlyAndPromptingQuestionToRightRoom() {
         myTestMaze.getCurrentRoom().getRightDoor().setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
         myTestMaze.getCurrentRoom().getRightDoor().setMyQuestionNotPromptedStatus(false);
-        final int moveRightToRightDoor = 54;
+        final int moveRightToRightDoor = 26;
         for (int i = 0; i < moveRightToRightDoor; i++) {
             myTestMaze.moveRight();
         }
-        final int moveDownToRightDoor = 15 ;
-        for (int i = 0; i < moveDownToRightDoor; i++) {
-            myTestMaze.moveDown();
-        }
+//        final int moveDownToRightDoor = 15 ;
+//        for (int i = 0; i < moveDownToRightDoor; i++) {
+//            myTestMaze.moveDown();
+//        }
         final String expected = """
                 Current Room's row and column:[0][1], the game is lost:false, the game is won:false
                 Top Door Status:null
