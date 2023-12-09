@@ -468,7 +468,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         setMyGameOverStatus(false);
         myGameWonStatus = false;
 
-
+        System.out.println(this);
         myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
         myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
 
@@ -509,6 +509,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         // Move to the new room if the move is valid
         if (isValidMove) {
             myCurrentRoom = myRooms[newRow][newCol];
+            System.out.println(this);
             //If we are at the bottom right room fire the property that the user won
             // and set the myGameWonn status to true
             if (newRow == ENDPOINT && newCol == ENDPOINT) {
@@ -516,7 +517,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                 myPcs.firePropertyChange(PROPERTY_GAME_WON, null, true);
             }
             myCharacter.resetToSpawn();
-            System.out.println("row:"+ getCurrentRoomRow() + ",col:"+ getCurrentRoomCol());
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
             myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
         }
@@ -884,6 +884,104 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
 
     }
 
+    /**
+     * Will be  in the format:"Current Room's row and column:[][], the game is lost: ,
+     * the game is won:
+     * Top door status:
+     * Bottom door status:
+     * Right Door Status:
+     * Left Door status:
+     * .
+     * @return a String with the state of the maze.
+     */
+    @Override
+    public String toString() {
+        final StringBuilder stats = new StringBuilder(30);
+        final String leftBracket = "[";
+        final String rightBracket = "]";
+        final String nullString = "null";
+        final String isLocked = "isLocked:";
+        final String exists = "exists";
+        final String comma = ", ";
+
+        stats.append("Current Room's row and column:");
+        stats.append(leftBracket);
+        stats.append(getCurrentRoomRow());
+        stats.append(rightBracket);
+        stats.append(leftBracket);
+        stats.append(getCurrentRoomCol());
+        stats.append(rightBracket);
+        stats.append(comma);
+        stats.append("the game is lost:");
+        stats.append(isGameLost());
+        stats.append(comma);
+        stats.append("the game is won:");
+        stats.append(isMyGameWon());
+        stats.append("\nTop Door Status:");
+        if (myCurrentRoom.getTopDoor() == null) {
+            stats.append(nullString);
+        } else if (myCurrentRoom.getTopDoor() != null) {
+            stats.append(exists);
+            stats.append(comma);
+            stats.append(isLocked);
+            stats.append(myCurrentRoom.getTopDoor().isLocked());
+            stats.append(comma);
+            stats.append("Question has not been prompted:");
+            stats.append(myCurrentRoom.getTopDoor().hasMyQuestionBeenNotPrompted());
+            stats.append(comma);
+            stats.append("Question has been answered correctly:");
+            stats.append(myCurrentRoom.getTopDoor().hasMyQuestionBeenAnsweredCorrectly());
+        }
+
+        stats.append("\nBottom Door Status:");
+        if (myCurrentRoom.getBottomDoor() == null) {
+            stats.append(nullString);
+        } else if (myCurrentRoom.getBottomDoor() != null) {
+            stats.append(exists);
+            stats.append(comma);
+            stats.append(isLocked);
+            stats.append(myCurrentRoom.getBottomDoor().isLocked());
+            stats.append(comma);
+            stats.append("Question has not been prompted:");
+            stats.append(myCurrentRoom.getBottomDoor().hasMyQuestionBeenNotPrompted());
+            stats.append(comma);
+            stats.append("Question has been answered correctly:");
+            stats.append(myCurrentRoom.getBottomDoor().hasMyQuestionBeenAnsweredCorrectly());
+        }
+        stats.append("\nRight Door Status:");
+        if (myCurrentRoom.getRightDoor() == null) {
+            stats.append(nullString);
+        } else if (myCurrentRoom.getRightDoor() != null) {
+            stats.append(exists);
+            stats.append(comma);
+            stats.append(isLocked);
+            stats.append(myCurrentRoom.getRightDoor().isLocked());
+            stats.append(comma);
+            stats.append("Question has not been prompted:");
+            stats.append(myCurrentRoom.getRightDoor().hasMyQuestionBeenNotPrompted());
+            stats.append(comma);
+            stats.append("Question has been answered correctly:");
+            stats.append(myCurrentRoom.getRightDoor().hasMyQuestionBeenAnsweredCorrectly());
+        }
+        stats.append("\nLeft Door Status:");
+        if (myCurrentRoom.getLeftDoor() == null) {
+            stats.append(nullString);
+        } else if (myCurrentRoom.getLeftDoor() != null) {
+            stats.append(exists);
+            stats.append(comma);
+            stats.append(isLocked);
+            stats.append(myCurrentRoom.getLeftDoor().isLocked());
+            stats.append(comma);
+            stats.append("Question has not been prompted:");
+            stats.append(myCurrentRoom.getLeftDoor().hasMyQuestionBeenNotPrompted());
+            stats.append(comma);
+            stats.append("Question has been answered correctly:");
+            stats.append(myCurrentRoom.getLeftDoor().hasMyQuestionBeenAnsweredCorrectly());
+        }
+
+        return stats.toString();
+    }
+
 
 
     @Override
@@ -968,4 +1066,5 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         }
 
     }
+
 }
