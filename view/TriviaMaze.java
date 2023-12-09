@@ -26,7 +26,7 @@ public  final class TriviaMaze {
     /**
      *  Maze Object to be referenced.
      */
-    private final Maze myMaze;
+    private Maze myMaze;
     /**
      * Static variable used to contain the gui components.
      */

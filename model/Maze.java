@@ -50,11 +50,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     private static final String BOTTOM_DOOR = "Bottom";
 
     /**
-     * Name of save/load file.
-     */
-    private static final String SAVE_FILE = "TriviaMaze.txt";
-
-    /**
      * Constant to be used to check if the current room has these types of doors.
      */
     private static final String[]
@@ -119,7 +114,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     /**
      * Signals change from the model to the view.
      */
-    private final PropertyChangeSupport myPcs;
+    private PropertyChangeSupport myPcs;
 
     /**
      * Arraylist of Questions to be used throughout setup of Maze.
@@ -337,11 +332,14 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     /**
      * Method to save the current state of the game into an object file.
      */
-    public void save() {
+    public void save() throws IOException {
+
+        final String saveFile = "TriviaMaze.txt";
 
         try {
 
-            final FileOutputStream file = new FileOutputStream(SAVE_FILE);
+            final FileOutputStream file = new FileOutputStream(saveFile);
+
             final ObjectOutputStream out = new ObjectOutputStream(file);
             out.writeObject(this);
             out.close();
@@ -350,6 +348,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
 
         } catch (final IOException exception) {
             System.out.println("IOException is caught.");
+            exception.printStackTrace();
         }
     }
 
@@ -357,13 +356,14 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      * Method that can load a previous state of the game from a file.
      * @return Maze with saved state.
      */
-    public static Maze load() throws IOException {
+    public Maze load() throws IOException {
 
+        final String saveFile = "TriviaMaze.txt";
         Maze maze = null;
 
         try {
 
-            final FileInputStream file = new FileInputStream(SAVE_FILE);
+            final FileInputStream file = new FileInputStream(saveFile);
             final ObjectInputStream in = new ObjectInputStream(file);
             maze = (Maze) in.readObject();
             in.close();
@@ -403,16 +403,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
             myDoors.get(i).setQuestion(myQuestions.get(i));
             System.out.println(myDoors.get(i).getMyQuestion().getQuestionText());
         }
-
-    }
-
-    public Memento saveToMemento() {
-        System.out.println("Originator: Saving to Memento. ");
-        return new Memento(myRooms, myCurrentRoom, myCharacter, myDoors,
-                myWidth, myHeight, myGameOverStatus, myGameWonStatus);
-    }
-
-    public void restoreFromMemento(final Memento theMemento) {
 
     }
 
@@ -1081,43 +1071,5 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myPcs.removePropertyChangeListener(thePropertyName, theListener);
     }
 
-    public class Memento {
-
-        private Room[][] myRooms;
-
-        private Room myCurrentRoom;
-
-        private Character myCharacter;
-
-        private ArrayList<Door> myDoors;
-
-        private int myWidth;
-
-        private int myHeight;
-
-        private boolean myGameOverStatus;
-
-        private boolean myGameWonStatus;
-        private Memento(final Room[][] theRooms, final Room theCurrentRoom,
-                        final Character theCharacter, final ArrayList<Door> theDoors,
-                        final int theWidth, final int theHeight,
-                        final boolean theGameOverStatus, final boolean theGameWon) {
-
-            this.myRooms = theRooms;
-            this.myCurrentRoom = theCurrentRoom;
-            this.myCharacter = theCharacter;
-            this.myDoors = theDoors;
-            this.myWidth = theWidth;
-            this.myHeight = theHeight;
-            this.myGameOverStatus = theGameOverStatus;
-            this.myGameWonStatus = theGameWon;
-
-        }
-
-        private String getSavedState() {
-            return null;
-        }
-
-    }
 
 }

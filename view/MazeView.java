@@ -57,11 +57,11 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      * Counter for which walking animation to choose.
      */
-    private int mySpriteNumber = 1;
+    private transient int mySpriteNumber = 1;
     /**
      *  Maze Object to be referenced.
      */
-    private final Maze myMaze;
+    private Maze myMaze;
     /**
      *  Character to reference.
      */
@@ -74,28 +74,28 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      * Counter for how many steps has taken the sprite alternates.
      */
-    private int mySpriteCounter;
+    private transient int mySpriteCounter;
 
     /**
      * This field will represent which ui to display.
      *
      */
-    private int myGameUI;
+    private transient int myGameUI;
 
     /**
      * This field will represent which option they chose during the settings menu.
      */
-    private int mySettingsMenuCommand;
+    private transient int mySettingsMenuCommand;
 
     /**
      * This field will represent which sub menu option we are at.
      *
      */
-    private int mySettingsSubMenuOption;
+    private transient int mySettingsSubMenuOption;
     /**
      * A boolean representing if enter key has been pressed
      */
-    private boolean enterPressed;
+    private transient boolean enterPressed;
 
 
 
@@ -103,7 +103,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * These will be sprites that we use for the character.
      */
     @SuppressWarnings("checkstyle:MultipleVariableDeclarations")
-    private BufferedImage myUp1, myUp2, myDown1,
+    private transient BufferedImage myUp1, myUp2, myDown1,
             myDown2, myLeft1, myLeft2, myRight1, myRight2;
 
     MazeView(final Maze theMaze) {
@@ -151,8 +151,12 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             drawCharacter(g2);
         }
 
-        if (myGameUI == PAUSED_STATE ) {
-            drawTheSettingsMenu(g2);
+        if (myGameUI == PAUSED_STATE && mySettingsSubMenuOption == 0) {
+            try {
+                drawTheSettingsMenu(g2);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
 
@@ -162,7 +166,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      * Draws the setting menu if the myGameUi is in a paused state.
      */
-    public void drawTheSettingsMenu(final Graphics2D g2) {
+    public void drawTheSettingsMenu(final Graphics2D g2) throws IOException {
 
         g2.setColor(Color.white);
         final float fontSize = 30F;
@@ -178,6 +182,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
 
 
+        optionsTop(frameX, frameY, g2);
+
         switch (mySettingsSubMenuOption) {
             case 0: optionsTop(frameX, frameY, g2);
             case 1: break;
@@ -190,8 +196,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         enterPressed = false;
     }
 
-    private void optionsTop(final int theFrameX, final int theFrameY, final Graphics2D g2) {
-        repaint();
+    private void optionsTop(final int theFrameX, final int theFrameY, final Graphics2D g2) throws IOException {
+//        repaint();
         int textX;
         int textY;
         String text = "Settings menu";
@@ -219,6 +225,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can save
             if (enterPressed) {
+                myGameUI = NORMAL_STATE;
+                myMaze.save();
+                repaint();
                 System.out.println("You clicked the enter key!");
             }
 
@@ -233,7 +242,13 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can load
             if (enterPressed) {
+                myMaze = myMaze.load();
+                System.out.println(myMaze);
                 System.out.println("You clicked the enter key!");
+                requestFocus();
+                myGameUI = NORMAL_STATE;
+                repaint();
+                enterPressed = false;
             }
         }
         //NewGame
@@ -260,12 +275,15 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can Exit
             if (enterPressed) {
+
+                repaint();
                 //System.out.println("You clicked the enter key!");
                 myGameUI = NORMAL_STATE;
 
             }
         }
-
+        System.out.println(myGameUI);
+        System.out.println(mySettingsSubMenuOption);
         //
     }
 
@@ -695,6 +713,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             myGameUI = PAUSED_STATE;
         } else if (myGameUI == PAUSED_STATE) {
             myGameUI = NORMAL_STATE;
+            mySettingsSubMenuOption = 0;
         }
         repaint();
     }

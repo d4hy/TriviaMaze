@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @author David Hoang
  * @version Fall 2023
  */
-public interface Question extends Serializable {
+public interface Question {
 
     String getQuestionText();
 

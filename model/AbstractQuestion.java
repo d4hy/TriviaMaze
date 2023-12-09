@@ -6,6 +6,8 @@ package model;
 
 import controller.Question;
 
+import java.io.Serializable;
+
 /**
  * Class will hold the list of Questions to be answered and evaluated during game.
  *
@@ -13,7 +15,7 @@ import controller.Question;
  * @author David Hoang
  * @version Fall 2023
  */
-public abstract class AbstractQuestion implements Question {
+public abstract class AbstractQuestion implements Question, Serializable {
 
     /**
      * Question to be answered in Maze.

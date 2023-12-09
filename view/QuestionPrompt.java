@@ -29,7 +29,7 @@ public class QuestionPrompt implements PropertyChangeListener {
     /**
      * The Maze object to be referenced.
      */
-    private final Maze myMaze;
+    private Maze myMaze;
 
     /**
      * The current room to reference.

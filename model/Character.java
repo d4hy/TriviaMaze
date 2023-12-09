@@ -1,13 +1,9 @@
 package model;
+
 import controller.MazeControls;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+
+import java.awt.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Objects;
-import javax.imageio.ImageIO;
 
 
 /**
