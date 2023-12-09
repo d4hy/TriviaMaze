@@ -21,7 +21,7 @@ import model.Maze;
  * @author Faith Capito
  * @version Fall 2023
  */
-public  final class TriviaMaze {
+public  final class TriviaMaze implements PropertyChangeListener {
 
     /**
      *  Maze Object to be referenced.
@@ -89,14 +89,21 @@ public  final class TriviaMaze {
         mazeview.requestFocusInWindow();
     }
 
+    /**
+     * Listens for property changes in the Maze class.
+     * W
+     *
+     * @param theEvt The property change event.
+     */
 
-
-
-
-
-
-
-
-
-
+    @Override
+    public void propertyChange(final PropertyChangeEvent theEvt) {
+        // Listen for changes in the model, if needed.
+        final String propertyName = theEvt.getPropertyName();
+        if (propertyName.equals(myMaze.PROPERTY_LOAD)) {
+            myMaze = (Maze) theEvt.getNewValue();
+            myMaze.addPropertyChangeListener(this);
+            myWindow.repaint();
+        }
+    }
 }

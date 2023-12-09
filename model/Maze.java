@@ -114,7 +114,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     /**
      * Signals change from the model to the view.
      */
-    private PropertyChangeSupport myPcs;
+    private  PropertyChangeSupport myPcs;
 
     /**
      * Arraylist of Questions to be used throughout setup of Maze.
@@ -373,6 +373,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         } catch (final ClassNotFoundException exception) {
             System.out.println("IOException is caught: " + exception);
         }
+        myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE,null, myCurrentRoom);
+        myPcs.firePropertyChange(PROPERTY_LOAD, null,  maze);
 
         return maze;
     }

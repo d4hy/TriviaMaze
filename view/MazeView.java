@@ -139,7 +139,11 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
     public void paintComponent(final Graphics theG) {
         super.paintComponent(theG);
+
         final Graphics2D g2 = (Graphics2D) theG;
+        System.out.println("GAMEUI:" + myGameUI);
+        System.out.println("SUBMENU-OPTIONS:" + mySettingsSubMenuOption);
+
         g2.setColor(Color.WHITE);
 
         if (myRoom != null) {
@@ -242,7 +246,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can load
             if (enterPressed) {
-                myMaze = myMaze.load();
+                myMaze.load();
+                //myMaze.addPropertyChangeListener(this);
                 System.out.println(myMaze);
                 System.out.println("You clicked the enter key!");
                 requestFocus();
@@ -282,9 +287,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
             }
         }
-        System.out.println(myGameUI);
-        System.out.println(mySettingsSubMenuOption);
-        //
+
+
     }
 
     /**
@@ -591,6 +595,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             }
 
 
+        } else if (propertyName.equals(myMaze.PROPERTY_LOAD)) {
+            myMaze = (Maze) theEvt.getNewValue();
+            myMaze.addPropertyChangeListener(this);
+            repaint();
         }
 
     }

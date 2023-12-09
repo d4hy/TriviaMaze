@@ -17,13 +17,19 @@ import java.beans.PropertyChangeListener;
 public interface PropertyChangedEnabledMazeControls extends MazeControls {
 
     /**
-     * A property name for the current GAME_OVER property in the game.
+     * A property name for the current GAME_OVER field in the game.
      */
     String PROPERTY_GAME_OVER = "GAME_OVER";
     /**
      * A property name for the current game won status.
      */
     String PROPERTY_GAME_WON ="GAME_WON";
+
+    /**
+     * A property name for when we load the status of the game.
+     */
+
+    String PROPERTY_LOAD ="LOADED";
 
     /**
      * A property name for the current position of the character status.

@@ -191,7 +191,8 @@ public class QuestionPrompt implements PropertyChangeListener {
 
     /**
      * Listens for property changes in the Maze class.
-     * When the freeze property is triggered, it displays a question prompt.
+     * When the prompt question property is triggered, it displays a question prompt,
+     * otherwise it loads the state of the maze, when the maze property load is fired.
      *
      * @param theEvt The property change event.
      */
@@ -211,6 +212,11 @@ public class QuestionPrompt implements PropertyChangeListener {
         } else if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_RIGHT_DOOR)) {
             myRoom = (Room) theEvt.getNewValue();
             displayQuestionPrompt(myRoom.getRightDoor());
+        }  else if (propertyName.equals(myMaze.PROPERTY_LOAD)) {
+            myMaze = (Maze) theEvt.getNewValue();
+            myMaze.addPropertyChangeListener(this);
+
         }
+
     }
 }
