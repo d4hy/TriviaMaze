@@ -347,7 +347,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      * Method that can load a previous state of the game from a file.
      * @return Maze with saved state.
      */
-    public Maze load(final String theFileName) throws IOException {
+    public Maze load(final String theFileName) {
 
         Maze maze = null;
 
@@ -361,8 +361,10 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
             System.out.println("State has been loaded.");
 
 
+        } catch (final IOException exception) {
+            System.out.println("IO Exception is caught.");
         } catch (final ClassNotFoundException exception) {
-            System.out.println("IOException is caught: " + exception);
+            System.out.println("Class not found exception is caught.");
         }
 
         myPcs.firePropertyChange(PROPERTY_LOAD, null,  maze);
