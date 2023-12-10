@@ -400,8 +400,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
             }
         }
 
-        // Using index, will add questions to each door given by the list of questions
-        // extracted from the database.
         for (int i = 0; i < myQuestions.size() && i < myDoors.size(); i++) {
             myDoors.get(i).setQuestion(myQuestions.get(i));
             System.out.println(myDoors.get(i).getMyQuestion().getQuestionText());
@@ -409,7 +407,9 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
 
     }
 
-
+    public ArrayList<Door> getMyDoors() {
+        return myDoors;
+    }
 
     /**
      * Evaluates if Character can move in Maze.
