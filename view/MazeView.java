@@ -246,6 +246,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can load
             if (enterPressed) {
+                mySettingsMenuCommand = 0;
+
                 myMaze.load();
                 //myMaze.addPropertyChangeListener(this);
                 System.out.println(myMaze);
@@ -599,7 +601,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             myMaze = (Maze) theEvt.getNewValue();
             myMaze.addPropertyChangeListener(this);
             myRoom = myMaze.getCurrentRoom();
-            System.out.println("Top Door Status:" + myRoom.getTopDoor().isLocked());
             repaint();
         }
 
