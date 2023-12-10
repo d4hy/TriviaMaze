@@ -11,11 +11,15 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Objects;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import model.Character;
@@ -132,6 +136,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
+        playMusic();
         setTimer();
     }
 
@@ -142,6 +147,33 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 // or only use to calculate time limit for user to answer questions.
             }
         });
+    }
+
+    /**
+     * Plays music on start up of window.
+     */
+    private static void playMusic() {
+
+        final String perfectPair = "Beabadoobee - the perfect pair (Instrumental).wav";
+
+        try {
+
+            final File musicPath = new File(perfectPair);
+
+            if (musicPath.exists()) {
+
+                final AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                final Clip clip = AudioSystem.getClip();
+                clip.open(audioInput);
+                clip.start();
+
+            } else {
+                System.out.println("Cannot find file.");
+            }
+
+        } catch (final Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     public void paintComponent(final Graphics theG) {
