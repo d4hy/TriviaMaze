@@ -11,6 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import controller.Question;
 import model.Door;
 import model.Maze;
+import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -228,10 +230,11 @@ class MazeTest {
     void testSaveAndLoad() throws IOException {
         testNewGame();
         testAnsweringCorrectlyAndPromptingQuestionToRightRoom();
-        myTestMaze.save();
+        final String saveLoad = "Successful Save/Load ";
+        myTestMaze.save(saveLoad);
         myTestMaze.newGame();
         testNewGame();
-        myTestMaze = myTestMaze.load();
+        myTestMaze = myTestMaze.load(saveLoad);
 
 
         assertEquals(ENTER_RIGHT_ROOM_CORRECTLY, myTestMaze.toString(), SHOULD_BE_SAME);
@@ -239,6 +242,36 @@ class MazeTest {
 
 
     }
+//    @Test
+//    void testFailsSave() throws IOException {
+//        Maze failMaze = new Maze(WIDTH_HEIGHT, WIDTH_HEIGHT);
+//
+//        try {
+//            failMaze.save();
+//            //Assertions.fail("Expected to fail");
+//        } catch (final IllegalArgumentException e) {
+//            // If the exception is thrown, the test passes
+//            assertEquals("Cannot divide by zero", e.getMessage());
+//        }
+//
+//
+//
+//    }
+//    @Test
+//    void testFailsLoad() throws IOException {
+//        Maze failMaze = new Maze(WIDTH_HEIGHT, WIDTH_HEIGHT);
+//
+//        try {
+//            myTestMaze = myTestMaze.load();
+//            Assertions.fail("Expected to fail");
+//        } catch (final IllegalArgumentException e) {
+//            // If the exception is thrown, the test passes
+//            assertEquals("Cannot Load something that is never saved", e.getMessage());
+//        }
+
+
+
+//    }
 
     @Test
     void testDoorsForDifferentQuestions() {
