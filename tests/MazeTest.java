@@ -14,6 +14,7 @@ import model.Maze;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -39,6 +40,17 @@ class MazeTest {
      * A test fixture for the false results.
      */
     private static final String SHOULD_BE_FALSE = "This should be False";
+
+
+    /**
+     * A test fixture for entering the right room correctly after answering question correctly
+     */
+    private static final String ENTER_RIGHT_ROOM_CORRECTLY = """
+                Current Room's row and column:[0][1], the game is lost:false, the game is won:false
+                Top Door Status:null
+                Bottom Door Status:exists, isLocked:false, Question has not been prompted:true, Question has been answered correctly:false
+                Right Door Status:exists, isLocked:false, Question has not been prompted:true, Question has been answered correctly:false
+                Left Door Status:exists, isLocked:false, Question has not been prompted:false, Question has been answered correctly:true""";
     /**
      * Test fixture for maze to be used for tests.
      */
@@ -67,7 +79,7 @@ class MazeTest {
 
     }
     @Test
-    void testAnsweringCorrectlyAndPromptingQuestionToRightRoom() {
+    void    testAnsweringIncorrectlySquareRoomGameOver() {
         myTestMaze.getCurrentRoom().getRightDoor().
                 setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
         myTestMaze.getCurrentRoom().getRightDoor().setMyQuestionNotPromptedStatus(false);
@@ -126,9 +138,9 @@ class MazeTest {
         myTestMaze.getCurrentRoom().getBottomDoor().setMyQuestionNotPromptedStatus(false);
         myTestMaze.getCurrentRoom().getBottomDoor().lock();
 
-
-        for (int i = 0; i < moveDownToBottomDoor; i++) {
-            myTestMaze.moveDown();
+        final int moveUpToTopDoor = 15;
+        for (int i = 0; i < moveUpToTopDoor; i++) {
+            myTestMaze.moveUp();
         }
 
 
@@ -188,7 +200,7 @@ class MazeTest {
         assertEquals(expected, myTestMaze.toString(), SHOULD_BE_SAME);
     }
     @Test
-    void testAnsweringIncorrectlyRoomsSquareGameOver() {
+    void testAnsweringCorrectlyAndPromptingQuestionToRightRoom() {
         myTestMaze.getCurrentRoom().getRightDoor().
                 setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
         myTestMaze.getCurrentRoom().getRightDoor().setMyQuestionNotPromptedStatus(false);
@@ -196,14 +208,9 @@ class MazeTest {
         for (int i = 0; i < moveRightToRightDoor; i++) {
             myTestMaze.moveRight();
         }
-        final String expected = """
-                Current Room's row and column:[0][1], the game is lost:false, the game is won:false
-                Top Door Status:null
-                Bottom Door Status:exists, isLocked:false, Question has not been prompted:true, Question has been answered correctly:false
-                Right Door Status:exists, isLocked:false, Question has not been prompted:true, Question has been answered correctly:false
-                Left Door Status:exists, isLocked:false, Question has not been prompted:false, Question has been answered correctly:true""";
 
-        assertEquals(expected, myTestMaze.toString(), SHOULD_BE_SAME);
+
+        assertEquals(ENTER_RIGHT_ROOM_CORRECTLY, myTestMaze.toString(), SHOULD_BE_SAME);
     }
 
     @Test
@@ -214,6 +221,22 @@ class MazeTest {
         }
 
         assertFalse(myTestMaze.canMove(), SHOULD_BE_FALSE);
+
+    }
+
+    @Test
+    void testSaveAndLoad() throws IOException {
+        testNewGame();
+        testAnsweringCorrectlyAndPromptingQuestionToRightRoom();
+        myTestMaze.save();
+        myTestMaze.newGame();
+        testNewGame();
+        myTestMaze = myTestMaze.load();
+
+
+        assertEquals(ENTER_RIGHT_ROOM_CORRECTLY, myTestMaze.toString(), SHOULD_BE_SAME);
+
+
 
     }
 
