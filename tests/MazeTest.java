@@ -16,7 +16,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -227,7 +229,7 @@ class MazeTest {
     }
 
     @Test
-    void testSaveAndLoad() throws IOException {
+    void testSaveAndLoad() throws IOException, ClassNotFoundException {
         testNewGame();
         testAnsweringCorrectlyAndPromptingQuestionToRightRoom();
         final String saveLoad = "Successful.txt";
@@ -240,36 +242,10 @@ class MazeTest {
 
 
     }
-//    @Test
-//    void testFailsSave() throws IOException {
-//        Maze failMaze = new Maze(WIDTH_HEIGHT, WIDTH_HEIGHT);
-//
-//        try {
-//            failMaze.save();
-//            //Assertions.fail("Expected to fail");
-//        } catch (final IllegalArgumentException e) {
-//            // If the exception is thrown, the test passes
-//            assertEquals("Cannot divide by zero", e.getMessage());
-//        }
-//
-//
-//
-//    }
-//    @Test
-//    void testFailsLoad() throws IOException {
-//        Maze failMaze = new Maze(WIDTH_HEIGHT, WIDTH_HEIGHT);
-//
-//        try {
-//            myTestMaze = myTestMaze.load();
-//            Assertions.fail("Expected to fail");
-//        } catch (final IllegalArgumentException e) {
-//            // If the exception is thrown, the test passes
-//            assertEquals("Cannot Load something that is never saved", e.getMessage());
-//        }
 
 
 
-//    }
+
 
     @Test
     void testDoorsForDifferentQuestions() {

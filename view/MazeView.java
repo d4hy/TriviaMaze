@@ -262,8 +262,17 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             if (enterPressed) {
                 mySettingsMenuCommand = 0;
 
-                myMaze.load(FILE_NAME);
-                //myMaze.addPropertyChangeListener(this);
+                try {
+
+                    myMaze.load(FILE_NAME);
+
+                } catch (final IOException exception) {
+                    System.out.println("Exception: State has not been saved.");
+                    exception.printStackTrace();
+                } catch (final ClassNotFoundException exception) {
+                    exception.printStackTrace();
+                }
+
                 System.out.println(myMaze);
                 System.out.println("You clicked the enter key!");
                 requestFocus();
