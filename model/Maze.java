@@ -700,14 +700,16 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      * @return -1 if the room doesn't exist, otherwise a value >= 0
      */
     public int getCurrentRoomRow() {
+        int res = 0;
         for (int i = 0; i < myRooms.length; i++) {
             for (int j = 0; j < myRooms[i].length; j++) {
                 if (myRooms[i][j] == myCurrentRoom) {
-                    return i;
+                    res = i;
+                    break;
                 }
             }
         }
-        return -1; // Room not found, handle appropriately
+        return res;
     }
 
     /**
@@ -715,14 +717,16 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      * @return -1 if the room doesn't exist, otherwise a value >= 0
      */
     public int getCurrentRoomCol() {
+        int res = 0;
         for (int i = 0; i < myRooms.length; i++) {
             for (int j = 0; j < myRooms[i].length; j++) {
                 if (myRooms[i][j] == myCurrentRoom) {
-                    return j;
+                    res = j;
+                    break;
                 }
             }
         }
-        return -1; // Room not found, handle appropriately
+        return res;
     }
 
     /**
@@ -1014,10 +1018,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
 
 
 
-    @Override
-    public void pauseGame() {
-
-    }
     /**
      * adds an object as a listener to the propertyChangeSupport object.
      * @param theListener The PropertyChangeListener to be added

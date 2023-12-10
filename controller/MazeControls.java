@@ -81,10 +81,7 @@ public interface MazeControls {
      */
     void moveRight();
 
-    /**
-     * Pauses the game, freezes the character in place, stops the timer from advancing.
-     */
-    void pauseGame();
+
 
 
 
