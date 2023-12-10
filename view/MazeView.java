@@ -598,6 +598,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         } else if (propertyName.equals(myMaze.PROPERTY_LOAD)) {
             myMaze = (Maze) theEvt.getNewValue();
             myMaze.addPropertyChangeListener(this);
+            myRoom = myMaze.getCurrentRoom();
+            System.out.println("Top Door Status:" + myRoom.getTopDoor().isLocked());
             repaint();
         }
 

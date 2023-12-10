@@ -370,10 +370,11 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
             file.close();
             System.out.println("State has been loaded.");
 
+
         } catch (final ClassNotFoundException exception) {
             System.out.println("IOException is caught: " + exception);
         }
-        myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE,null, myCurrentRoom);
+
         myPcs.firePropertyChange(PROPERTY_LOAD, null,  maze);
 
         return maze;
