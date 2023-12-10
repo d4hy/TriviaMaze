@@ -1,12 +1,16 @@
+/*
+ * TriviaMaze
+ * Fall 2023
+ */
 package tests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import controller.MazeControls;
-import model.Maze;
-import org.junit.jupiter.api.BeforeEach;
 import model.Character;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 
 
