@@ -332,13 +332,11 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     /**
      * Method to save the current state of the game into an object file.
      */
-    public void save() throws IOException {
-
-        final String saveFile = "TriviaMaze.txt";
+    public void save(final String theFileName) {
 
         try {
 
-            final FileOutputStream file = new FileOutputStream(saveFile);
+            final FileOutputStream file = new FileOutputStream(theFileName);
 
             final ObjectOutputStream out = new ObjectOutputStream(file);
             out.writeObject(this);
@@ -356,14 +354,13 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      * Method that can load a previous state of the game from a file.
      * @return Maze with saved state.
      */
-    public Maze load() throws IOException {
+    public Maze load(final String theFileName) throws IOException {
 
-        final String saveFile = "TriviaMaze.txt";
         Maze maze = null;
 
         try {
 
-            final FileInputStream file = new FileInputStream(saveFile);
+            final FileInputStream file = new FileInputStream(theFileName);
             final ObjectInputStream in = new ObjectInputStream(file);
             maze = (Maze) in.readObject();
             in.close();

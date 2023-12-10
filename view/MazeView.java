@@ -38,6 +38,11 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private static final String  CURSOR_TEXT = "-";
 
     /**
+     * File name when user wants to save and load a previous game.
+     */
+    private static final String FILE_NAME = "TriviaMaze.txt";
+
+    /**
      * This variable will represent the state when we are in a playable state.
      */
     private static final int NORMAL_STATE =  1;
@@ -230,7 +235,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             //TODO handle the case so you can save
             if (enterPressed) {
                 myGameUI = NORMAL_STATE;
-                myMaze.save();
+                myMaze.save(FILE_NAME);
                 repaint();
                 System.out.println("You clicked the enter key!");
             }
@@ -248,7 +253,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             if (enterPressed) {
                 mySettingsMenuCommand = 0;
 
-                myMaze.load();
+                myMaze.load(FILE_NAME);
                 //myMaze.addPropertyChangeListener(this);
                 System.out.println(myMaze);
                 System.out.println("You clicked the enter key!");
