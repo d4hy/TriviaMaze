@@ -332,22 +332,15 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     /**
      * Method to save the current state of the game into an object file.
      */
-    public void save(final String theFileName) {
+    public void save(final String theFileName) throws IOException {
 
-        try {
+        final FileOutputStream file = new FileOutputStream(theFileName);
+        final ObjectOutputStream out = new ObjectOutputStream(file);
+        out.writeObject(this);
+        out.close();
+        file.close();
+        System.out.println("State has been saved successfully.");
 
-            final FileOutputStream file = new FileOutputStream(theFileName);
-
-            final ObjectOutputStream out = new ObjectOutputStream(file);
-            out.writeObject(this);
-            out.close();
-            file.close();
-            System.out.println("State has been saved.");
-
-        } catch (final IOException exception) {
-            System.out.println("IOException is caught.");
-            exception.printStackTrace();
-        }
     }
 
     /**

@@ -11,7 +11,9 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Objects;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -235,7 +237,14 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             //TODO handle the case so you can save
             if (enterPressed) {
                 myGameUI = NORMAL_STATE;
-                myMaze.save(FILE_NAME);
+                try {
+
+                    myMaze.save(FILE_NAME);
+
+                } catch (final IOException exception) {
+                    System.out.println("Exception: State has not been saved.");
+                    exception.printStackTrace();
+                }
                 repaint();
                 System.out.println("You clicked the enter key!");
             }
