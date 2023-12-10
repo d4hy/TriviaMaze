@@ -230,13 +230,11 @@ class MazeTest {
     void testSaveAndLoad() throws IOException {
         testNewGame();
         testAnsweringCorrectlyAndPromptingQuestionToRightRoom();
-        final String saveLoad = "Successful Save/Load ";
+        final String saveLoad = "Successful.txt";
         myTestMaze.save(saveLoad);
         myTestMaze.newGame();
         testNewGame();
         myTestMaze = myTestMaze.load(saveLoad);
-
-
         assertEquals(ENTER_RIGHT_ROOM_CORRECTLY, myTestMaze.toString(), SHOULD_BE_SAME);
 
 
