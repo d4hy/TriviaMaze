@@ -52,7 +52,8 @@ class MazeTest {
     }
     @Test
     void testAnsweringCorrectlyAndPromptingQuestionToRightRoom() {
-        myTestMaze.getCurrentRoom().getRightDoor().setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
+        myTestMaze.getCurrentRoom().getRightDoor().
+                setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
         myTestMaze.getCurrentRoom().getRightDoor().setMyQuestionNotPromptedStatus(false);
         final int moveRightToRightDoor = 26;
         for (int i = 0; i < moveRightToRightDoor; i++) {
@@ -67,9 +68,35 @@ class MazeTest {
                 Top Door Status:null
                 Bottom Door Status:exists, isLocked:false, Question has not been prompted:true, Question has been answered correctly:false
                 Right Door Status:exists, isLocked:false, Question has not been prompted:true, Question has been answered correctly:false
-                Left Door Status:null""";
+                Left Door Status:exists, isLocked:false, Question has not been prompted:false, Question has been answered correctly:true""";
         assertEquals(expected, myTestMaze.toString(), SHOULD_BE_SAME);
 
     }
+
+    @Test
+    void testAnsweringIncorrectlyStartingRoomGameOver() {
+        myTestMaze.getCurrentRoom().getRightDoor().
+                setMyQuestionHasBeenAnsweredCorrectlyStatus(false);
+        myTestMaze.getCurrentRoom().getRightDoor().setMyQuestionNotPromptedStatus(false);
+        myTestMaze.getCurrentRoom().getRightDoor().lock();
+        myTestMaze.getCurrentRoom().getBottomDoor().
+                setMyQuestionHasBeenAnsweredCorrectlyStatus(false);
+        myTestMaze.getCurrentRoom().getBottomDoor().
+                lock();
+        myTestMaze.getCurrentRoom().getBottomDoor().setMyQuestionNotPromptedStatus(false);
+        final int moveRightToRightDoor = 26;
+        for (int i = 0; i < moveRightToRightDoor; i++) {
+            myTestMaze.moveRight();
+        }
+        final String expected = """
+                Current Room's row and column:[0][0], the game is lost:true, the game is won:false
+                Top Door Status:null
+                Bottom Door Status:exists, isLocked:true, Question has not been prompted:false, Question has been answered correctly:false
+                Right Door Status:exists, isLocked:true, Question has not been prompted:false, Question has been answered correctly:false
+                Left Door Status:null""";
+
+        assertEquals(expected, myTestMaze.toString(), SHOULD_BE_SAME);
+    }
+
 
 }

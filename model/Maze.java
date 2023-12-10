@@ -409,15 +409,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
 
     }
 
-    /**
-     * Evaluates the answer given by the Character to a trivia Question.
-     */
-    public boolean answerQuestion(final String theInput) {
 
-        final boolean validity = false;
-
-        return validity;
-    }
 
     /**
      * Evaluates if Character can move in Maze.
