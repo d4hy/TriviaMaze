@@ -8,10 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import controller.Question;
+import model.Door;
 import model.Maze;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 
 /**
@@ -209,6 +214,20 @@ class MazeTest {
         }
 
         assertFalse(myTestMaze.canMove(), SHOULD_BE_FALSE);
+
+    }
+
+    @Test
+    void testDoorsForDifferentQuestions() {
+
+        final ArrayList<Door> gameQuestions = new ArrayList<>(myTestMaze.getMyDoors());
+        final HashSet<Question> gameQuestionsNoDupes = new HashSet<>();
+
+        for (Door door : gameQuestions) {
+            gameQuestionsNoDupes.add(door.getMyQuestion());
+        }
+
+        assertEquals(gameQuestions.size(), gameQuestionsNoDupes.size(), SHOULD_BE_SAME);
 
     }
 
