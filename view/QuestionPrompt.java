@@ -1,15 +1,14 @@
 package view;
 
+import controller.Question;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.JOptionPane;
-
 import model.Door;
 import model.Maze;
 import model.MultipleChoice;
-import controller.Question;
 import model.Room;
 import model.ShortAnswer;
 import model.TrueOrFalse;
@@ -48,21 +47,24 @@ public class QuestionPrompt implements PropertyChangeListener {
     /**
      * Displays a question prompt to the user and processes their answer.
      * If the answer is correct, it sets the bottom door as prompted and unlocks it.
-     * If the dialog is closed or the answer is incorrect, it sets the question as not prompted.
+     * If the dialog is closed or the answer is incorrect,
+     * it sets the question as not prompted.
      * Updates the game state accordingly.
      *
      * @param theDoor The door for which the question prompt is displayed.
      */
     private void displayQuestionPrompt(final Door theDoor) {
         // Retrieve the associated question
-        final Question question = theDoor.getMyQuestion();
+        if (!myMaze.isGameLost()) {
+            final Question question = theDoor.getMyQuestion();
 
-        if (question instanceof TrueOrFalse) {
-            handleTrueOrFalseQuestion(theDoor, (TrueOrFalse) question);
-        } else if (question instanceof MultipleChoice) {
-            handleMultipleChoiceQuestion(theDoor, (MultipleChoice) question);
-        } else if (question instanceof ShortAnswer) {
-            handleShortAnswerQuestion(theDoor, (ShortAnswer) question);
+            if (question instanceof TrueOrFalse) {
+                handleTrueOrFalseQuestion(theDoor, (TrueOrFalse) question);
+            } else if (question instanceof MultipleChoice) {
+                handleMultipleChoiceQuestion(theDoor, (MultipleChoice) question);
+            } else if (question instanceof ShortAnswer) {
+                handleShortAnswerQuestion(theDoor, (ShortAnswer) question);
+            }
         }
     }
 
@@ -72,7 +74,9 @@ public class QuestionPrompt implements PropertyChangeListener {
      * @param theDoor The door for which the question prompt is displayed.
      * @param theMultipleChoiceQuestion The multiple choice type question.
      */
-    private void  handleMultipleChoiceQuestion(final Door theDoor, final MultipleChoice theMultipleChoiceQuestion) {
+    private void  handleMultipleChoiceQuestion(final Door theDoor,
+                                               final MultipleChoice
+                                                       theMultipleChoiceQuestion) {
         final ArrayList<String> options = new ArrayList<>();
         options.add(theMultipleChoiceQuestion.getAnswerText());
         options.add(theMultipleChoiceQuestion.getSecondOption());
