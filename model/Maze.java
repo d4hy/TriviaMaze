@@ -438,14 +438,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
 
     }
 
-
-    /**
-     * Door holding current Question to be locked if answered incorrectly.
-     */
-    private void lockDoor(final Door theDoor) {
-
-    }
-
     /**
      * Returns if the game is lost or not.
      * @return true if the game is lost, false if the game is not lost.
