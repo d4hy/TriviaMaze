@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import controller.Question;
+import model.Character;
 import model.Door;
 import model.Maze;
 import org.junit.Assert;
@@ -207,10 +208,17 @@ class MazeTest {
     }
     @Test
     void testAnsweringCorrectlyAndPromptingQuestionToRightRoom() {
+        myTestMaze.moveRight();
+        final String expected = "right";
+
+        final Character character = myTestMaze.getCharacter();
+
+        assertEquals(expected, character.getMyDirection(), SHOULD_BE_SAME);
+
         myTestMaze.getCurrentRoom().getRightDoor().
                 setMyQuestionHasBeenAnsweredCorrectlyStatus(true);
         myTestMaze.getCurrentRoom().getRightDoor().setMyQuestionNotPromptedStatus(false);
-        final int moveRightToRightDoor = 26;
+        final int moveRightToRightDoor = 25;
         for (int i = 0; i < moveRightToRightDoor; i++) {
             myTestMaze.moveRight();
         }
