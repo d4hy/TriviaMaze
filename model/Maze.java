@@ -87,14 +87,14 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     private ArrayList<Door> myDoors;
 
     /**
-     * Width of Maze rooms.
+     * Columns in Maze.
      */
-    private final int myWidth;
+    private final int myColumns;
 
     /**
-     * Height of Maze rooms.
+     * Rows in Maze.
      */
-    private final int myHeight;
+    private final int myRows;
 
     /**
      * The status of the game if it is over.
@@ -121,15 +121,17 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      */
     private ArrayList<Question> myQuestions = new ArrayList<>();
 
+    private static Maze uniqueInstance;
+
 
     /**
      *
      * Constructor for new game of Maze, creating starting point of a Character and Rooms.
      *
-     * @param theWidth of how many rooms there are wide.
-     * @param theHeight of many rooms there are tall.
+     * @param theColumns of how many rooms there are wide.
+     * @param theRows of many rooms there are tall.
      */
-    public Maze(final int theWidth, final int theHeight) {
+    public Maze(final int theRows, final int theColumns) {
         super();
 
 
@@ -143,8 +145,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH,
                 MazeControls.MY_SCREEN_HEIGHT);
 
-        myWidth = theWidth;
-        myHeight = theHeight;
+        myColumns = theColumns;
+        myRows = theRows;
         myPcs = new PropertyChangeSupport(this);
         setMoveTrue();
         setMyGameOverStatus(false);
@@ -156,16 +158,26 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     }
 
     /**
+     * Following Singleton design pattern, returns a global reference to the same
+     * instance or creates one if null.
+     */
+//    public static Maze getInstance() {
+//        if (uniqueInstance == null) {
+//            uniqueInstance = new Maze()
+//        }
+//    }
+
+    /**
      * Fills the maze with Rooms and sets initial game values.
      */
     public void createMaze() {
 
         myCorrectAnswers = 0;
-        myRooms = new Room[myWidth][myHeight];
+        myRooms = new Room[myRows][myColumns];
         myDoors = new ArrayList<>();
 
-        for (int i = 0; i < myWidth; i++) {
-            for (int j = 0; j < myHeight; j++) {
+        for (int i = 0; i < myRows; i++) {
+            for (int j = 0; j < myColumns; j++) {
                 myRooms[i][j] = new Room();
             }
         }
@@ -199,8 +211,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         createBottomRowDoors();
         createRightColDoors();
 
-        for (int i = 1; i < myWidth - 1; i++) {
-            for (int j = 1; j < myHeight - 1; j++) {
+        for (int i = 1; i < myRows - 1; i++) {
+            for (int j = 1; j < myColumns - 1; j++) {
                 myRooms[i][j].setDoor(RIGHT_DOOR);
                 myRooms[i][j].setDoor(LEFT_DOOR);
                 myRooms[i][j].setDoor(TOP_DOOR);
@@ -222,7 +234,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myRooms[0][ENDPOINT].setDoor(LEFT_DOOR);
         myRooms[0][ENDPOINT].setDoor(BOTTOM_DOOR);
 
-        for (int i = 1; i < myWidth - 1; i++) {
+        for (int i = 1; i < myColumns - 1; i++) {
             myRooms[0][i].setDoor(LEFT_DOOR);
             myRooms[0][i].setDoor(RIGHT_DOOR);
             myRooms[0][i].setDoor(BOTTOM_DOOR);
@@ -240,7 +252,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myRooms[ENDPOINT][0].setDoor(RIGHT_DOOR);
         myRooms[ENDPOINT][0].setDoor(TOP_DOOR);
 
-        for (int i = 1; i < myHeight - 1; i++) {
+        for (int i = 1; i < myRows - 1; i++) {
             myRooms[i][0].setDoor(TOP_DOOR);
             myRooms[i][0].setDoor(RIGHT_DOOR);
             myRooms[i][0].setDoor(BOTTOM_DOOR);
@@ -259,7 +271,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myRooms[ENDPOINT][ENDPOINT].setDoor(LEFT_DOOR);
         myRooms[ENDPOINT][ENDPOINT].setDoor(TOP_DOOR);
 
-        for (int i = 1; i < myWidth - 1; i++) {
+        for (int i = 1; i < myColumns - 1; i++) {
             myRooms[ENDPOINT][i].setDoor(TOP_DOOR);
             myRooms[ENDPOINT][i].setDoor(RIGHT_DOOR);
             myRooms[ENDPOINT][i].setDoor(LEFT_DOOR);
@@ -272,8 +284,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      */
     private void createRightColDoors() {
 
-//        myRooms[ENDPOINT][1].setDoor();
-        for (int i = 1; i < myWidth - 1; i++) {
+        for (int i = 1; i < myRows - 1; i++) {
             myRooms[i][ENDPOINT].setDoor(TOP_DOOR);
             myRooms[i][ENDPOINT].setDoor(BOTTOM_DOOR);
             myRooms[i][ENDPOINT].setDoor(LEFT_DOOR);
@@ -287,8 +298,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      */
     private void assignDoors() {
 
-        for (int i = 0; i < myWidth; i++) {
-            for (int j = 0; j < myHeight; j++) {
+        for (int i = 0; i < myRows; i++) {
+            for (int j = 0; j < myColumns; j++) {
 
                 // assigns all rooms that have both left and top doors.
                 if (j > 0 && i > 0) {
@@ -297,7 +308,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                 }
 
                 // assigns all rooms that have both right and bottom doors.
-                if (j < myHeight - 2 && i < myWidth - 2) {
+                if (j < myRows - 2 && i < myColumns - 2) {
                     myRooms[i][j].assignRightDoor(myRooms[i][j + 1].getLeftDoor());
                     myRooms[i][j].assignBottomDoor(myRooms[i + 1][j].getTopDoor());
                 }
@@ -315,12 +326,12 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                 }
 
                 // assigns right doors of last row.
-                if (i == ENDPOINT && j < myHeight - 2) {
+                if (i == ENDPOINT && j < myColumns - 2) {
                     myRooms[i][j].assignRightDoor(myRooms[i][j + 1].getLeftDoor());
                 }
 
                 // assigns bottom doors of right column.
-                if (i < myWidth - 2 && j == ENDPOINT) {
+                if (i < myRows - 2 && j == ENDPOINT) {
                     myRooms[i][j].assignBottomDoor(myRooms[i + 1][j].getTopDoor());
                 }
 
@@ -382,8 +393,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         // Adds all active doors to list of doors after maze creation.
         // This will only check for bottom and right doors in all rooms,
         // avoiding adding doubles when some doors should be using a "shared" question.
-        for (int i = 0; i < myWidth; i++) {
-            for (int j = 0; j < myHeight; j++) {
+        for (int i = 0; i < myRows; i++) {
+            for (int j = 0; j < myColumns; j++) {
                 if (myRooms[i][j].getRightDoor() != null) {
                     myDoors.add(myRooms[i][j].getRightDoor());
                 }
