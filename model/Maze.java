@@ -114,7 +114,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     /**
      * Signals change from the model to the view.
      */
-    private  PropertyChangeSupport myPcs;
+    private static PropertyChangeSupport myPcs;
 
     /**
      * Arraylist of Questions to be used throughout setup of Maze.
@@ -363,6 +363,14 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         //myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null,  myCurrentRoom);
         //myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null,  myCharacter);
         return maze;
+    }
+
+    /**
+     * Method that gets the character object of the maze.
+     * @return a character object that the maze class is referencing.
+     */
+    public Character getCharacter () {
+        return myCharacter;
     }
 
     /**
