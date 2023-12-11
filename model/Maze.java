@@ -461,7 +461,9 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myPcs.firePropertyChange(PROPERTY_GAME_OVER, null, myGameOverStatus);
     }
 
-
+    /**
+     * Method starts and initializes the variables needed in order for a new game to start.
+     */
     @Override
     public void newGame() {
         // Calculate the initial position for the Character to be in the middle of the screen.
@@ -487,6 +489,18 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
 
     }
+
+    /**
+     * Is meant to be a cheat to spawn in the room [3][2].
+     */
+
+    public void cheatSpawnInRoomLeftOfBottomRight() {
+        final int row = 3;
+        final int col = 2;
+        myCurrentRoom = myRooms[row][col];
+        myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+    }
+
 
     /**
      * Handles the interaction when the character is near a specific door.
