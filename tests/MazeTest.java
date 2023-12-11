@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -407,6 +409,57 @@ class MazeTest {
 
         assertEquals(gameQuestions.size(), gameQuestionsNoDupes.size(), SHOULD_BE_SAME);
 
+    }
+
+    @Test
+    void testAddPropertyChangeListener() {
+        // Create a flag to check if the listener was called
+        final boolean[] listenerCalled = {false};
+        // Create a mock listener for testing
+        PropertyChangeListener mockListener = new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(final PropertyChangeEvent evt) {
+                final String propertyName = evt.getPropertyName();
+                if(propertyName.equals(myTestMaze.PROPERTY_CHARACTER_MOVE)) {
+                    listenerCalled[0] = true;
+                }
+
+            }
+        };
+        myTestMaze.addPropertyChangeListener(mockListener);
+
+        // Perform some operation that triggers a property change
+        myTestMaze.moveDown();
+
+        // Check if the listener was called
+        assertTrue(listenerCalled[0], "The property change listener was not called.");
+    }
+    @Test
+    void testRemovePropertyChangeListener() {
+        // Create a flag to check if the listener was called
+        final boolean[] listenerCalled = {false};
+
+        // Create a mock listener for testing
+        PropertyChangeListener mockListener = evt -> {
+            final String propertyName = evt.getPropertyName();
+            if (propertyName.equals(myTestMaze.PROPERTY_CHARACTER_MOVE)) {
+                listenerCalled[0] = true;
+            }
+        };
+
+        // Add the listener
+        myTestMaze.addPropertyChangeListener(mockListener);
+
+        // Remove the listener
+        myTestMaze.removePropertyChangeListener(mockListener);
+
+        // Perform some operation that triggers a property change
+        myTestMaze.moveDown();
+
+        // Check if the listener was not called
+        assertFalse(listenerCalled[0], "The property change listener should"
+                + " not be called after removal.");
     }
 
 
