@@ -1025,16 +1025,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myPcs.addPropertyChangeListener(theListener);
     }
 
-    /**
-     * adds an object as a listener to the propertyChangeSupport object.
-     * @param thePropertyName The name of the property to listen on.
-     * @param theListener The PropertyChangeListener to be added
-     */
-    @Override
-    public void addPropertyChangeListener(final String thePropertyName,
-                                          final PropertyChangeListener theListener) {
-        myPcs.addPropertyChangeListener(thePropertyName, theListener);
-    }
+
 
     /**
      * removes an object as a listener to the propertyChangeSupport object.
@@ -1045,16 +1036,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myPcs.removePropertyChangeListener(theListener);
     }
 
-    /**
-     * removes an object as a listener to the propertyChangeSupport object.
-     * @param thePropertyName The name of the property that was listened on.
-     * @param theListener The PropertyChangeListener to be removed
-     */
-    @Override
-    public void removePropertyChangeListener(final String thePropertyName,
-                                             final PropertyChangeListener theListener) {
-        myPcs.removePropertyChangeListener(thePropertyName, theListener);
-    }
 
 
 }
