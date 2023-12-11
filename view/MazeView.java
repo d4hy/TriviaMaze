@@ -683,7 +683,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             handleSpaceKey();
 
         }
-        if (myGameUI == PAUSED_STATE && mySettingsSubMenuOption == 0) {
+        if (myGameUI == PAUSED_STATE) {
             handleSettingsOptions(theEvent.getKeyCode());
 
 
