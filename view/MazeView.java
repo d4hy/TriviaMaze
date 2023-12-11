@@ -12,16 +12,15 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Objects;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import model.Character;
 import model.Door;
 import model.Maze;
@@ -58,7 +57,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      */
     private static final int PAUSED_STATE =  2;
 
-
+    /**
+     * Settings menu option that plays/pauses the music.
+     */
+    private static final int PLAY_MUSIC = 4;
 
 
     /**
@@ -81,6 +83,11 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * The current room to reference.
      */
     private Room myRoom;
+
+    /**
+     * Music player clip.
+     */
+    private Clip clip;
 
     /**
      * Counter for how many steps has taken the sprite alternates.
@@ -108,6 +115,23 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      */
     private transient boolean enterPressed;
 
+    /**
+     * Boolean representation if music is currently playing or paused.
+     */
+    private transient boolean myMusicPlayerIsPaused;
+
+    /**
+     * Boolean representation if music is looping.
+     */
+    private transient boolean myMusicPlayerIsLooping;
+
+    /**
+     * File chooser that is used for music player.
+     */
+    private transient JFileChooser myFileChooser;
+
+    private JTextField myFilePathField;
+
 
 
     /**
@@ -122,6 +146,11 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         mySettingsMenuCommand = 0;
         mySettingsSubMenuOption = 0;
         enterPressed = false;
+        myMusicPlayerIsPaused = false;
+        myMusicPlayerIsLooping = false;
+        myFilePathField = new JTextField(20);
+        myFileChooser = new JFileChooser(".");
+        myFileChooser.setFileFilter(new FileNameExtensionFilter("WAV Files", "wav"));
         this.myMaze = theMaze;
         setUp();
         myMaze.addPropertyChangeListener(this);
@@ -149,6 +178,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         });
     }
 
+    // TODO: Replace this method with file chooser music player implementation.
     /**
      * Plays music on start up of window.
      */
@@ -342,6 +372,38 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 //System.out.println("You clicked the enter key!");
                 myGameUI = NORMAL_STATE;
 
+            }
+        }
+
+        // Play music.
+        textY += MazeControls.MY_TILE_SIZE;
+        g2.drawString("Play Music", textX, textY);
+        if (mySettingsMenuCommand == PLAY_MUSIC) {
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+
+            if (enterPressed) {
+
+                if (clip != null && clip.isRunning()) {
+                    clip.stop();
+                }
+
+                try {
+                    File file = new File(myFilePathField.getText());
+                    AudioInputStream audioIn = AudioSystem.getAudioInputStream(file);
+
+                    clip = AudioSystem.getClip();
+                    clip.open(audioIn);
+
+                    if (myMusicPlayerIsLooping) {
+                        clip.loop(Clip.LOOP_CONTINUOUSLY);
+                    }
+
+                    clip.start();
+
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -699,7 +761,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         // in the main settings menu, after hitting pause
 
             //3 means we are at the 1st option out of 3.
-        final int maxCommandNum = 3;
+        final int maxCommandNum = 4;
 
         if (theEventCode == KeyEvent.VK_W || theEventCode == KeyEvent.VK_UP) {
             mySettingsMenuCommand--;
