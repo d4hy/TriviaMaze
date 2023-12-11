@@ -224,7 +224,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             drawCharacter(g2);
         }
 
-        if (myGameUI == PAUSED_STATE && mySettingsSubMenuOption == 0) {
+        if (myGameUI == PAUSED_STATE) {
             try {
                 drawTheSettingsMenu(g2);
             } catch (IOException e) {
@@ -762,7 +762,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
             //3 means we are at the 1st option out of 3.
         final int maxCommandNum = 4;
-
+//        switch (mySettingsSubMenuOption) {
+//            case
+//        }
         if (theEventCode == KeyEvent.VK_W || theEventCode == KeyEvent.VK_UP) {
             mySettingsMenuCommand--;
             if (mySettingsMenuCommand < 0) {
