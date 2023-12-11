@@ -761,10 +761,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         // in the main settings menu, after hitting pause
 
             //3 means we are at the 1st option out of 3.
-        final int maxCommandNum = 4;
-//        switch (mySettingsSubMenuOption) {
-//            case
-//        }
+        int maxCommandNum = 0;
+        switch (mySettingsSubMenuOption) {
+            case 0: maxCommandNum = 4;
+        }
         if (theEventCode == KeyEvent.VK_W || theEventCode == KeyEvent.VK_UP) {
             mySettingsMenuCommand--;
             if (mySettingsMenuCommand < 0) {
