@@ -338,6 +338,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         } else if (myMaze.isMyGameWon()) {
             text = "You Won!";
         }
+
             // have to adjust the x coordinate, or else the left side of
             // this screen will be drawn from the middle all the way to the right.
 
@@ -346,9 +347,17 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         textY = theFrameY + MazeControls.MY_TILE_SIZE;
         // y indicates the baseline of the text.
         g2.drawString(text, textX, textY);
+
+        text = "In Room: [" + myMaze.getCurrentRoomRow() + "]["
+                + myMaze.getCurrentRoomCol() + "]";
+        final int ySpace = 40;
+        textY += ySpace;
+        g2.drawString(text, textX, textY);
+
+
         //Save
         textX = theFrameX + MazeControls.MY_TILE_SIZE;
-        textY += MazeControls.MY_TILE_SIZE * 2;
+        textY += MazeControls.MY_TILE_SIZE;
         g2.drawString("Save", textX, textY);
         if (mySettingsMenuCommand == SAVE) {
 
@@ -381,11 +390,12 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can load
             if (enterPressed) {
-
-
                 try {
 
-                    myMaze.load(FILE_NAME);
+                    myMaze =myMaze.load(FILE_NAME);
+                    myMaze.addPropertyChangeListener(this);
+                    myRoom = myMaze.getCurrentRoom();
+                    myCharacter = myMaze.getCharacter();
 
                 } catch (final IOException exception) {
                     System.out.println("Exception: State has not been loaded.");
@@ -406,7 +416,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         textY += MazeControls.MY_TILE_SIZE;
         g2.drawString("New Game", textX, textY);
         if (mySettingsMenuCommand == NEW_GAME) {
-
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
@@ -462,7 +471,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can Exit
             if (enterPressed) {
-
+                enterPressed = false;
                 repaint();
                 //System.out.println("You clicked the enter key!");
                 myGameUI = NORMAL_STATE;
@@ -780,10 +789,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
 
         } else if (propertyName.equals(myMaze.PROPERTY_LOAD)) {
-            myMaze = (Maze) theEvt.getNewValue();
-            myMaze.addPropertyChangeListener(this);
-            myRoom = myMaze.getCurrentRoom();
-            myCharacter = myMaze.getCharacter();
+//            myMaze = (Maze) theEvt.getNewValue();
+//            myMaze.addPropertyChangeListener(this);
+//            myRoom = myMaze.getCurrentRoom();
+//            myCharacter = myMaze.getCharacter();
             repaint();
         }
 

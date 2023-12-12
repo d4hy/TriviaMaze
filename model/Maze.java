@@ -114,7 +114,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     /**
      * Signals change from the model to the view.
      */
-    private static PropertyChangeSupport myPcs;
+    private  PropertyChangeSupport myPcs;
 
     /**
      * Arraylist of Questions to be used throughout setup of Maze.
