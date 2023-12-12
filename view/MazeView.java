@@ -353,7 +353,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             if (enterPressed) {
                 try {
 
-                    myMaze.load(FILE_NAME);
+                    myMaze =myMaze.load(FILE_NAME);
+                    myMaze.addPropertyChangeListener(this);
+                    myRoom = myMaze.getCurrentRoom();
+                    myCharacter = myMaze.getCharacter();
 
                 } catch (final IOException exception) {
                     System.out.println("Exception: State has not been saved.");
@@ -744,10 +747,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
 
         } else if (propertyName.equals(myMaze.PROPERTY_LOAD)) {
-            myMaze = (Maze) theEvt.getNewValue();
-            myMaze.addPropertyChangeListener(this);
-            myRoom = myMaze.getCurrentRoom();
-            myCharacter = myMaze.getCharacter();
+//            myMaze = (Maze) theEvt.getNewValue();
+//            myMaze.addPropertyChangeListener(this);
+//            myRoom = myMaze.getCurrentRoom();
+//            myCharacter = myMaze.getCharacter();
             repaint();
         }
 
