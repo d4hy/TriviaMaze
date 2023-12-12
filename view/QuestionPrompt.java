@@ -56,14 +56,18 @@ public class QuestionPrompt implements PropertyChangeListener {
     private void displayQuestionPrompt(final Door theDoor) {
         // Retrieve the associated question
         if (!myMaze.isGameLost()) {
-            final Question question = theDoor.getMyQuestion();
+            try {
+                final Question question = theDoor.getMyQuestion();
 
-            if (question instanceof TrueOrFalse) {
-                handleTrueOrFalseQuestion(theDoor, (TrueOrFalse) question);
-            } else if (question instanceof MultipleChoice) {
-                handleMultipleChoiceQuestion(theDoor, (MultipleChoice) question);
-            } else if (question instanceof ShortAnswer) {
-                handleShortAnswerQuestion(theDoor, (ShortAnswer) question);
+                if (question instanceof TrueOrFalse) {
+                    handleTrueOrFalseQuestion(theDoor, (TrueOrFalse) question);
+                } else if (question instanceof MultipleChoice) {
+                    handleMultipleChoiceQuestion(theDoor, (MultipleChoice) question);
+                } else if (question instanceof ShortAnswer) {
+                    handleShortAnswerQuestion(theDoor, (ShortAnswer) question);
+                }
+            } catch (final NullPointerException e) {
+                System.out.println("Don't do that ");
             }
         }
     }
@@ -218,6 +222,7 @@ public class QuestionPrompt implements PropertyChangeListener {
             displayQuestionPrompt(myRoom.getRightDoor());
         }  else if (propertyName.equals(myMaze.PROPERTY_LOAD)) {
             myMaze = (Maze) theEvt.getNewValue();
+            myRoom = myMaze.getCurrentRoom();
             myMaze.addPropertyChangeListener(this);
 
         }
