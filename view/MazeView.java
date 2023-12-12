@@ -13,11 +13,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -83,6 +87,11 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private static final int LOAD = 1;
 
     /**
+     * List of music files that are playable in the background of game.
+     */
+    private static List<String> myMusicFiles = new ArrayList<>();
+
+    /**
      * Timer that will be used for game and question functionality.
      */
     private static Timer myTimer;
@@ -90,6 +99,17 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * Counter for which walking animation to choose.
      */
     private transient int mySpriteNumber = 1;
+
+    /**
+     * Long that stores position of clip when paused.
+     */
+    private transient long myPausedPosition;
+
+    /**
+     * Index in music player.
+     */
+    private static int myCurrentMusicIndex;
+
     /**
      *  Maze Object to be referenced.
      */
@@ -106,7 +126,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      * Music player clip.
      */
-    private Clip clip;
+    private static Clip myClip;
 
     /**
      * Counter for how many steps has taken the sprite alternates.
@@ -129,6 +149,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      *
      */
     private transient int mySettingsSubMenuOption;
+
     /**
      * A boolean representing if enter key has been pressed
      */
@@ -137,12 +158,12 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      * Boolean representation if music is currently playing or paused.
      */
-    private transient boolean myMusicPlayerIsPaused;
+    private static boolean myMusicPlayerIsPaused;
 
     /**
      * Boolean representation if music is looping.
      */
-    private transient boolean myMusicPlayerIsLooping;
+    private static boolean myMusicPlayerIsLooping;
 
     /**
      * File chooser that is used for music player.
@@ -160,7 +181,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private transient BufferedImage myUp1, myUp2, myDown1,
             myDown2, myLeft1, myLeft2, myRight1, myRight2;
 
-    MazeView(final Maze theMaze) {
+    MazeView(final Maze theMaze) throws UnsupportedAudioFileException,
+            LineUnavailableException, IOException {
         myGameUI = NORMAL_STATE;
         mySettingsMenuCommand = 0;
         mySettingsSubMenuOption = 0;
@@ -178,13 +200,14 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
     }
 
-    public void setUp() {
+    public void setUp() throws UnsupportedAudioFileException, LineUnavailableException,
+            IOException {
         this.setPreferredSize(new Dimension(
                 MazeControls.MY_SCREEN_WIDTH, MazeControls.MY_SCREEN_HEIGHT));
 
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
-        playMusic();
+        addMusic();
         setTimer();
     }
 
@@ -197,32 +220,48 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         });
     }
 
-    // TODO: Replace this method with file chooser music player implementation.
     /**
-     * Plays music on start up of window.
+     * Adds music files to list.
      */
-    private static void playMusic() {
+    private void addMusic() throws IOException, UnsupportedAudioFileException,
+            LineUnavailableException {
 
-        final String perfectPair = "Beabadoobee - the perfect pair (Instrumental).wav";
+        myCurrentMusicIndex = 0;
+        myPausedPosition = 0;
 
-        try {
+        myMusicFiles.add("sound/beabadoobee - Cologne (Lyrics).wav");
+        myMusicFiles.add("sound/Beabadoobee - Last Day On Earth (Official Audio).wav");
+        myMusicFiles.add("sound/beabadoobee - the perfect pair (Official Audio).wav");
+        myMusicFiles.add("sound/beabadoobee - the way things go.wav");
+        myMusicFiles.add("sound/beabadoobee x Laufey - A Night To Remember"
+                + "(Official Lyric Video).wav");
+        myMusicFiles.add("sound/You’re here that’s the thing.wav");
 
-            final File musicPath = new File(perfectPair);
+        final File file = new File(myMusicFiles.get(myCurrentMusicIndex));
+        final AudioInputStream audioIn = AudioSystem.getAudioInputStream(file);
 
-            if (musicPath.exists()) {
+        myClip = AudioSystem.getClip();
+        myClip.open(audioIn);
 
-                final AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
-                final Clip clip = AudioSystem.getClip();
-                clip.open(audioInput);
-                clip.start();
-
-            } else {
-                System.out.println("Cannot find file.");
-            }
-
-        } catch (final Exception exception) {
-            exception.printStackTrace();
+        if (myMusicPlayerIsLooping) {
+            myClip.loop(Clip.LOOP_CONTINUOUSLY);
         }
+
+    }
+
+    private void initializeClip() throws LineUnavailableException, IOException,
+            UnsupportedAudioFileException {
+
+        final File file = new File(myMusicFiles.get(myCurrentMusicIndex));
+        final AudioInputStream audioIn = AudioSystem.getAudioInputStream(file);
+
+        myClip = AudioSystem.getClip();
+        myClip.open(audioIn);
+
+        if (myMusicPlayerIsLooping) {
+            myClip.loop(Clip.LOOP_CONTINUOUSLY);
+        }
+
     }
 
     public void paintComponent(final Graphics theG) {
@@ -246,7 +285,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         if (myGameUI == PAUSED_STATE) {
             try {
                 drawTheSettingsMenu(g2);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -349,7 +388,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                     myMaze.load(FILE_NAME);
 
                 } catch (final IOException exception) {
-                    System.out.println("Exception: State has not been saved.");
+                    System.out.println("Exception: State has not been loaded.");
                     exception.printStackTrace();
                 } catch (final ClassNotFoundException exception) {
                     exception.printStackTrace();
@@ -380,37 +419,40 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             }
         }
 
-        // Play music.
+        // Play and pause music.
         textY += MazeControls.MY_TILE_SIZE;
-        g2.drawString("Play Music", textX, textY);
+        g2.drawString("Play/Pause Music", textX, textY);
         if (mySettingsMenuCommand == PLAY_MUSIC) {
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
 
             if (enterPressed) {
-
-                if (clip != null && clip.isRunning()) {
-                    clip.stop();
-                }
-
                 try {
-                    File file = new File(myFilePathField.getText());
-                    AudioInputStream audioIn = AudioSystem.getAudioInputStream(file);
 
-                    clip = AudioSystem.getClip();
-                    clip.open(audioIn);
+                    if (myClip != null) {
 
-                    if (myMusicPlayerIsLooping) {
-                        clip.loop(Clip.LOOP_CONTINUOUSLY);
+                        if (myClip.isRunning()) {
+                            myPausedPosition = myClip.getMicrosecondPosition();
+                            myClip.stop();
+                        } else {
+                            initializeClip();
+                            myClip.setMicrosecondPosition(myPausedPosition);
+                            myClip.start();
+                        }
+
+                    } else {
+                        initializeClip();
+                        myClip.start();
                     }
 
-                    clip.start();
-
-                } catch (final Exception e) {
-                    e.printStackTrace();
+                } catch (final LineUnavailableException | IOException
+                               | UnsupportedAudioFileException exception) {
+                    exception.printStackTrace();
                 }
+
             }
         }
+
         //Exit
         textY += MazeControls.MY_TILE_SIZE;
         g2.drawString("Exit", textX, textY);

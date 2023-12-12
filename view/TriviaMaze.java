@@ -8,6 +8,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -36,7 +39,8 @@ public  final class TriviaMaze implements PropertyChangeListener {
      * Constructs the JFrame where everything will be contained and displays
      * the game.
      */
-    public TriviaMaze() {
+    public TriviaMaze() throws UnsupportedAudioFileException, LineUnavailableException,
+            IOException {
         myWindow = new JFrame();
         myMaze = new Maze(4, 4);
 //        myMaze.createMaze();
@@ -73,7 +77,8 @@ public  final class TriviaMaze implements PropertyChangeListener {
     /**
      * Adds the JPanel of the maze to the JFrame.
      */
-    private  void addMazeView() {
+    private  void addMazeView() throws UnsupportedAudioFileException,
+            LineUnavailableException, IOException {
         final MazeView mazeview = new MazeView(myMaze);
         myMaze.addPropertyChangeListener(mazeview);
         mazeview.setFocusable(true);
