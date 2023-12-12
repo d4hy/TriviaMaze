@@ -278,6 +278,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
         switch (mySettingsSubMenuOption) {
             case 0: optionsTop(frameX, frameY, g2);
+                    break;
             case 1: break;
             case 2: break;
             default:
@@ -357,6 +358,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 System.out.println(myMaze);
                 System.out.println("You clicked the enter key!");
                 requestFocus();
+
                 myGameUI = NORMAL_STATE;
                 repaint();
             }
@@ -373,7 +375,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             if (enterPressed) {
                 myMaze.newGame();
                 System.out.println("You clicked the enter key!");
+                enterPressed = false;
                 myGameUI = NORMAL_STATE;
+                mySettingsMenuCommand = 0;
             }
         }
 
