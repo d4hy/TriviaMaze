@@ -20,6 +20,7 @@ import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
@@ -41,6 +42,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * The initial delay that the timer has.
      */
     private static final int TIMER_DELAY = 1000;
+
     /**
      * The String that will be used as the cursor.
      */
@@ -80,7 +82,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * Settings menu option is the new game option.
      */
     private static final int NEW_GAME = 2;
-    /**
+
     /**
      * Settings menu option is the save.
      */
@@ -94,12 +96,33 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      * List of music files that are playable in the background of game.
      */
-    private static List<String> myMusicFiles = new ArrayList<>();
+    private static final List<String> MY_MUSIC_FILES = new ArrayList<>();
+
+    /**
+     * Index in music player.
+     */
+    private static int myCurrentMusicIndex;
+
+    /**
+     * Boolean representation if music is looping.
+     */
+    private static boolean myMusicPlayerIsLooping;
+
+    /**
+     * Boolean representing when the user requests to skip a song.
+     */
+    private static boolean mySkipSongRequested;
 
     /**
      * Timer that will be used for game and question functionality.
      */
     private static Timer myTimer;
+
+    /**
+     * Music player clip.
+     */
+    private static Clip myClip;
+
     /**
      * Counter for which walking animation to choose.
      */
@@ -110,28 +133,21 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      */
     private transient long myPausedPosition;
 
-    /**
-     * Index in music player.
-     */
-    private static int myCurrentMusicIndex;
 
     /**
      *  Maze Object to be referenced.
      */
     private Maze myMaze;
+
     /**
      *  Character to reference.
      */
     private Character myCharacter;
+
     /**
      * The current room to reference.
      */
     private Room myRoom;
-
-    /**
-     * Music player clip.
-     */
-    private static Clip myClip;
 
     /**
      * Counter for how many steps has taken the sprite alternates.
@@ -160,22 +176,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      */
     private transient boolean enterPressed;
 
-    /**
-     * Boolean representation if music is currently playing or paused.
-     */
-    private static boolean myMusicPlayerIsPaused;
-
-    /**
-     * Boolean representation if music is looping.
-     */
-    private static boolean myMusicPlayerIsLooping;
-
-    /**
-     * File chooser that is used for music player.
-     */
-    private transient JFileChooser myFileChooser;
-
-    private JTextField myFilePathField;
 
 
 
@@ -192,11 +192,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         mySettingsMenuCommand = 0;
         mySettingsSubMenuOption = 0;
         enterPressed = false;
-        myMusicPlayerIsPaused = false;
         myMusicPlayerIsLooping = false;
-        myFilePathField = new JTextField(20);
-        myFileChooser = new JFileChooser(".");
-        myFileChooser.setFileFilter(new FileNameExtensionFilter("WAV Files", "wav"));
         this.myMaze = theMaze;
         setUp();
         myMaze.addPropertyChangeListener(this);
@@ -233,15 +229,16 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
         myCurrentMusicIndex = 0;
         myPausedPosition = 0;
+        mySkipSongRequested = false;
 
-        myMusicFiles.add("sound/beabadoobee - Cologne (Lyrics).wav");
-        myMusicFiles.add("sound/Beabadoobee - Last Day On Earth (Official Audio).wav");
-        myMusicFiles.add("sound/beabadoobee - the perfect pair (Official Audio).wav");
-        myMusicFiles.add("sound/beabadoobee - the way things go.wav");
-        myMusicFiles.add("sound/beabadoobee x Laufey - A Night To Remember (Official Lyric Video).wav");
-        myMusicFiles.add("sound/You’re here that’s the thing.wav");
+        MY_MUSIC_FILES.add("sound/beabadoobee - Cologne (Lyrics).wav");
+        MY_MUSIC_FILES.add("sound/Beabadoobee - Last Day On Earth (Official Audio).wav");
+        MY_MUSIC_FILES.add("sound/beabadoobee - the perfect pair (Official Audio).wav");
+        MY_MUSIC_FILES.add("sound/beabadoobee - the way things go.wav");
+        MY_MUSIC_FILES.add("sound/beabadoobee x Laufey - A Night To Remember (Official Lyric Video).wav");
+        MY_MUSIC_FILES.add("sound/You’re here that’s the thing.wav");
 
-        final File file = new File(myMusicFiles.get(myCurrentMusicIndex));
+        final File file = new File(MY_MUSIC_FILES.get(myCurrentMusicIndex));
         final AudioInputStream audioIn = AudioSystem.getAudioInputStream(file);
 
         myClip = AudioSystem.getClip();
@@ -256,7 +253,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private void initializeClip() throws LineUnavailableException, IOException,
             UnsupportedAudioFileException {
 
-        final File file = new File(myMusicFiles.get(myCurrentMusicIndex));
+        final File file = new File(MY_MUSIC_FILES.get(myCurrentMusicIndex));
         final AudioInputStream audioIn = AudioSystem.getAudioInputStream(file);
 
         myClip = AudioSystem.getClip();
@@ -270,13 +267,13 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
     private void playNextSong() {
 
-        if (!myMusicFiles.isEmpty()) {
+        if (!MY_MUSIC_FILES.isEmpty()) {
             if (myClip != null) {
                 myClip.stop();
             }
 
-            myCurrentMusicIndex = (myCurrentMusicIndex + 1) % myMusicFiles.size();
-            final String nextMusicFile = myMusicFiles.get(myCurrentMusicIndex);
+            myCurrentMusicIndex = (myCurrentMusicIndex + 1) % MY_MUSIC_FILES.size();
+            final String nextMusicFile = MY_MUSIC_FILES.get(myCurrentMusicIndex);
 
             try {
                 final AudioInputStream audioIn = AudioSystem.getAudioInputStream(
@@ -424,7 +421,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             if (enterPressed) {
                 try {
 
-                    myMaze =myMaze.load(FILE_NAME);
+                    myMaze = myMaze.load(FILE_NAME);
                     myMaze.addPropertyChangeListener(this);
                     myRoom = myMaze.getCurrentRoom();
                     myCharacter = myMaze.getCharacter();
@@ -475,15 +472,18 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                         if (myClip.isRunning()) {
                             myPausedPosition = myClip.getMicrosecondPosition();
                             myClip.stop();
+                            mySkipSongRequested = true;
                         } else {
                             initializeClip();
                             myClip.setMicrosecondPosition(myPausedPosition);
                             myClip.start();
+                            addLineListener();
                         }
 
                     } else {
                         initializeClip();
                         myClip.start();
+                        addLineListener();
                     }
 
                 } catch (final LineUnavailableException | IOException
@@ -525,10 +525,25 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
             }
         }
+
         enterPressed = false;
 
+    }
 
-
+    /**
+     * Handles line events to ensure clip will play the next file in list
+     * when it has finished playing.
+     */
+    private void addLineListener() {
+        myClip.addLineListener(event -> {
+            if (event.getType() == LineEvent.Type.STOP) {
+                if (!mySkipSongRequested) {
+                    playNextSong();
+                }
+                mySkipSongRequested = false;
+                playNextSong();
+            }
+        });
     }
 
     /**
