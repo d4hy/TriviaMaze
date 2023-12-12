@@ -286,7 +286,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                         +
                         mySettingsSubMenuOption);
         }
-        enterPressed = false;
+        //enterPressed = false;
     }
 
     private void optionsTop(final int theFrameX, final int theFrameY, final Graphics2D g2) throws IOException {
@@ -375,7 +375,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             if (enterPressed) {
                 myMaze.newGame();
                 System.out.println("You clicked the enter key!");
-                enterPressed = false;
                 myGameUI = NORMAL_STATE;
                 mySettingsMenuCommand = 0;
             }
@@ -428,7 +427,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
 
             }
         }
-
+        enterPressed = false;
 
 
 
