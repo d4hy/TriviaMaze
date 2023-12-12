@@ -341,7 +341,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can load
             if (enterPressed) {
-                mySettingsMenuCommand = 0;
+
 
                 try {
 
@@ -359,7 +359,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 requestFocus();
                 myGameUI = NORMAL_STATE;
                 repaint();
-                enterPressed = false;
             }
         }
         //NewGame
@@ -786,6 +785,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         int maxCommandNum = 0;
         switch (mySettingsSubMenuOption) {
             case 0: maxCommandNum = 4;
+                    break;
         }
         if (theEventCode == KeyEvent.VK_W || theEventCode == KeyEvent.VK_UP) {
             mySettingsMenuCommand--;
@@ -867,6 +867,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             myGameUI = NORMAL_STATE;
             mySettingsSubMenuOption = 0;
         }
+        mySettingsMenuCommand = 0;
         repaint();
     }
 }
