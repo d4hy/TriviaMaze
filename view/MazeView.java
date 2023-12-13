@@ -76,12 +76,17 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      * Settings menu option is the exit.
      */
-    private static final int EXIT = 5;
+    private static final int EXIT = 6;
 
     /**
      * Settings menu option is the new game option.
      */
     private static final int NEW_GAME = 2;
+
+    /**
+     * Settings Menu Option that is the cheat option
+     */
+    private static final int CHEAT = 5;
 
     /**
      * Settings menu option is the save.
@@ -508,7 +513,23 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 playNextSong();
             }
         }
+        //Cheat
+        // Will spawn in room[3][2]
+        textY += MazeControls.MY_TILE_SIZE;
+        g2.drawString("Cheat", textX, textY);
+        if (mySettingsMenuCommand ==  CHEAT) {
+            // this is the cursor
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+            //TODO handle the case so you can Exit
+            if (enterPressed) {
+                myMaze.cheatSpawnInRoomLeftOfBottomRight();
+                repaint();
 
+                myGameUI = NORMAL_STATE;
+
+            }
+        }
         //Exit
         textY += MazeControls.MY_TILE_SIZE;
         g2.drawString("Exit", textX, textY);
@@ -900,7 +921,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             //3 means we are at the 1st option out of 3.
         int maxCommandNum = 0;
         switch (mySettingsSubMenuOption) {
-            case 0: maxCommandNum = 5;
+            case 0: maxCommandNum = 6;
                     break;
         }
         if (theEventCode == KeyEvent.VK_W || theEventCode == KeyEvent.VK_UP) {

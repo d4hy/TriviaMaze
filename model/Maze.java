@@ -518,6 +518,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         final int row = 3;
         final int col = 2;
         myCurrentRoom = myRooms[row][col];
+        myCharacter.resetToSpawn();
+        myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
     }
 
