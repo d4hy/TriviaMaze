@@ -1000,13 +1000,13 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                 append(leftBracket).append(getCurrentRoomCol()).append(rightBracket).
                 append(comma).append("the game is lost:").append(isGameLost()).
                 append(comma).append("the game is won:").append(isMyGameWon());
-        appendDoorStatus(stats, "Top", myCurrentRoom.getTopDoor(),
+        appendDoorStatus(stats, TOP_DOOR, myCurrentRoom.getTopDoor(),
                 comma);
-        appendDoorStatus(stats, "Bottom", myCurrentRoom.getBottomDoor(),
+        appendDoorStatus(stats, BOTTOM_DOOR, myCurrentRoom.getBottomDoor(),
                 comma);
-        appendDoorStatus(stats, "Right", myCurrentRoom.getRightDoor(),
+        appendDoorStatus(stats, RIGHT_DOOR, myCurrentRoom.getRightDoor(),
                 comma);
-        appendDoorStatus(stats, "Left", myCurrentRoom.getLeftDoor(),
+        appendDoorStatus(stats, LEFT_DOOR, myCurrentRoom.getLeftDoor(),
                 comma);
         return stats.toString();
     }
