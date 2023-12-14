@@ -11,17 +11,6 @@ package model;
 public class ShortAnswer extends AbstractQuestion {
 
     /**
-     * Question's text.
-     */
-    private final String myQuestion;
-
-    /**
-     * Text of correct answer to this Question.
-     */
-    private final String myAnswer;
-
-
-    /**
      * Constructor that takes question and answer Strings from database for a
      * short answer Question.
      * @param theQuestion Question for trivia.
@@ -31,23 +20,7 @@ public class ShortAnswer extends AbstractQuestion {
 
         super(theQuestion, theAnswer, "", "", "");
 
-        myQuestion = theQuestion;
-        myAnswer = theAnswer;
     }
 
-    /**
-     * Returns the text of the specific question that will be displayed in view.
-     * @return String Text of the question.
-     */
-    public String getQuestionText() {
-        return myQuestion;
-    }
 
-    /**
-     * Returns the text of the answer to this question that will be displayed in view.
-     * @return String Text of the answer.
-     */
-    public String getAnswerText() {
-        return myAnswer;
-    }
 }

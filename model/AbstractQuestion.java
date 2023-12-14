@@ -5,7 +5,6 @@
 package model;
 
 import controller.Question;
-
 import java.io.Serializable;
 
 /**
