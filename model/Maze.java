@@ -938,8 +938,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     }
 
     /**
-     * Will be  in the format:"Current Room's row and column:[][], the game is lost: ,
-     * the game is won:
+     * Will be  in the format:
+     * Current Room's row and column:[][], the game is lost: ,the game is won:
      * Top door status:
      * Bottom door status:
      * Right Door Status:
@@ -952,87 +952,44 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         final StringBuilder stats = new StringBuilder(30);
         final String leftBracket = "[";
         final String rightBracket = "]";
-        final String nullString = "null";
-        final String isLocked = "isLocked:";
-        final String exists = "exists";
         final String comma = ", ";
-        final String notPrompted = "Question has not been prompted:";
-        final String notAnswered = "Question has been answered correctly:";
-        stats.append("Current Room's row and column:");
-        stats.append(leftBracket);
-        stats.append(getCurrentRoomRow());
-        stats.append(rightBracket);
-        stats.append(leftBracket);
-        stats.append(getCurrentRoomCol());
-        stats.append(rightBracket);
-        stats.append(comma);
-        stats.append("the game is lost:");
-        stats.append(isGameLost());
-        stats.append(comma);
-        stats.append("the game is won:");
-        stats.append(isMyGameWon());
-        stats.append("\nTop Door Status:");
-        if (myCurrentRoom.getTopDoor() == null) {
-            stats.append(nullString);
-        } else if (myCurrentRoom.getTopDoor() != null) {
-            stats.append(exists);
-            stats.append(comma);
-            stats.append(isLocked);
-            stats.append(myCurrentRoom.getTopDoor().isLocked());
-            stats.append(comma);
-            stats.append(notPrompted);
-            stats.append(myCurrentRoom.getTopDoor().hasMyQuestionBeenNotPrompted());
-            stats.append(comma);
-            stats.append(notAnswered);
-            stats.append(myCurrentRoom.getTopDoor().hasMyQuestionBeenAnsweredCorrectly());
-        }
-        stats.append("\nBottom Door Status:");
-        if (myCurrentRoom.getBottomDoor() == null) {
-            stats.append(nullString);
-        } else if (myCurrentRoom.getBottomDoor() != null) {
-            stats.append(exists);
-            stats.append(comma);
-            stats.append(isLocked);
-            stats.append(myCurrentRoom.getBottomDoor().isLocked());
-            stats.append(comma);
-            stats.append(notPrompted);
-            stats.append(myCurrentRoom.getBottomDoor().hasMyQuestionBeenNotPrompted());
-            stats.append(comma);
-            stats.append(notAnswered);
-            stats.append(myCurrentRoom.getBottomDoor().hasMyQuestionBeenAnsweredCorrectly());
-        }
-        stats.append("\nRight Door Status:");
-        if (myCurrentRoom.getRightDoor() == null) {
-            stats.append(nullString);
-        } else if (myCurrentRoom.getRightDoor() != null) {
-            stats.append(exists);
-            stats.append(comma);
-            stats.append(isLocked);
-            stats.append(myCurrentRoom.getRightDoor().isLocked());
-            stats.append(comma);
-            stats.append(notPrompted);
-            stats.append(myCurrentRoom.getRightDoor().hasMyQuestionBeenNotPrompted());
-            stats.append(comma);
-            stats.append(notAnswered);
-            stats.append(myCurrentRoom.getRightDoor().hasMyQuestionBeenAnsweredCorrectly());
-        }
-        stats.append("\nLeft Door Status:");
-        if (myCurrentRoom.getLeftDoor() == null) {
-            stats.append(nullString);
-        } else if (myCurrentRoom.getLeftDoor() != null) {
-            stats.append(exists);
-            stats.append(comma);
-            stats.append(isLocked);
-            stats.append(myCurrentRoom.getLeftDoor().isLocked());
-            stats.append(comma);
-            stats.append(notPrompted);
-            stats.append(myCurrentRoom.getLeftDoor().hasMyQuestionBeenNotPrompted());
-            stats.append(comma);
-            stats.append(notAnswered);
-            stats.append(myCurrentRoom.getLeftDoor().hasMyQuestionBeenAnsweredCorrectly());
-        }
-
+        stats.append("Current Room's row and column:").
+                append(leftBracket).append(getCurrentRoomRow()).
+                append(rightBracket).
+                append(leftBracket).append(getCurrentRoomCol()).append(rightBracket).
+                append(comma).append("the game is lost:").append(isGameLost()).
+                append(comma).append("the game is won:").append(isMyGameWon());
+        appendDoorStatus(stats, "Top", myCurrentRoom.getTopDoor(),
+                comma);
+        appendDoorStatus(stats, "Bottom", myCurrentRoom.getBottomDoor(),
+                comma);
+        appendDoorStatus(stats, "Right", myCurrentRoom.getRightDoor(),
+                comma);
+        appendDoorStatus(stats, "Left", myCurrentRoom.getLeftDoor(),
+                comma);
         return stats.toString();
+    }
+
+    /**
+     * helper method to use within toString.
+      * @param theStats theStringBuilder Object we are referencing.
+     * @param theDoorName to add within the toString.
+     * @param theDoor to use to add for the toString.
+     * @param theComma string to add within the toString.
+     */
+    private void appendDoorStatus(final StringBuilder theStats, final String theDoorName,
+                                  final Door theDoor, final String theComma) {
+        theStats.append("\n").append(theDoorName).append(" Door Status:");
+        if (theDoor == null) {
+            theStats.append("null");
+        } else {
+            theStats.append("exists").
+                    append(theComma).append("isLocked:").append(theDoor.isLocked()).
+                    append(theComma).append("Question has not been prompted:").
+                    append(theDoor.hasMyQuestionBeenNotPrompted()).
+                    append(theComma).append("Question has been answered correctly:").
+                    append(theDoor.hasMyQuestionBeenAnsweredCorrectly());
+        }
     }
 
     /**
