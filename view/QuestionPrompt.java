@@ -26,6 +26,12 @@ import model.TrueOrFalse;
 public class QuestionPrompt implements PropertyChangeListener {
 
     /**
+     * A static constant to be reused as a title.
+     */
+    private static final String TITLE = "Answer to play!";
+
+
+    /**
      * The Maze object to be referenced.
      */
     private Maze myMaze;
@@ -34,6 +40,7 @@ public class QuestionPrompt implements PropertyChangeListener {
      * The current room to reference.
      */
     private Room myRoom;
+
 
     /**
      * Constructs a QuestionPrompt with a reference to the Maze object.
@@ -90,7 +97,7 @@ public class QuestionPrompt implements PropertyChangeListener {
         final int userAnswerIndex = JOptionPane.showOptionDialog(
                 null,
                 theMultipleChoiceQuestion.getQuestionText(),
-                "Answer to play!",
+                TITLE,
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
@@ -144,7 +151,7 @@ public class QuestionPrompt implements PropertyChangeListener {
         final int userAnswer = JOptionPane.showOptionDialog(
                 null,
                 theTrueOrFalseQuestion.getQuestionText(),
-                "Answer to play!",
+                TITLE,
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
