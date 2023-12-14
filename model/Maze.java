@@ -7,7 +7,6 @@ package model;
 import controller.MazeControls;
 import controller.PropertyChangedEnabledMazeControls;
 import controller.Question;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.FileInputStream;
@@ -380,7 +379,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      * Method that gets the character object of the maze.
      * @return a character object that the maze class is referencing.
      */
-    public Character getCharacter () {
+    public Character getCharacter() {
         return myCharacter;
     }
 
@@ -957,7 +956,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         final String isLocked = "isLocked:";
         final String exists = "exists";
         final String comma = ", ";
-
+        final String notPrompted = "Question has not been prompted:";
+        final String notAnswered = "Question has been answered correctly:";
         stats.append("Current Room's row and column:");
         stats.append(leftBracket);
         stats.append(getCurrentRoomRow());
@@ -980,13 +980,12 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
             stats.append(isLocked);
             stats.append(myCurrentRoom.getTopDoor().isLocked());
             stats.append(comma);
-            stats.append("Question has not been prompted:");
+            stats.append(notPrompted);
             stats.append(myCurrentRoom.getTopDoor().hasMyQuestionBeenNotPrompted());
             stats.append(comma);
-            stats.append("Question has been answered correctly:");
+            stats.append(notAnswered);
             stats.append(myCurrentRoom.getTopDoor().hasMyQuestionBeenAnsweredCorrectly());
         }
-
         stats.append("\nBottom Door Status:");
         if (myCurrentRoom.getBottomDoor() == null) {
             stats.append(nullString);
@@ -996,10 +995,10 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
             stats.append(isLocked);
             stats.append(myCurrentRoom.getBottomDoor().isLocked());
             stats.append(comma);
-            stats.append("Question has not been prompted:");
+            stats.append(notPrompted);
             stats.append(myCurrentRoom.getBottomDoor().hasMyQuestionBeenNotPrompted());
             stats.append(comma);
-            stats.append("Question has been answered correctly:");
+            stats.append(notAnswered);
             stats.append(myCurrentRoom.getBottomDoor().hasMyQuestionBeenAnsweredCorrectly());
         }
         stats.append("\nRight Door Status:");
@@ -1011,10 +1010,10 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
             stats.append(isLocked);
             stats.append(myCurrentRoom.getRightDoor().isLocked());
             stats.append(comma);
-            stats.append("Question has not been prompted:");
+            stats.append(notPrompted);
             stats.append(myCurrentRoom.getRightDoor().hasMyQuestionBeenNotPrompted());
             stats.append(comma);
-            stats.append("Question has been answered correctly:");
+            stats.append(notAnswered);
             stats.append(myCurrentRoom.getRightDoor().hasMyQuestionBeenAnsweredCorrectly());
         }
         stats.append("\nLeft Door Status:");
@@ -1026,17 +1025,15 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
             stats.append(isLocked);
             stats.append(myCurrentRoom.getLeftDoor().isLocked());
             stats.append(comma);
-            stats.append("Question has not been prompted:");
+            stats.append(notPrompted);
             stats.append(myCurrentRoom.getLeftDoor().hasMyQuestionBeenNotPrompted());
             stats.append(comma);
-            stats.append("Question has been answered correctly:");
+            stats.append(notAnswered);
             stats.append(myCurrentRoom.getLeftDoor().hasMyQuestionBeenAnsweredCorrectly());
         }
 
         return stats.toString();
     }
-
-
 
     /**
      * adds an object as a listener to the propertyChangeSupport object.
@@ -1046,9 +1043,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     public void addPropertyChangeListener(final PropertyChangeListener theListener) {
         myPcs.addPropertyChangeListener(theListener);
     }
-
-
-
     /**
      * removes an object as a listener to the propertyChangeSupport object.
      * @param theListener The PropertyChangeListener to be removed
@@ -1057,7 +1051,4 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     public void removePropertyChangeListener(final PropertyChangeListener theListener) {
         myPcs.removePropertyChangeListener(theListener);
     }
-
-
-
 }
