@@ -3,19 +3,13 @@ package view;
 
 
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import model.Maze;
 
 /**
@@ -25,6 +19,10 @@ import model.Maze;
  * @version Fall 2023
  */
 public  final class TriviaMaze implements PropertyChangeListener {
+    /**
+     * A static constant to use set the rows and columns of the maze.
+     */
+    private static final int THE_ROWS_COLS = 4;
 
     /**
      *  Maze Object to be referenced.
@@ -35,6 +33,8 @@ public  final class TriviaMaze implements PropertyChangeListener {
      */
     private  JFrame myWindow;
 
+
+
     /**
      * Constructs the JFrame where everything will be contained and displays
      * the game.
@@ -42,9 +42,7 @@ public  final class TriviaMaze implements PropertyChangeListener {
     public TriviaMaze() throws UnsupportedAudioFileException, LineUnavailableException,
             IOException {
         myWindow = new JFrame();
-        myMaze = new Maze(4, 4);
-//        myMaze.createMaze();
-
+        myMaze = new Maze(THE_ROWS_COLS, THE_ROWS_COLS);
 
         setUpJFrame();
         addMazeView();
