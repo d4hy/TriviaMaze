@@ -23,8 +23,6 @@ import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import model.Character;
 import model.Door;
 import model.Maze;
@@ -51,6 +49,11 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * File name when user wants to save and load a previous game.
      */
     private static final String FILE_NAME = "TriviaMaze.txt";
+
+    /**
+     * String displaying when enter key has been pressed.
+     */
+    private static final String ENTER_KEY_PRESSED = "You pressed the enter key!";
 
     /**
      * This variable will represent the state when we are in a playable state.
@@ -83,6 +86,41 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private static final int VOLUME_HEIGHT = 20;
 
     /**
+     * Default volume scale upon starting game.
+     */
+    private static final int DEFAULT_VOLUME_SCALE = 3;
+
+    /**
+     * First option of volume setting (lowest).
+     */
+    private static final float VOL_OPTION_1 = -80f;
+
+    /**
+     * Second option of volume setting.
+     */
+    private static final float VOL_OPTION_2 = -40f;
+
+    /**
+     * Third option of volume setting.
+     */
+    private static final float VOL_OPTION_3 = -30f;
+
+    /**
+     * Fourth option of volume setting.
+     */
+    private static final float VOL_OPTION_4 = -20f;
+
+    /**
+     * Fifth option of volume setting.
+     */
+    private static final float VOL_OPTION_5 = -10f;
+
+    /**
+     * Final option of volume setting (highest).
+     */
+    private static final float VOL_OPTION_6 = -5f;
+
+    /**
      * Settings menu option is the save.
      */
     private static final int SAVE = 0;
@@ -113,7 +151,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private static final int VOLUME = 5;
 
     /**
-     * Settings Menu Option that is the cheat option
+     * Settings Menu Option that is the cheat option.
      */
     private static final int CHEAT = 6;
 
@@ -143,14 +181,14 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private static LineListener myLineListener;
 
     /**
-     * Music player clip.
-     */
-    private transient Clip myClip;
-
-    /**
      * Used to control volume of music.
      */
     private static FloatControl myFC;
+
+    /**
+     * Music player clip.
+     */
+    private transient Clip myClip;
 
     /**
      * Counter for which walking animation to choose.
@@ -188,11 +226,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private transient int myVolumeScale;
 
     /**
-     * Volume of the music that is playing.
-     */
-    private transient float myVolume;
-
-    /**
      * This field will represent which ui to display.
      *
      */
@@ -220,9 +253,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private transient boolean myPauseSongRequest;
 
     /**
-     * A boolean representing if enter key has been pressed
+     * A boolean representing if enter key has been pressed.
      */
-    private transient boolean enterPressed;
+    private transient boolean myEnterPressed;
 
 
 
@@ -239,7 +272,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         myGameUI = NORMAL_STATE;
         mySettingsMenuCommand = 0;
         mySettingsSubMenuOption = 0;
-        enterPressed = false;
+        myEnterPressed = false;
         this.myMaze = theMaze;
         setUp();
         myMaze.addPropertyChangeListener(this);
@@ -278,13 +311,14 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         myPausedPosition = 0;
         mySkipSongRequest = false;
         myPauseSongRequest = false;
-        myVolumeScale = 3;
+        myVolumeScale = DEFAULT_VOLUME_SCALE;
 
         MY_MUSIC_FILES.add("sound/beabadoobee - Cologne (Lyrics).wav");
         MY_MUSIC_FILES.add("sound/Beabadoobee - Last Day On Earth (Official Audio).wav");
         MY_MUSIC_FILES.add("sound/beabadoobee - the perfect pair (Official Audio).wav");
         MY_MUSIC_FILES.add("sound/beabadoobee - the way things go.wav");
-        MY_MUSIC_FILES.add("sound/beabadoobee x Laufey - A Night To Remember (Official Lyric Video).wav");
+        MY_MUSIC_FILES.add("sound/beabadoobee x Laufey - A Night To Remember "
+                + "(Official Lyric Video).wav");
         MY_MUSIC_FILES.add("sound/You’re here that’s the thing.wav");
 
         final File file = new File(MY_MUSIC_FILES.get(myCurrentMusicIndex));
@@ -335,8 +369,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 myClip.start();
                 addLineListener();
 
-            } catch (final Exception e) {
-                e.printStackTrace();
+            } catch (final IOException | UnsupportedAudioFileException
+                           | LineUnavailableException exception) {
+                exception.printStackTrace();
             }
 
         }
@@ -347,16 +382,33 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      */
     private void checkVolume() {
 
+        /**
+         * Volume of the music that is playing.
+         */
+        final float volume;
         switch (myVolumeScale) {
-            case 0 -> myVolume = -80f;
-            case 1 -> myVolume = -20f;
-            case 2 -> myVolume = -12f;
-            case 3 -> myVolume = -5f;
-            case 4 -> myVolume = 1f;
-            case 5 -> myVolume = 6f;
-            default -> throw new IllegalStateException("Unexpected value: " + myVolumeScale);
+            case 0 -> {
+                volume = VOL_OPTION_1;
+            }
+            case 1 -> {
+                volume = VOL_OPTION_2;
+            }
+            case 2 -> {
+                volume = VOL_OPTION_3;
+            }
+            case 3 -> {
+                volume = VOL_OPTION_4;
+            }
+            case 4 -> {
+                volume = VOL_OPTION_5;
+            }
+            case 5 -> {
+                volume = VOL_OPTION_6;
+            }
+            default -> throw new IllegalStateException("Unexpected volume value"
+                    + myVolumeScale);
         }
-        myFC.setValue(myVolume);
+        myFC.setValue(volume);
 
     }
 
@@ -424,7 +476,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         //enterPressed = false;
     }
 
-    private void optionsTop(final int theFrameX, final int theFrameY, final Graphics2D g2) throws IOException {
+    private void optionsTop(final int theFrameX, final int theFrameY,
+                            final Graphics2D g2) throws IOException {
 
         int textX;
         int textY;
@@ -461,7 +514,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can save
-            if (enterPressed) {
+            if (myEnterPressed) {
                 myGameUI = NORMAL_STATE;
                 try {
 
@@ -472,7 +525,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                     exception.printStackTrace();
                 }
                 repaint();
-                System.out.println("You clicked the enter key!");
+                System.out.println(ENTER_KEY_PRESSED);
             }
 
         }
@@ -485,7 +538,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can load
-            if (enterPressed) {
+            if (myEnterPressed) {
                 try {
 
                     myMaze = myMaze.load(FILE_NAME);
@@ -501,7 +554,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 }
 
                 System.out.println(myMaze);
-                System.out.println("You clicked the enter key!");
+                System.out.println(ENTER_KEY_PRESSED);
                 requestFocus();
 
                 myGameUI = NORMAL_STATE;
@@ -516,9 +569,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
 
-            if (enterPressed) {
+            if (myEnterPressed) {
                 myMaze.newGame();
-                System.out.println("You clicked the enter key!");
+                System.out.println(ENTER_KEY_PRESSED);
                 myGameUI = NORMAL_STATE;
                 mySettingsMenuCommand = 0;
             }
@@ -531,7 +584,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
 
-            if (enterPressed) {
+            if (myEnterPressed) {
                 try {
 
                     if (myClip != null) {
@@ -569,7 +622,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
 
-            if (enterPressed) {
+            if (myEnterPressed) {
                 playNextSong();
             }
         }
@@ -579,7 +632,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         g2.drawString("Volume", textX, textY);
         g2.setStroke(new BasicStroke(2));
         g2.drawRect(VOLUME_X, VOLUME_Y, VOLUME_WIDTH, VOLUME_HEIGHT);
-        int volumeWidth = 24 * myVolumeScale;
+        final int volumeWidth = 24 * myVolumeScale;
         g2.fillRect(VOLUME_X, VOLUME_Y, volumeWidth, VOLUME_HEIGHT);
         if (mySettingsMenuCommand == VOLUME) {
             final int cursorX = textX - 25;
@@ -595,7 +648,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can Exit
-            if (enterPressed) {
+            if (myEnterPressed) {
                 myMaze.cheatSpawnInRoomLeftOfBottomRight();
                 repaint();
 
@@ -611,8 +664,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can Exit
-            if (enterPressed) {
-                enterPressed = false;
+            if (myEnterPressed) {
+                myEnterPressed = false;
                 repaint();
                 //System.out.println("You clicked the enter key!");
                 myGameUI = NORMAL_STATE;
@@ -620,7 +673,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             }
         }
 
-        enterPressed = false;
+        myEnterPressed = false;
 
     }
 
@@ -1040,7 +1093,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             }
 
         } else if (theEventCode == KeyEvent.VK_ENTER) {
-            enterPressed = true;
+            myEnterPressed = true;
         }
 
 

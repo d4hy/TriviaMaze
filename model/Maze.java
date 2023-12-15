@@ -60,16 +60,11 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     private static final int ENDPOINT = 3;
 
     /**
-     * Number of correct answers that the current Character has answered.
-     */
-    private static int myCorrectAnswers;
-
-
-    /**
      * Field to show if the character can currently move.
      */
 
     private boolean myCanMove;
+
     /**
      * The room that Character is currently in.
      */
@@ -120,9 +115,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      */
     private ArrayList<Question> myQuestions = new ArrayList<>();
 
-    private static Maze uniqueInstance;
-
-
     /**
      *
      * Constructor for new game of Maze, creating starting point of a Character and Rooms.
@@ -157,21 +149,10 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     }
 
     /**
-     * Following Singleton design pattern, returns a global reference to the same
-     * instance or creates one if null.
-     */
-//    public static Maze getInstance() {
-//        if (uniqueInstance == null) {
-//            uniqueInstance = new Maze()
-//        }
-//    }
-
-    /**
      * Fills the maze with Rooms and sets initial game values.
      */
     public void createMaze() {
 
-        myCorrectAnswers = 0;
         myRooms = new Room[myRows][myColumns];
         myDoors = new ArrayList<>();
 
@@ -497,7 +478,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH,
                 MazeControls.MY_SCREEN_HEIGHT);
         setMoveTrue();
-        myCorrectAnswers = 0;
         createMaze();
 
         setMyGameOverStatus(false);
@@ -552,7 +532,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                 isValidMove = currentRow < ENDPOINT && myRooms[++newRow][newCol] != null;
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + theDoorType);
+                throw new IllegalStateException("Unexpected value:  " + theDoorType);
         }
 
         // Move to the new room if the move is valid
