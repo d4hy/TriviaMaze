@@ -4,8 +4,6 @@
  */
 package controller;
 
-import java.io.Serializable;
-
 /**
  * Question interface outlines the basic methods each type of subclass
  * of Question will have.
