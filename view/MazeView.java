@@ -1,8 +1,11 @@
 package view;
 
 import controller.MazeControls;
-
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -35,11 +38,6 @@ import model.Room;
  * @version Fall 2023
  */
 public class MazeView extends JPanel implements PropertyChangeListener, KeyListener {
-    /**
-     * The initial delay that the timer has.
-     */
-    private static final int TIMER_DELAY = 1000;
-
     /**
      * The String that will be used as the cursor.
      */
@@ -253,8 +251,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private transient boolean myEnterPressed;
 
 
-
-
     /**
      * These will be sprites that we use for the character.
      */
@@ -313,8 +309,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         myClip.open(audioIn);
         myFC = (FloatControl) myClip.getControl(FloatControl.Type.MASTER_GAIN);
         checkVolume();
-
-
     }
 
     private void initializeClip() throws LineUnavailableException, IOException,
@@ -396,7 +390,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         myFC.setValue(volume);
 
     }
-
     public void paintComponent(final Graphics theG) {
         super.paintComponent(theG);
 
@@ -422,8 +415,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 throw new RuntimeException(e);
             }
         }
-
-
         g2.dispose();
     }
 
@@ -442,10 +433,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         final int frameWidth = MazeControls.MY_TILE_SIZE * 8;
         final int frameHeight = MazeControls.MY_TILE_SIZE * 10;
         drawSubWindow(frameX, frameY, frameWidth, frameHeight, g2);
-
-
-
-
         optionsTop(frameX, frameY, g2);
 
         switch (mySettingsSubMenuOption) {
@@ -455,10 +442,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             case 2: break;
             default:
                 throw new IllegalStateException("Unexpected value: "
-                        +
-                        mySettingsSubMenuOption);
+                        + mySettingsSubMenuOption);
         }
-        //enterPressed = false;
     }
 
     private void optionsTop(final int theFrameX, final int theFrameY,
@@ -472,11 +457,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         } else if (myMaze.isMyGameWon()) {
             text = "You Won!";
         }
-
             // have to adjust the x coordinate, or else the left side of
             // this screen will be drawn from the middle all the way to the right.
-
-
         textX = getXForCenteredText(text, g2);
         textY = theFrameY + MazeControls.MY_TILE_SIZE;
         // y indicates the baseline of the text.
@@ -636,11 +618,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             if (myEnterPressed) {
                 myMaze.cheatSpawnInRoomLeftOfBottomRight();
                 repaint();
-
                 myGameUI = NORMAL_STATE;
-
             }
         }
+
         //Exit
         textY += ySpace;
         g2.drawString("Exit", textX, textY);
@@ -652,14 +633,11 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             if (myEnterPressed) {
                 myEnterPressed = false;
                 repaint();
-                //System.out.println("You clicked the enter key!");
                 myGameUI = NORMAL_STATE;
 
             }
         }
-
         myEnterPressed = false;
-
     }
 
     /**
@@ -707,7 +685,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * @param theWidth of the sub window.
      * @param theHeight of the sub window.
      */
-
     private void drawSubWindow(final int theX,
                                final int theY,
                                final int theWidth, final int theHeight, final Graphics2D g2) {
@@ -733,7 +710,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         g2.drawRoundRect(outerRectangleX, outerRectangleY, outerRectangleWidth,
                 outerRectangleHeight, arcWidthHeight , arcWidthHeight);
     }
-
 
     /**
      * Method used to draw the room's doors.
@@ -783,6 +759,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             }
         }
     }
+
     /**
      *  Draws the Door.
      * @param g2 object used to draw
@@ -859,7 +836,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         }
     }
 
-
     /**
      * Draw the characters, based on their current position.
      */
@@ -868,12 +844,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         //the x and y coordinates of the character.
         final int x = myCharacter.getCurrentPosition().x;
         final int y = myCharacter.getCurrentPosition().y;
-
-
-
         final BufferedImage image = getSpriteImage();
         g2.drawImage(image, x, y, MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
-
     }
     /**
      * Get the appropriate sprite image based on the
@@ -973,31 +945,21 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         } else if (propertyName.equals(myMaze.PROPERTY_ROOM_CHANGE)) {
             myRoom = (Room) theEvt.getNewValue();
             repaint();
-
         } else if (propertyName.equals(myMaze.PROPERTY_GAME_WON)) {
             final boolean gameWon = (Boolean) theEvt.getNewValue();
             if (gameWon) {
                 myGameUI = PAUSED_STATE;
                 repaint();
             }
-            repaint();
-
         } else if (propertyName.equals(myMaze.PROPERTY_GAME_OVER)) {
             final boolean gameOver = (Boolean) theEvt.getNewValue();
             if (gameOver) {
                 myGameUI = PAUSED_STATE;
                 repaint();
             }
-
-
         } else if (propertyName.equals(myMaze.PROPERTY_LOAD)) {
-//            myMaze = (Maze) theEvt.getNewValue();
-//            myMaze.addPropertyChangeListener(this);
-//            myRoom = myMaze.getCurrentRoom();
-//            myCharacter = myMaze.getCharacter();
             repaint();
         }
-
     }
 
     // Implementing KeyListener methods
@@ -1024,11 +986,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         }
         if (myGameUI == PAUSED_STATE) {
             handleSettingsOptions(theEvent.getKeyCode());
-
-
         }
     }
-
     /**
      * Helper method that helps us display and update within the mainSettings menu.
      * @param theEventCode that we are calling for.
@@ -1048,16 +1007,11 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             if (mySettingsMenuCommand < 0) {
                 mySettingsMenuCommand = maxCommandNum;
             }
-
-
-
-
         } else if (theEventCode == KeyEvent.VK_S || theEventCode == KeyEvent.VK_DOWN) {
             mySettingsMenuCommand++;
             if (mySettingsMenuCommand > maxCommandNum) {
                 mySettingsMenuCommand = 0;
             }
-
 
         } else if (theEventCode == KeyEvent.VK_A || theEventCode == KeyEvent.VK_LEFT) {
 
@@ -1080,53 +1034,25 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         } else if (theEventCode == KeyEvent.VK_ENTER) {
             myEnterPressed = true;
         }
-
-
-
-
-
     }
-
-
-
     @Override
     public void keyTyped(final KeyEvent theE) {
-
     }
-
     @Override
     public void keyReleased(final KeyEvent theE) {
         // Not needed for
     }
     private void handleUpKey() {
         myMaze.moveUp();
-
-
     }
-
     private void handleDownKey() {
         myMaze.moveDown();
-
-
-
     }
-
     private void handleLeftKey() {
         myMaze.moveLeft();
-
-
     }
-
     private void handleRightKey() {
         myMaze.moveRight();
-
-
-    }
-
-    private void handleEnterKey() {
-
-
-
     }
 
     /**
