@@ -25,7 +25,7 @@ import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.*;
+import javax.swing.JPanel;
 import model.Character;
 import model.Door;
 import model.Maze;
@@ -154,9 +154,14 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private static final int CHEAT = 6;
 
     /**
-     * Settings menu option is the exit.
+     * Settings menu option that is the help.
      */
-    private static final int EXIT = 7;
+    private static final int HELP = 7;
+
+    /**
+     * Settings menu option that is the exit.
+     */
+    private static final int EXIT = 8;
 
     /**
      * List of music files that are playable in the background of game.
@@ -433,12 +438,11 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         final int frameWidth = MazeControls.MY_TILE_SIZE * 8;
         final int frameHeight = MazeControls.MY_TILE_SIZE * 10;
         drawSubWindow(frameX, frameY, frameWidth, frameHeight, g2);
-        optionsTop(frameX, frameY, g2);
-
         switch (mySettingsSubMenuOption) {
             case 0: optionsTop(frameX, frameY, g2);
                     break;
-            case 1: break;
+            case 1: optionsHelp(frameX, frameY, g2);
+                break;
             case 2: break;
             default:
                 throw new IllegalStateException("Unexpected value: "
@@ -484,9 +488,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             if (myEnterPressed) {
                 myGameUI = NORMAL_STATE;
                 try {
-
                     myMaze.save(FILE_NAME);
-
                 } catch (final IOException exception) {
                     System.out.println("Exception: State has not been saved.");
                     exception.printStackTrace();
@@ -519,13 +521,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 } catch (final ClassNotFoundException exception) {
                     exception.printStackTrace();
                 }
-
                 System.out.println(myMaze);
                 System.out.println(ENTER_KEY_PRESSED);
-                requestFocus();
-
                 myGameUI = NORMAL_STATE;
-                repaint();
             }
         }
         //NewGame
@@ -535,12 +533,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
-
             if (myEnterPressed) {
                 myMaze.newGame();
                 System.out.println(ENTER_KEY_PRESSED);
                 myGameUI = NORMAL_STATE;
-                mySettingsMenuCommand = 0;
             }
         }
 
@@ -617,11 +613,24 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             //TODO handle the case so you can Exit
             if (myEnterPressed) {
                 myMaze.cheatSpawnInRoomLeftOfBottomRight();
-                repaint();
                 myGameUI = NORMAL_STATE;
             }
         }
+        //Help
+        textY += ySpace;
+        g2.drawString("Help", textX, textY);
+        if (mySettingsMenuCommand ==  HELP) {
+            // this is the cursor
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+            //TODO handle the case so you can Exit
+            if (myEnterPressed) {
+                mySettingsSubMenuOption = 1;
+                mySettingsMenuCommand = 0;
+                repaint();
 
+            }
+        }
         //Exit
         textY += ySpace;
         g2.drawString("Exit", textX, textY);
@@ -631,10 +640,8 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             g2.drawString(CURSOR_TEXT, cursorX, textY);
             //TODO handle the case so you can Exit
             if (myEnterPressed) {
-                myEnterPressed = false;
-                repaint();
                 myGameUI = NORMAL_STATE;
-
+                repaint();
             }
         }
         myEnterPressed = false;
@@ -662,6 +669,52 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         if (myLineListener != null) {
             myClip.removeLineListener(myLineListener);
         }
+    }
+
+    private void optionsHelp(final int theFrameX, final int theFrameY,
+                              final Graphics2D g2) {
+        int textX;
+        int textY;
+        final int ySpace = 40;
+        //TITLE
+        final String text = "Instructions:";
+        textX = getXForCenteredText(text, g2);
+        textY = theFrameY + MazeControls.MY_TILE_SIZE;
+        // y indicates the baseline of the text.
+        g2.drawString(text, textX, textY);
+        final int buffer = 14;
+        textX = theFrameX + buffer;
+        textY += ySpace;
+        g2.drawString("Move: WASD/↑←↓→", textX, textY);
+        textY += ySpace;
+        g2.drawString("SpaceBar: Close/Open settings.", textX, textY);
+        textY += ySpace;
+        g2.drawString("Click enter to use settings.", textX, textY);
+        textY += ySpace;
+        g2.drawString("Answer questions by typing", textX, textY);
+        textY += ySpace;
+        g2.drawString("and/or clicking.", textX, textY);
+        textY += ySpace;
+        g2.drawString("If too many doors lock, you may ", textX, textY);
+        textY += ySpace;
+        g2.drawString("lose.", textX, textY);
+        //Exit
+        textX = theFrameX + MazeControls.MY_TILE_SIZE;
+        textY += ySpace;
+        g2.drawString("Exit", textX, textY);
+        if (mySettingsMenuCommand ==  0) {
+            // this is the cursor
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+            //TODO handle the case so you can Exit
+            if (myEnterPressed) {
+                myGameUI = NORMAL_STATE;
+                mySettingsSubMenuOption = 0;
+                repaint();
+            }
+        }
+        myEnterPressed = false;
+
     }
 
     /**
@@ -999,7 +1052,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             //3 means we are at the 1st option out of 3.
         int maxCommandNum = 0;
         switch (mySettingsSubMenuOption) {
-            case 0: maxCommandNum = 7;
+            case 0: maxCommandNum = 8;
+                    break;
+            case 1: maxCommandNum = 0;
                     break;
         }
         if (theEventCode == KeyEvent.VK_W || theEventCode == KeyEvent.VK_UP) {
