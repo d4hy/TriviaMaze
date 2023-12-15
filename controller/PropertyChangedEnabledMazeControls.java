@@ -1,5 +1,8 @@
+/*
+ * TriviaMaze
+ * Fall 2023
+ */
 package controller;
-import model.Maze;
 
 import java.beans.PropertyChangeListener;
 
@@ -23,13 +26,13 @@ public interface PropertyChangedEnabledMazeControls extends MazeControls {
     /**
      * A property name for the current game won status.
      */
-    String PROPERTY_GAME_WON ="GAME_WON";
+    String PROPERTY_GAME_WON = "GAME_WON";
 
     /**
      * A property name for when we load the status of the game.
      */
 
-    String PROPERTY_LOAD ="LOADED";
+    String PROPERTY_LOAD = "LOADED";
 
     /**
      * A property name for the current position of the character status.
