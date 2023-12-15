@@ -164,6 +164,23 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private static final int EXIT = 8;
 
     /**
+     * Settings Menu Option title for the Exit option.
+     */
+    private static final String EXIT_TITLE = "Exit";
+
+    /**
+     * Constant to be reused for the String left.
+     */
+    private static final String LEFT = "left";
+
+    /**
+     * Constant to be reused for the String right.
+     */
+    private static final String RIGHT = "right";
+
+
+
+    /**
      * List of music files that are playable in the background of game.
      */
     private static final List<String> MY_MUSIC_FILES = new ArrayList<>();
@@ -254,7 +271,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * A boolean representing if enter key has been pressed.
      */
     private transient boolean myEnterPressed;
-
 
     /**
      * These will be sprites that we use for the character.
@@ -442,7 +458,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             case 1: optionsHelp(frameX, frameY, g2);
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: "
+                throw new IllegalStateException("Unexpected mySettingsSubMenuOption Value: "
                         + mySettingsSubMenuOption);
         }
     }
@@ -624,7 +640,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         }
         //Exit
         textY += ySpace;
-        g2.drawString("Exit", textX, textY);
+        g2.drawString(EXIT_TITLE, textX, textY);
         if (mySettingsMenuCommand ==  EXIT) {
             // this is the cursor
             final int cursorX = textX - 25;
@@ -691,7 +707,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         //Exit
         textX = theFrameX + MazeControls.MY_TILE_SIZE;
         textY += ySpace;
-        g2.drawString("Exit", textX, textY);
+        g2.drawString(EXIT_TITLE, textX, textY);
         if (mySettingsMenuCommand ==  0) {
             // this is the cursor
             final int cursorX = textX - 25;
@@ -756,9 +772,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * @param g2 object used to draw.
      */
     private void drawRoomsDoors(final Graphics2D g2) {
-        drawDoorIfNotNull(g2, myRoom.getLeftDoor(), getDoorImage("left"),
+        drawDoorIfNotNull(g2, myRoom.getLeftDoor(), getDoorImage(LEFT),
                 0, MazeControls.MY_SCREEN_HEIGHT / 2 - MazeControls.MY_TILE_SIZE / 2);
-        drawDoorIfNotNull(g2, myRoom.getRightDoor(), getDoorImage("right"),
+        drawDoorIfNotNull(g2, myRoom.getRightDoor(), getDoorImage(RIGHT),
                 MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE,
                 MazeControls.MY_SCREEN_HEIGHT / 2 - MazeControls.MY_TILE_SIZE / 2);
         drawDoorIfNotNull(g2, myRoom.getBottomDoor(), getDoorImage("bottom"),
@@ -818,7 +834,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * @return the Image that serves as the Room's tiles.
      */
     private BufferedImage getRoomTileImage() {
-
         final String roomTilePath = "/res/room_tile_red.png";
         return loadImage(roomTilePath);
     }
@@ -874,10 +889,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             case "down":
                 image = getSprite(myDown1, myDown2);
                 break;
-            case "right":
+            case RIGHT:
                 image = getSprite(myRight1, myRight2);
                 break;
-            case "left":
+            case LEFT:
                 image = getSprite(myLeft1, myLeft2);
                 break;
             default:
@@ -975,7 +990,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     }
 
     // Implementing KeyListener methods
-
     @Override
     public void keyPressed(final KeyEvent theEvent) {
         //if the game isn't a paused state listen to all the other keys.
@@ -1008,11 +1022,17 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         repaint();
         // in the main settings menu, after hitting pause
 
-            //3 means we are at the 1st option out of 3.
+            //3 means we are at the last option out of 3.
         int maxCommandNum = 0;
+        final int maxDefaultSettings = 8;
         switch (mySettingsSubMenuOption) {
-            case 0: maxCommandNum = 8;
+            case 0: maxCommandNum = maxDefaultSettings;
                     break;
+            case 1: maxCommandNum = 0;
+                    break;
+            default:
+                throw new IllegalStateException("Unexpected value when clicking keys: "
+                        + mySettingsSubMenuOption);
         }
         if (theEventCode == KeyEvent.VK_W || theEventCode == KeyEvent.VK_UP) {
             mySettingsMenuCommand--;
