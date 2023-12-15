@@ -348,11 +348,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         in.close();
         file.close();
         System.out.println("State has been loaded.");
-
-
         myPcs.firePropertyChange(PROPERTY_LOAD, null,  maze);
-        //myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null,  myCurrentRoom);
-        //myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null,  myCharacter);
         return maze;
     }
 
@@ -900,10 +896,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         // Check doors for interaction
         checkDoors();
     }
-
-
-
-
     /**
      * Moves the character up.
      *
