@@ -7,7 +7,6 @@ package model;
 import controller.MazeControls;
 import controller.PropertyChangedEnabledMazeControls;
 import controller.Question;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.FileInputStream;
@@ -380,7 +379,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      * Method that gets the character object of the maze.
      * @return a character object that the maze class is referencing.
      */
-    public Character getCharacter () {
+    public Character getCharacter() {
         return myCharacter;
     }
 
@@ -473,7 +472,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      */
     private void setMyGameOverStatus(final boolean theStatus) {
         myGameOverStatus = theStatus;
-        if(theStatus) {
+        if (theStatus) {
 
             System.out.println("GameOver");
         }
@@ -518,6 +517,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         final int row = 3;
         final int col = 2;
         myCurrentRoom = myRooms[row][col];
+        myCharacter.resetToSpawn();
+        myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
         myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
     }
 
@@ -604,10 +605,13 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
 
 
         // Check if the character's position is near the specified door
-        final boolean isNearDoor = myCharacter.getCurrentPosition().getX() >= doorX - MazeControls.MY_TILE_SIZE
+        final boolean isNearDoor = myCharacter.getCurrentPosition().getX()
+                >= doorX - MazeControls.MY_TILE_SIZE
                 && myCharacter.getCurrentPosition().getX() <= doorX + MazeControls.MY_TILE_SIZE
-                && myCharacter.getCurrentPosition().getY() >= doorY - MazeControls.MY_TILE_SIZE
-                && myCharacter.getCurrentPosition().getY() <= doorY + MazeControls.MY_TILE_SIZE;
+                && myCharacter.getCurrentPosition().getY()
+                >= doorY - MazeControls.MY_TILE_SIZE
+                && myCharacter.getCurrentPosition().getY()
+                <= doorY + MazeControls.MY_TILE_SIZE;
 
         // If the character is near a door, check if all doors have been incorrectly answered
         if (isNearDoor) {
@@ -622,67 +626,104 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     }
     /**
      * Checks if it is possible to reach the bottom-right room of the maze,
-     * considering the question answers in each room. Sets the gameOverStatusToTrue if we are unable to
-     * reach the bottom right room.
+     * considering the question answers in each room. Sets the gameOverStatusToTrue
+     * if we are unable to reach the bottom right room.
      */
     private void canReachBottomRight() {
-        //checkAllColumnsRightDoors();
-        //checkRoomOnTopAndLeftBottomRightRoom();
-        final int bottomRightRow = myRooms.length - 1;
-        final int bottomRightCol = myRooms[0].length - 1;
-        boolean[][] visited = new boolean[myRooms.length][myRooms[0].length];
+        final boolean[][] visited = new boolean[myRooms.length][myRooms[0].length];
 
-        if (!move(visited,myRooms,0, 0)) {
+        if (!move(visited, myRooms, 0, 0)) {
 
             setMyGameOverStatus(true);
         }
 
     }
+
+    /**
+     * Recursive algorithm to see if there is a valid path to the exit.
+     * @param theVisited array of rooms as a 2d array of boolean values,
+     *      *  true if it is already visited false otherwise.
+     * @param theRooms the 2d array of rooms to reference to
+     *      *                      see if it is already a dead end or
+     *                to check if its doors are locked.
+     * @param theRow of the current room
+     * @param theCol of the current room
+     * @return true if there is valid path, false otherwise
+     */
     private boolean move(final boolean[][] theVisited, final Room[][] theRooms,
                          final int theRow, final int theCol) {
         boolean success = false;
-        // Local variable as a copy of the 2D array of rooms.
-        final Room[][] copyOfRooms = theRooms;
-
-        // Local variable to serve as a copy of the current room.
-        final Room currentRoomCheck = copyOfRooms[theRow][theCol];
-        if (validMove(theVisited, copyOfRooms, theRow, theCol)) {
+        final Room currentRoomCheck = theRooms[theRow][theCol];
+        if (validMove(theVisited, theRooms, theRow, theCol)) {
             markVisited(theVisited, theRow, theCol);
             if (atExit(theVisited, theRow, theCol)) {
                 return true;
             }
-            if (currentRoomCheck.getBottomDoor() != null && !currentRoomCheck.getBottomDoor().isLocked()) {
-                success = move(theVisited, copyOfRooms, theRow + 1, theCol); // down
+            if (currentRoomCheck.getBottomDoor() != null
+                    && !currentRoomCheck.getBottomDoor().isLocked()) {
+                success = move(theVisited, theRooms, theRow + 1, theCol); // down
             }
-            if (!success && currentRoomCheck.getRightDoor() != null && !currentRoomCheck.getRightDoor().isLocked()) {
-                success = move(theVisited, copyOfRooms, theRow, theCol + 1); // right
+            if (!success && currentRoomCheck.getRightDoor() != null
+                    && !currentRoomCheck.getRightDoor().isLocked()) {
+                success = move(theVisited, theRooms, theRow, theCol + 1); // right
             }
-            if (!success && currentRoomCheck.getTopDoor() != null && !currentRoomCheck.getTopDoor().isLocked()) {
-                success = move(theVisited, copyOfRooms, theRow - 1, theCol); // up
+            if (!success && currentRoomCheck.getTopDoor() != null
+                    && !currentRoomCheck.getTopDoor().isLocked()) {
+                success = move(theVisited, theRooms, theRow - 1, theCol); // up
             }
-            if (!success && currentRoomCheck.getLeftDoor() != null && !currentRoomCheck.getLeftDoor().isLocked()) {
-                success = move(theVisited, copyOfRooms, theRow, theCol - 1); // left
+            if (!success && currentRoomCheck.getLeftDoor() != null
+                    && !currentRoomCheck.getLeftDoor().isLocked()) {
+                success = move(theVisited, theRooms, theRow, theCol - 1); // left
             }
             if (!success) { // Is a dead end so go to other options
-                copyOfRooms[theRow][theCol].setAsDeadEnd();
+                theRooms[theRow][theCol].setAsDeadEnd();
             }
         }
         return success;
     }
+
+    /**
+     *  Helper method to set if the  room is visited already.
+     * @param theVisited array of rooms as a 2d array of boolean values,
+     *  true if it is already visited false otherwise.
+     * @param theRow of the current room
+     * @param theCol of the current room
+     */
     private  void markVisited(final boolean[][] theVisited,
                                     final int theRow, final int theCol) {
         theVisited[theRow][theCol] = true;
     }
+
+    /**
+     * Helper method to see if it as the exit.
+     * @param theVisited array of rooms as a 2d array of boolean values,
+     *      *                   true if it is already visited false otherwise.
+     * @param theRow of the current room
+     * @param theCol of the current room.
+     * @return true if the room is at the exit, false otherwise.
+     */
     private  boolean atExit(final boolean[][] theVisited, final int theRow, final int theCol) {
 
         return theRow == theVisited.length - 1 && theCol == theVisited[theRow].length - 1;
     }
+
+    /**
+     * helper method to check if a room is valid move to within, it is valid if
+     * it isn't visited already or a dead end.
+     * @param theVisited array of rooms as a 2d array of boolean values,
+     *                   true if it is already visited false otherwise.
+     * @param theCopyOfRooms the 2d array of rooms to reference to
+     *                      see if it is already a dead end.
+     * @param theRow of the current room
+     * @param theCol of the current room.
+     * @return true if the room is valid to move into false otherwise.
+     */
     private  boolean validMove(final boolean[][] theVisited,
                                final Room[][]theCopyOfRooms,
                                final int theRow, final int theCol) {
         return theRow >= 0 && theRow < myRooms.length
-                && theCol >=0 && theCol< myRooms[theRow].length
-                //check  within bounds if the room has not been visited yet, is not a deadend.
+                && theCol >= 0 && theCol < myRooms[theRow].length
+                //check  within bounds if the room has not been visited yet, is not a dead end.
                 && !theVisited[theRow][theCol] && !theCopyOfRooms[theRow][theCol].isDeadEnd();
     }
 
@@ -697,20 +738,20 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         // Iterate through each door direction in the array of doors to check.
         for (String doorDirection : DOORS_TO_CHECK) {
             // Get the Door object for the current direction.
-            Door door = getDoorForDirection(doorDirection);
+            final Door door = getDoorForDirection(doorDirection);
 
             // Check if the door is not null (exists).
             if (door != null) {
                 // Update the boolean variable based on the conditions.
-                allDoorsIncorrectlyAnswered = allDoorsIncorrectlyAnswered &&
-                        !door.hasMyQuestionBeenNotPrompted() &&
-                        !door.hasMyQuestionBeenAnsweredCorrectly();
+                allDoorsIncorrectlyAnswered = allDoorsIncorrectlyAnswered
+                        && !door.hasMyQuestionBeenNotPrompted()
+                        && !door.hasMyQuestionBeenAnsweredCorrectly();
             }
         }
 
         // If all doors have been incorrectly answered, set game over status to true.
         if (allDoorsIncorrectlyAnswered) {
-         setMyGameOverStatus(true);
+            setMyGameOverStatus(true);
         }
     }
     /**
@@ -791,7 +832,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                     handleUnpromptedDoor(door, doorDirection);
 
                     // Handle answered door
-                } else if (!door.hasMyQuestionBeenNotPrompted() && door.hasMyQuestionBeenAnsweredCorrectly()) {
+                } else if (!door.hasMyQuestionBeenNotPrompted()
+                        && door.hasMyQuestionBeenAnsweredCorrectly()) {
                     handleAnsweredDoor(doorDirection);
 
                 }
@@ -937,8 +979,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     }
 
     /**
-     * Will be  in the format:"Current Room's row and column:[][], the game is lost: ,
-     * the game is won:
+     * Will be  in the format:
+     * Current Room's row and column:[][], the game is lost: ,the game is won:
      * Top door status:
      * Bottom door status:
      * Right Door Status:
@@ -951,90 +993,45 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         final StringBuilder stats = new StringBuilder(30);
         final String leftBracket = "[";
         final String rightBracket = "]";
-        final String nullString = "null";
-        final String isLocked = "isLocked:";
-        final String exists = "exists";
         final String comma = ", ";
-
-        stats.append("Current Room's row and column:");
-        stats.append(leftBracket);
-        stats.append(getCurrentRoomRow());
-        stats.append(rightBracket);
-        stats.append(leftBracket);
-        stats.append(getCurrentRoomCol());
-        stats.append(rightBracket);
-        stats.append(comma);
-        stats.append("the game is lost:");
-        stats.append(isGameLost());
-        stats.append(comma);
-        stats.append("the game is won:");
-        stats.append(isMyGameWon());
-        stats.append("\nTop Door Status:");
-        if (myCurrentRoom.getTopDoor() == null) {
-            stats.append(nullString);
-        } else if (myCurrentRoom.getTopDoor() != null) {
-            stats.append(exists);
-            stats.append(comma);
-            stats.append(isLocked);
-            stats.append(myCurrentRoom.getTopDoor().isLocked());
-            stats.append(comma);
-            stats.append("Question has not been prompted:");
-            stats.append(myCurrentRoom.getTopDoor().hasMyQuestionBeenNotPrompted());
-            stats.append(comma);
-            stats.append("Question has been answered correctly:");
-            stats.append(myCurrentRoom.getTopDoor().hasMyQuestionBeenAnsweredCorrectly());
-        }
-
-        stats.append("\nBottom Door Status:");
-        if (myCurrentRoom.getBottomDoor() == null) {
-            stats.append(nullString);
-        } else if (myCurrentRoom.getBottomDoor() != null) {
-            stats.append(exists);
-            stats.append(comma);
-            stats.append(isLocked);
-            stats.append(myCurrentRoom.getBottomDoor().isLocked());
-            stats.append(comma);
-            stats.append("Question has not been prompted:");
-            stats.append(myCurrentRoom.getBottomDoor().hasMyQuestionBeenNotPrompted());
-            stats.append(comma);
-            stats.append("Question has been answered correctly:");
-            stats.append(myCurrentRoom.getBottomDoor().hasMyQuestionBeenAnsweredCorrectly());
-        }
-        stats.append("\nRight Door Status:");
-        if (myCurrentRoom.getRightDoor() == null) {
-            stats.append(nullString);
-        } else if (myCurrentRoom.getRightDoor() != null) {
-            stats.append(exists);
-            stats.append(comma);
-            stats.append(isLocked);
-            stats.append(myCurrentRoom.getRightDoor().isLocked());
-            stats.append(comma);
-            stats.append("Question has not been prompted:");
-            stats.append(myCurrentRoom.getRightDoor().hasMyQuestionBeenNotPrompted());
-            stats.append(comma);
-            stats.append("Question has been answered correctly:");
-            stats.append(myCurrentRoom.getRightDoor().hasMyQuestionBeenAnsweredCorrectly());
-        }
-        stats.append("\nLeft Door Status:");
-        if (myCurrentRoom.getLeftDoor() == null) {
-            stats.append(nullString);
-        } else if (myCurrentRoom.getLeftDoor() != null) {
-            stats.append(exists);
-            stats.append(comma);
-            stats.append(isLocked);
-            stats.append(myCurrentRoom.getLeftDoor().isLocked());
-            stats.append(comma);
-            stats.append("Question has not been prompted:");
-            stats.append(myCurrentRoom.getLeftDoor().hasMyQuestionBeenNotPrompted());
-            stats.append(comma);
-            stats.append("Question has been answered correctly:");
-            stats.append(myCurrentRoom.getLeftDoor().hasMyQuestionBeenAnsweredCorrectly());
-        }
-
+        stats.append("Current Room's row and column:").
+                append(leftBracket).append(getCurrentRoomRow()).
+                append(rightBracket).
+                append(leftBracket).append(getCurrentRoomCol()).append(rightBracket).
+                append(comma).append("the game is lost:").append(isGameLost()).
+                append(comma).append("the game is won:").append(isMyGameWon());
+        appendDoorStatus(stats, TOP_DOOR, myCurrentRoom.getTopDoor(),
+                comma);
+        appendDoorStatus(stats, BOTTOM_DOOR, myCurrentRoom.getBottomDoor(),
+                comma);
+        appendDoorStatus(stats, RIGHT_DOOR, myCurrentRoom.getRightDoor(),
+                comma);
+        appendDoorStatus(stats, LEFT_DOOR, myCurrentRoom.getLeftDoor(),
+                comma);
         return stats.toString();
     }
 
-
+    /**
+     * helper method to use within toString.
+      * @param theStats theStringBuilder Object we are referencing.
+     * @param theDoorName to add within the toString.
+     * @param theDoor to use to add for the toString.
+     * @param theComma string to add within the toString.
+     */
+    private void appendDoorStatus(final StringBuilder theStats, final String theDoorName,
+                                  final Door theDoor, final String theComma) {
+        theStats.append("\n").append(theDoorName).append(" Door Status:");
+        if (theDoor == null) {
+            theStats.append("null");
+        } else {
+            theStats.append("exists").
+                    append(theComma).append("isLocked:").append(theDoor.isLocked()).
+                    append(theComma).append("Question has not been prompted:").
+                    append(theDoor.hasMyQuestionBeenNotPrompted()).
+                    append(theComma).append("Question has been answered correctly:").
+                    append(theDoor.hasMyQuestionBeenAnsweredCorrectly());
+        }
+    }
 
     /**
      * adds an object as a listener to the propertyChangeSupport object.
@@ -1044,9 +1041,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     public void addPropertyChangeListener(final PropertyChangeListener theListener) {
         myPcs.addPropertyChangeListener(theListener);
     }
-
-
-
     /**
      * removes an object as a listener to the propertyChangeSupport object.
      * @param theListener The PropertyChangeListener to be removed
@@ -1055,7 +1049,4 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     public void removePropertyChangeListener(final PropertyChangeListener theListener) {
         myPcs.removePropertyChangeListener(theListener);
     }
-
-
-
 }

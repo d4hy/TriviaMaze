@@ -1,14 +1,13 @@
 package model;
 
 import controller.MazeControls;
-
-import java.awt.*;
+import java.awt.Point;
 import java.io.Serializable;
 
 
 /**
  * This class will represent the controllable character
- * that the user will operate.
+ * that the user will operate through the game.
  * @author David Hoang
  * @author Faith Capito.
  * @version Fall 2023.
@@ -23,14 +22,14 @@ public class Character implements Serializable {
 
 
     /**
-     * This field will be the bounds for which rows the user can enter.
+     * This field will be the bounds for which X coordinates the user can enter.
      */
-    private final int myMaxRows;
+    private final int myXBoundary;
     /**
-     * This field will be the bounds for which columns the user can enter.
+     * This field will be the bounds for which Y coordinates  the user can enter.
      *
      */
-    private final  int myMaxCols;
+    private final  int myMaxYBoundary;
 
 
 
@@ -48,7 +47,7 @@ public class Character implements Serializable {
     private final int myStartY;
 
     /**
-     * The speed at which the character moves between each movement.
+     * The speed at which the character travels between each movement.
      */
     private final int mySpeed = 16;
 
@@ -66,22 +65,22 @@ public class Character implements Serializable {
      * This method initializes the start position.
      * @param theStartX coordinate
      * @param theStartY coordinate
-     * @param theMaxRows boundaries
-     * @param theMaxCols boundaries
+     * @param theMaxX boundaries
+     * @param theMaxY boundaries
      */
     public Character(final int theStartX, final int theStartY,
-                     final int theMaxRows, final int theMaxCols) {
+                     final int theMaxX, final int theMaxY) {
         myDirection = "down";
         myStartX = theStartX;
         myStartY = theStartY;
         myCurrentPosition = new Point(theStartX, theStartY);
-        myMaxRows = theMaxRows;
-        myMaxCols = theMaxCols;
+        myXBoundary = theMaxX;
+        myMaxYBoundary = theMaxY;
     }
 
 
     /**
-     * The direction which the character is facing
+     * The direction which the character is facing.
      * @return a String that represents which direction the character is facing.
      */
     public String getMyDirection() {
@@ -96,7 +95,7 @@ public class Character implements Serializable {
     }
 
     /**
-     * Moves the user up if it is within the boundaries.
+     * Moves the character up if it is within the boundaries.
      */
     public void moveUp() {
         final double newY = myCurrentPosition.getY() - mySpeed;
@@ -112,35 +111,35 @@ public class Character implements Serializable {
     }
 
     /**
-     * Method to move the user down if it is within the boundaries.
+     * Method to move the character down if it is within the boundaries.
      */
     public void moveDown() {
         final double newY = myCurrentPosition.getY() + mySpeed;
         // Check if the new Y-coordinate is below the bottom boundary
-        if (newY < myMaxCols - MazeControls.MY_TILE_SIZE) {
+        if (newY < myMaxYBoundary - MazeControls.MY_TILE_SIZE) {
             myDirection = "down";
             myCurrentPosition.setLocation(myCurrentPosition.getX(), newY);
 
         } else {
             // If already at or below the bottom boundary, set Y-coordinate to bottom boundary
             myCurrentPosition.setLocation(myCurrentPosition.getX(),
-                    myMaxCols - MazeControls.MY_TILE_SIZE);
+                    myMaxYBoundary - MazeControls.MY_TILE_SIZE);
         }
 
     }
 
     /**
-     * Method to move the user right if it is within the boundaries.
+     * Method to move the character right if it is within the boundaries.
      */
     public void moveRight() {
         final double newX = myCurrentPosition.getX() + mySpeed;
         // Check if the new X-coordinate is beyond the right boundary
-        if (newX < myMaxRows - MazeControls.MY_TILE_SIZE) {
+        if (newX < myXBoundary - MazeControls.MY_TILE_SIZE) {
             myDirection = "right";
             myCurrentPosition.setLocation(newX, myCurrentPosition.getY());
         } else {
             // If already at or beyond the right boundary, set X-coordinate to right boundary
-            myCurrentPosition.setLocation(myMaxRows - MazeControls.MY_TILE_SIZE,
+            myCurrentPosition.setLocation(myXBoundary - MazeControls.MY_TILE_SIZE,
                     myCurrentPosition.getY());
         }
 
@@ -148,7 +147,7 @@ public class Character implements Serializable {
 
 
     /**
-     * Method to move the user left if it is within the boundaries.
+     * Method to move the character left if it is within the boundaries.
      */
     public void moveLeft() {
         final double newX = myCurrentPosition.getX() - mySpeed;

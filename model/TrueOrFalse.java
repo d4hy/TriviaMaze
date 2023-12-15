@@ -10,20 +10,7 @@ package model;
  */
 public class TrueOrFalse extends AbstractQuestion {
 
-    /**
-     * Question's text.
-     */
-    private final String myQuestion;
 
-    /**
-     * Text of correct answer to this Question.
-     */
-    private final String myAnswer;
-
-    /**
-     * Text of incorrect second option.
-     */
-    private final String mySecondOption;
 
     /**
      * Multiple choice constructor calls super to Question and takes parameters based
@@ -36,33 +23,8 @@ public class TrueOrFalse extends AbstractQuestion {
                        final String theIncorrectAnswer) {
         super(theQuestion, theAnswer, theIncorrectAnswer, "", "");
 
-        myQuestion = theQuestion;
-        myAnswer = theAnswer;
-        mySecondOption = theIncorrectAnswer;
     }
 
-    /**
-     * Returns the text of the specific question that will be displayed in view.
-     * @return String Text of the question.
-     */
-    public String getQuestionText() {
-        return myQuestion;
-    }
 
-    /**
-     * Returns the correct answer for the question that will be displayed in view.
-     * @return String correct answer text.
-     */
-    public String getAnswerText() {
-        return myAnswer;
-    }
-
-    /**
-     * Returns an incorrect option used for multiple choice in view.
-     * @return String second incorrect option.
-     */
-    public String getSecondOption() {
-        return mySecondOption;
-    }
 
 }
