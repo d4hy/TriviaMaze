@@ -107,7 +107,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      * Index in music player.
      */
-    private  int myCurrentMusicIndex;
+    private static int myCurrentMusicIndex;
 
     /**
      * Boolean representation if music is looping.
@@ -124,7 +124,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      * Music player clip.
      */
-    private Clip myClip;
+    private transient Clip myClip;
 
     /**
      * Counter for which walking animation to choose.
@@ -135,8 +135,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * Long that stores position of clip when paused.
      */
     private transient long myPausedPosition;
-
-    private static boolean myMusicHasStarted;
 
     /**
      *  Maze Object to be referenced.
@@ -175,9 +173,15 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      */
     private transient int mySettingsSubMenuOption;
 
-    private boolean mySkipSongRequest;
+    /**
+     * Boolean used when user requests to skip song.
+     */
+    private transient boolean mySkipSongRequest;
 
-    private boolean myPauseSongRequest;
+    /**
+     * Boolean used when user requests to pause song.
+     */
+    private transient boolean myPauseSongRequest;
 
     /**
      * A boolean representing if enter key has been pressed
@@ -239,7 +243,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         myPausedPosition = 0;
         mySkipSongRequest = false;
         myPauseSongRequest = false;
-        myMusicHasStarted = false;
 
         MY_MUSIC_FILES.add("sound/Wrong Buzzer - Sound Effect.wav");
         MY_MUSIC_FILES.add("sound/beabadoobee - Cologne (Lyrics).wav");
