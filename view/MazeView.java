@@ -259,7 +259,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      * These will be sprites that we use for the character.
      */
-    @SuppressWarnings("checkstyle:MultipleVariableDeclarations")
     private transient BufferedImage myUp1, myUp2, myDown1,
             myDown2, myLeft1, myLeft2, myRight1, myRight2;
 
@@ -274,7 +273,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         myMaze.addPropertyChangeListener(this);
         addKeyListener(this);
         setFocusable(true);
-
     }
 
     public void setUp() throws UnsupportedAudioFileException, LineUnavailableException,
@@ -443,7 +441,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                     break;
             case 1: optionsHelp(frameX, frameY, g2);
                 break;
-            case 2: break;
             default:
                 throw new IllegalStateException("Unexpected value: "
                         + mySettingsSubMenuOption);
@@ -474,7 +471,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         textY += ySpace;
         g2.drawString(text, textX, textY);
 
-
         //Save
         textX = theFrameX + MazeControls.MY_TILE_SIZE;
         textY += ySpace;
@@ -484,7 +480,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
-            //TODO handle the case so you can save
             if (myEnterPressed) {
                 myGameUI = NORMAL_STATE;
                 try {
@@ -506,7 +501,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
-            //TODO handle the case so you can load
             if (myEnterPressed) {
                 try {
 
@@ -610,7 +604,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
-            //TODO handle the case so you can Exit
             if (myEnterPressed) {
                 myMaze.cheatSpawnInRoomLeftOfBottomRight();
                 myGameUI = NORMAL_STATE;
@@ -623,12 +616,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
-            //TODO handle the case so you can Exit
             if (myEnterPressed) {
                 mySettingsSubMenuOption = 1;
                 mySettingsMenuCommand = 0;
                 repaint();
-
             }
         }
         //Exit
@@ -638,7 +629,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
-            //TODO handle the case so you can Exit
             if (myEnterPressed) {
                 myGameUI = NORMAL_STATE;
                 repaint();
@@ -706,7 +696,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
-            //TODO handle the case so you can Exit
             if (myEnterPressed) {
                 myGameUI = NORMAL_STATE;
                 mySettingsSubMenuOption = 0;
@@ -714,9 +703,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             }
         }
         myEnterPressed = false;
-
     }
-
     /**
      *  Helper method to get X coordinate of the text you are trying to get to the center of.
      * @param theText of which you are getting the coordinates for
@@ -769,15 +756,15 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * @param g2 object used to draw.
      */
     private void drawRoomsDoors(final Graphics2D g2) {
-        drawDoorIfNotNull(g2, myRoom.getLeftDoor(), getLeftDoorImg(),
+        drawDoorIfNotNull(g2, myRoom.getLeftDoor(), getDoorImage("left"),
                 0, MazeControls.MY_SCREEN_HEIGHT / 2 - MazeControls.MY_TILE_SIZE / 2);
-        drawDoorIfNotNull(g2, myRoom.getRightDoor(), getRightDoorImg(),
+        drawDoorIfNotNull(g2, myRoom.getRightDoor(), getDoorImage("right"),
                 MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE,
                 MazeControls.MY_SCREEN_HEIGHT / 2 - MazeControls.MY_TILE_SIZE / 2);
-        drawDoorIfNotNull(g2, myRoom.getBottomDoor(), getBottomDoorImg(),
+        drawDoorIfNotNull(g2, myRoom.getBottomDoor(), getDoorImage("bottom"),
                 MazeControls.MY_SCREEN_WIDTH / 2 - MazeControls.MY_TILE_SIZE / 2,
                 MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE);
-        drawDoorIfNotNull(g2, myRoom.getTopDoor(), getTopDoorImg(),
+        drawDoorIfNotNull(g2, myRoom.getTopDoor(), getDoorImage("top"),
                 MazeControls.MY_SCREEN_WIDTH / 2 - MazeControls.MY_TILE_SIZE / 2, 0);
     }
 
@@ -837,41 +824,14 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     }
 
     /**
-     *  Method that loads the Door's left image.
-     * @return the left Door's image.
+     *
+     * @param theDoorImgPath the door image path to retrieve
+     * @return the specified door's image
      */
-    private BufferedImage getLeftDoorImg() {
+    private BufferedImage getDoorImage(final String theDoorImgPath) {
 
-        final String leftDoorPath = "/res/left_door.png";
-        return loadImage(leftDoorPath);
-    }
-
-    /**
-     *  Method that loads the Door's right image.
-     * @return the right Door's image.
-     */
-    private BufferedImage getRightDoorImg() {
-
-        final String rightDoorPath = "/res/right_door.png";
-        return loadImage(rightDoorPath);
-    }
-
-    /**
-     *  Method that loads the Door's right image.
-     * @return the right Door's image.
-     */
-    private BufferedImage getBottomDoorImg() {
-
-        final String bottomDoorPath = "/res/bottom_door.png";
-        return loadImage(bottomDoorPath);
-    }
-    /**
-     *  Method that loads the Door's top image.
-     * @return the top Door's image.
-     */
-    private BufferedImage getTopDoorImg() {
-        final String topDoorPath = "/res/top_door.png";
-        return loadImage(topDoorPath);
+        final String doorPath = "/res/" + theDoorImgPath + "_door.png";
+        return loadImage(doorPath);
     }
 
     /**
@@ -907,7 +867,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      */
     private BufferedImage getSpriteImage() {
         BufferedImage image = null;
-
         switch (myCharacter.getMyDirection()) {
             case "up":
                 image = getSprite(myUp1, myUp2);
@@ -1022,10 +981,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         //if the game isn't a paused state listen to all the other keys.
         if (myGameUI == NORMAL_STATE) {
             switch (theEvent.getKeyCode()) {
-                case KeyEvent.VK_W, KeyEvent.VK_UP -> handleUpKey();
-                case KeyEvent.VK_S, KeyEvent.VK_DOWN -> handleDownKey();
-                case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
-                case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
+                case KeyEvent.VK_W, KeyEvent.VK_UP -> myMaze.moveUp();
+                case KeyEvent.VK_S, KeyEvent.VK_DOWN -> myMaze.moveDown();
+                case KeyEvent.VK_A, KeyEvent.VK_LEFT ->  myMaze.moveLeft();
+                case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> myMaze.moveRight();
 
                 default -> {
                 }
@@ -1053,8 +1012,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         int maxCommandNum = 0;
         switch (mySettingsSubMenuOption) {
             case 0: maxCommandNum = 8;
-                    break;
-            case 1: maxCommandNum = 0;
                     break;
         }
         if (theEventCode == KeyEvent.VK_W || theEventCode == KeyEvent.VK_UP) {
@@ -1096,18 +1053,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     @Override
     public void keyReleased(final KeyEvent theE) {
         // Not needed for
-    }
-    private void handleUpKey() {
-        myMaze.moveUp();
-    }
-    private void handleDownKey() {
-        myMaze.moveDown();
-    }
-    private void handleLeftKey() {
-        myMaze.moveLeft();
-    }
-    private void handleRightKey() {
-        myMaze.moveRight();
     }
 
     /**
