@@ -171,11 +171,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     private static int myCurrentMusicIndex;
 
     /**
-     * Timer that will be used for game and question functionality.
-     */
-    private static Timer myTimer;
-
-    /**
      * LineListener that prompts different behavior when music stops.
      */
     private static LineListener myLineListener;
@@ -289,16 +284,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         addMusic();
-        setTimer();
-    }
-
-    private void setTimer() {
-        myTimer = new Timer(TIMER_DELAY, e -> {
-            if (myTimer.isRunning()) {
-                // Depending on implementation, show the timer during the game
-                // or only use to calculate time limit for user to answer questions.
-            }
-        });
     }
 
     /**
