@@ -15,6 +15,27 @@ import java.io.Serializable;
 
 
 public class Character implements Serializable {
+
+    /**
+     * String constant flagging when character is moving down.
+     */
+    private static final String DOWN = "down";
+
+    /**
+     * String constant flagging when character is moving up.
+     */
+    private static final String UP = "up";
+
+    /**
+     * String constant flagging when character is moving left.
+     */
+    private static final String LEFT = "left";
+
+    /**
+     * String constant flagging when character is moving right.
+     */
+    private static final String RIGHT = "right";
+
     /**
      * This will be the current position of character.
      */
@@ -30,9 +51,6 @@ public class Character implements Serializable {
      *
      */
     private final  int myMaxYBoundary;
-
-
-
 
     /**
      * The starting X coordinate of where the user spawned within the room.
@@ -70,7 +88,7 @@ public class Character implements Serializable {
      */
     public Character(final int theStartX, final int theStartY,
                      final int theMaxX, final int theMaxY) {
-        myDirection = "down";
+        myDirection = DOWN;
         myStartX = theStartX;
         myStartY = theStartY;
         myCurrentPosition = new Point(theStartX, theStartY);
@@ -101,7 +119,7 @@ public class Character implements Serializable {
         final double newY = myCurrentPosition.getY() - mySpeed;
         // Check if the new Y-coordinate is above the top boundary
         if (newY >= 0) {
-            myDirection = "up";
+            myDirection = UP;
             myCurrentPosition.setLocation(myCurrentPosition.getX(), newY);
         } else {
             // If already at or above the top boundary, set Y-coordinate to 0
@@ -117,7 +135,7 @@ public class Character implements Serializable {
         final double newY = myCurrentPosition.getY() + mySpeed;
         // Check if the new Y-coordinate is below the bottom boundary
         if (newY < myMaxYBoundary - MazeControls.MY_TILE_SIZE) {
-            myDirection = "down";
+            myDirection = DOWN;
             myCurrentPosition.setLocation(myCurrentPosition.getX(), newY);
 
         } else {
@@ -135,7 +153,7 @@ public class Character implements Serializable {
         final double newX = myCurrentPosition.getX() + mySpeed;
         // Check if the new X-coordinate is beyond the right boundary
         if (newX < myXBoundary - MazeControls.MY_TILE_SIZE) {
-            myDirection = "right";
+            myDirection = RIGHT;
             myCurrentPosition.setLocation(newX, myCurrentPosition.getY());
         } else {
             // If already at or beyond the right boundary, set X-coordinate to right boundary
@@ -153,7 +171,7 @@ public class Character implements Serializable {
         final double newX = myCurrentPosition.getX() - mySpeed;
         // Check if the new X-coordinate is beyond the left boundary
         if (newX >= 0) {
-            myDirection = "left";
+            myDirection = LEFT;
             myCurrentPosition.setLocation(newX, myCurrentPosition.getY());
         } else {
             // If already at or beyond the left boundary, set X-coordinate to 0

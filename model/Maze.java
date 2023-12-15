@@ -108,7 +108,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     /**
      * Signals change from the model to the view.
      */
-    private  PropertyChangeSupport myPcs;
+    private PropertyChangeSupport myPcs;
 
     /**
      * Arraylist of Questions to be used throughout setup of Maze.
@@ -532,7 +532,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                 isValidMove = currentRow < ENDPOINT && myRooms[++newRow][newCol] != null;
                 break;
             default:
-                throw new IllegalStateException("Unexpected value:  " + theDoorType);
+                throw new IllegalStateException("Unexpected value: " + theDoorType);
         }
 
         // Move to the new room if the move is valid
@@ -580,7 +580,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                 doorX = MazeControls.MY_SCREEN_WIDTH / 2.0;
                 doorY = MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE;
             }
-            default -> throw new IllegalStateException("Unexpected value: " + theDoorType);
+            default -> throw new IllegalStateException("Unexpected value:  " + theDoorType);
         }
 
 
