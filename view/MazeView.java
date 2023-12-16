@@ -11,8 +11,10 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -321,8 +323,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 + "(Official Lyric Video).wav");
         MY_MUSIC_FILES.add("sound/You’re here that’s the thing.wav");
 
-        final File file = new File(MY_MUSIC_FILES.get(myCurrentMusicIndex));
-        final AudioInputStream audioIn = AudioSystem.getAudioInputStream(file);
+//        final File file = new File(MY_MUSIC_FILES.get(myCurrentMusicIndex));
+        InputStream is = getClass().getResourceAsStream(MY_MUSIC_FILES.get(myCurrentMusicIndex));
+        final AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
 
         myClip = AudioSystem.getClip();
         myClip.open(audioIn);
