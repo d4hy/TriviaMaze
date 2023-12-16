@@ -4,13 +4,9 @@
  */
 package model;
 
-import controller.MazeControls;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+
 import java.io.Serializable;
 import java.util.Objects;
-import javax.imageio.ImageIO;
 
 
 /**
@@ -79,13 +75,13 @@ public class Room implements Serializable {
     public void setDoor(final String theDoor) {
 
         if (Objects.equals(theDoor, "Left")) {
-            myLeftDoor = new Door("Left Door");
+            myLeftDoor = new Door();
         } else if (Objects.equals(theDoor, "Right")) {
-            myRightDoor = new Door("Right Door");
+            myRightDoor = new Door();
         } else if (Objects.equals(theDoor, "Top")) {
-            myTopDoor = new Door("Top Door");
+            myTopDoor = new Door();
         } else if (Objects.equals(theDoor, "Bottom")) {
-            myBottomDoor = new Door("Bottom Door");
+            myBottomDoor = new Door();
         }
 
     }

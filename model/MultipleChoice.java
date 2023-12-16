@@ -1,3 +1,7 @@
+/*
+ * TriviaMaze
+ * Fall 2023
+ */
 package model;
 
 /**
@@ -9,32 +13,6 @@ package model;
  * @version Fall 2023
  */
 public class MultipleChoice extends AbstractQuestion {
-
-    /**
-     * Question's text.
-     */
-    private final String myQuestion;
-
-    /**
-     * Text of correct answer to this Question.
-     */
-    private final String myAnswer;
-
-    /**
-     * Text of incorrect second option.
-     */
-    private final String mySecondOption;
-
-    /**
-     * Text of incorrect third option.
-     */
-    private final String myThirdOption;
-
-    /**
-     * Text of incorrect fourth option.
-     */
-    private final String myFourthOption;
-
     /**
      * Multiple choice constructor calls super to Question and takes parameters based
      * on the information pertaining to this specific type of question.
@@ -49,52 +27,6 @@ public class MultipleChoice extends AbstractQuestion {
                           final String theFourthOption) {
         super(theQuestion, theAnswer, theSecondOption, theThirdOption, theFourthOption);
 
-        myQuestion = theQuestion;
-        myAnswer = theAnswer;
-        mySecondOption = theSecondOption;
-        myThirdOption = theThirdOption;
-        myFourthOption = theFourthOption;
+
     }
-
-    /**
-     * Returns the text of the question that will be displayed in view.
-     * @return String question text.
-     */
-    public String getQuestionText() {
-        return myQuestion;
-    }
-
-    /**
-     * Returns the correct answer for the question that will be displayed in view.
-     * @return String correct answer text.
-     */
-    public String getAnswerText() {
-        return myAnswer;
-    }
-
-    /**
-     * Returns an incorrect option used for multiple choice in view.
-     * @return String second incorrect option.
-     */
-    public String getSecondOption() {
-        return mySecondOption;
-    }
-
-    /**
-     * Returns an incorrect option used for multiple choice in view.
-     * @return String third incorrect option.
-     */
-    public String getThirdOption() {
-        return myThirdOption;
-    }
-
-
-    /**
-     * Returns an incorrect option used for multiple choice in view.
-     * @return String fourth incorrect option.
-     */
-    public String getFourthOption() {
-        return myFourthOption;
-    }
-
 }

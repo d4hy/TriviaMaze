@@ -1,7 +1,10 @@
+/*
+ * TriviaMaze
+ * Fall 2023
+ */
 package model;
 
 import controller.Question;
-
 import java.util.Objects;
 
 /**

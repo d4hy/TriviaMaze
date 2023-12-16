@@ -5,13 +5,12 @@
 package model;
 
 import controller.Question;
-import org.sqlite.SQLiteDataSource;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import org.sqlite.SQLiteDataSource;
 
 /**
  * Database helper class that creates Question objects from information that is
@@ -42,7 +41,7 @@ public final class QuestionDatabase {
      * Arraylist stores collection of Question object with respective information
      * needed to distribute and use in Trivia Maze.
      */
-    private static final ArrayList<Question> myQuestions = new ArrayList<>();
+    private static final ArrayList<Question> MY_QUESTIONS = new ArrayList<>();
 
     /**
      * Private, empty constructor to ensure this remains a utility class.
@@ -102,7 +101,7 @@ public final class QuestionDatabase {
                                 correctAnswer, secondOption, thirdOption, fourthOption);
 
                 // Adds the new Question depending on its type into list.
-                myQuestions.add(question);
+                MY_QUESTIONS.add(question);
 
 
             }
@@ -118,6 +117,6 @@ public final class QuestionDatabase {
      * @return arraylist of Question objects.
      */
     public static ArrayList<Question> getQuestions() {
-        return myQuestions;
+        return MY_QUESTIONS;
     }
 }

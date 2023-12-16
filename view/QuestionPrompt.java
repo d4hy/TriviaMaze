@@ -1,15 +1,14 @@
 package view;
 
+import controller.Question;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.JOptionPane;
-
 import model.Door;
 import model.Maze;
 import model.MultipleChoice;
-import controller.Question;
 import model.Room;
 import model.ShortAnswer;
 import model.TrueOrFalse;
@@ -27,14 +26,21 @@ import model.TrueOrFalse;
 public class QuestionPrompt implements PropertyChangeListener {
 
     /**
+     * A static constant to be reused as a title.
+     */
+    private static final String TITLE = "Answer to play!";
+
+
+    /**
      * The Maze object to be referenced.
      */
-    private final Maze myMaze;
+    private Maze myMaze;
 
     /**
      * The current room to reference.
      */
     private Room myRoom;
+
 
     /**
      * Constructs a QuestionPrompt with a reference to the Maze object.
@@ -48,21 +54,28 @@ public class QuestionPrompt implements PropertyChangeListener {
     /**
      * Displays a question prompt to the user and processes their answer.
      * If the answer is correct, it sets the bottom door as prompted and unlocks it.
-     * If the dialog is closed or the answer is incorrect, it sets the question as not prompted.
+     * If the dialog is closed or the answer is incorrect,
+     * it sets the question as not prompted.
      * Updates the game state accordingly.
      *
      * @param theDoor The door for which the question prompt is displayed.
      */
     private void displayQuestionPrompt(final Door theDoor) {
         // Retrieve the associated question
-        final Question question = theDoor.getMyQuestion(theDoor);
+        if (!myMaze.isGameLost()) {
+            try {
+                final Question question = theDoor.getMyQuestion();
 
-        if (question instanceof TrueOrFalse) {
-            handleTrueOrFalseQuestion(theDoor, (TrueOrFalse) question);
-        } else if (question instanceof MultipleChoice) {
-            handleMultipleChoiceQuestion(theDoor, (MultipleChoice) question);
-        } else if (question instanceof ShortAnswer) {
-            handleShortAnswerQuestion(theDoor, (ShortAnswer) question);
+                if (question instanceof TrueOrFalse) {
+                    handleTrueOrFalseQuestion(theDoor, (TrueOrFalse) question);
+                } else if (question instanceof MultipleChoice) {
+                    handleMultipleChoiceQuestion(theDoor, (MultipleChoice) question);
+                } else if (question instanceof ShortAnswer) {
+                    handleShortAnswerQuestion(theDoor, (ShortAnswer) question);
+                }
+            } catch (final NullPointerException e) {
+                System.out.println("Don't do that ");
+            }
         }
     }
 
@@ -72,7 +85,9 @@ public class QuestionPrompt implements PropertyChangeListener {
      * @param theDoor The door for which the question prompt is displayed.
      * @param theMultipleChoiceQuestion The multiple choice type question.
      */
-    private void  handleMultipleChoiceQuestion(final Door theDoor, final MultipleChoice theMultipleChoiceQuestion) {
+    private void  handleMultipleChoiceQuestion(final Door theDoor,
+                                               final MultipleChoice
+                                                       theMultipleChoiceQuestion) {
         final ArrayList<String> options = new ArrayList<>();
         options.add(theMultipleChoiceQuestion.getAnswerText());
         options.add(theMultipleChoiceQuestion.getSecondOption());
@@ -82,7 +97,7 @@ public class QuestionPrompt implements PropertyChangeListener {
         final int userAnswerIndex = JOptionPane.showOptionDialog(
                 null,
                 theMultipleChoiceQuestion.getQuestionText(),
-                "Answer to play!",
+                TITLE,
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
@@ -136,7 +151,7 @@ public class QuestionPrompt implements PropertyChangeListener {
         final int userAnswer = JOptionPane.showOptionDialog(
                 null,
                 theTrueOrFalseQuestion.getQuestionText(),
-                "Answer to play!",
+                TITLE,
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
@@ -191,7 +206,8 @@ public class QuestionPrompt implements PropertyChangeListener {
 
     /**
      * Listens for property changes in the Maze class.
-     * When the freeze property is triggered, it displays a question prompt.
+     * When the prompt question property is triggered, it displays a question prompt,
+     * otherwise it loads the state of the maze, when the maze property load is fired.
      *
      * @param theEvt The property change event.
      */
@@ -211,6 +227,12 @@ public class QuestionPrompt implements PropertyChangeListener {
         } else if (propertyName.equals(myMaze.PROPERTY_PROMPT_QUESTION_RIGHT_DOOR)) {
             myRoom = (Room) theEvt.getNewValue();
             displayQuestionPrompt(myRoom.getRightDoor());
+        }  else if (propertyName.equals(myMaze.PROPERTY_LOAD)) {
+            myMaze = (Maze) theEvt.getNewValue();
+            myRoom = myMaze.getCurrentRoom();
+            myMaze.addPropertyChangeListener(this);
+
         }
+
     }
 }

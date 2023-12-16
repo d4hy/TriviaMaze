@@ -1,5 +1,8 @@
+/*
+ * TriviaMaze
+ * Fall 2023
+ */
 package controller;
-import model.Maze;
 
 import java.beans.PropertyChangeListener;
 
@@ -17,13 +20,19 @@ import java.beans.PropertyChangeListener;
 public interface PropertyChangedEnabledMazeControls extends MazeControls {
 
     /**
-     * A property name for the current GAME_OVER property in the game.
+     * A property name for the current GAME_OVER field in the game.
      */
     String PROPERTY_GAME_OVER = "GAME_OVER";
     /**
      * A property name for the current game won status.
      */
-    String PROPERTY_GAME_WON ="GAME_WON";
+    String PROPERTY_GAME_WON = "GAME_WON";
+
+    /**
+     * A property name for when we load the status of the game.
+     */
+
+    String PROPERTY_LOAD = "LOADED";
 
     /**
      * A property name for the current position of the character status.
@@ -71,17 +80,7 @@ public interface PropertyChangedEnabledMazeControls extends MazeControls {
     void addPropertyChangeListener(PropertyChangeListener theListener);
 
 
-    /**
-     * Add a PropertyChangeListener for a specific property. The listener will be invoked only
-     * when a call on firePropertyChange names that specific property. The same listener object
-     * may be added more than once. For each property, the listener will be invoked the number
-     * of times it was added for that property. If propertyName or listener is null, no
-     * exception is thrown and no action is taken.
-     *
-     * @param thePropertyName The name of the property to listen on.
-     * @param theListener The PropertyChangeListener to be added
-     */
-    void addPropertyChangeListener(String thePropertyName, PropertyChangeListener theListener);
+
 
     /**
      * Remove a PropertyChangeListener from the listener list. This removes a
@@ -94,16 +93,5 @@ public interface PropertyChangedEnabledMazeControls extends MazeControls {
      */
     void removePropertyChangeListener(PropertyChangeListener theListener);
 
-    /**
-     * Remove a PropertyChangeListener for a specific property. If listener was added more than
-     * once to the same event source for the specified property, it will be notified one less
-     * time after being removed. If propertyName is null, no exception is thrown and no action
-     * is taken. If listener is null, or was never added for the specified property, no
-     * exception is thrown and no action is taken.
-     *
-     * @param thePropertyName The name of the property that was listened on.
-     * @param theListener The PropertyChangeListener to be removed
-     */
-    void removePropertyChangeListener(String thePropertyName,
-                                      PropertyChangeListener theListener);
+
 }

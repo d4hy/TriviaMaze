@@ -7,9 +7,13 @@ package model;
 import controller.MazeControls;
 import controller.PropertyChangedEnabledMazeControls;
 import controller.Question;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,16 +60,11 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     private static final int ENDPOINT = 3;
 
     /**
-     * Number of correct answers that the current Character has answered.
-     */
-    private static int myCorrectAnswers;
-
-
-    /**
      * Field to show if the character can currently move.
      */
 
     private boolean myCanMove;
+
     /**
      * The room that Character is currently in.
      */
@@ -82,14 +81,14 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     private ArrayList<Door> myDoors;
 
     /**
-     * Width of Maze rooms.
+     * Columns in Maze.
      */
-    private final int myWidth;
+    private final int myColumns;
 
     /**
-     * Height of Maze rooms.
+     * Rows in Maze.
      */
-    private final int myHeight;
+    private final int myRows;
 
     /**
      * The status of the game if it is over.
@@ -109,7 +108,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     /**
      * Signals change from the model to the view.
      */
-    private final PropertyChangeSupport myPcs;
+    private PropertyChangeSupport myPcs;
 
     /**
      * Arraylist of Questions to be used throughout setup of Maze.
@@ -117,9 +116,13 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     private ArrayList<Question> myQuestions = new ArrayList<>();
 
     /**
+     *
      * Constructor for new game of Maze, creating starting point of a Character and Rooms.
+     *
+     * @param theColumns of how many rooms there are wide.
+     * @param theRows of many rooms there are tall.
      */
-    public Maze(final int theWidth, final int theHeight) {
+    public Maze(final int theRows, final int theColumns) {
         super();
 
 
@@ -133,8 +136,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH,
                 MazeControls.MY_SCREEN_HEIGHT);
 
-        myWidth = theWidth;
-        myHeight = theHeight;
+        myColumns = theColumns;
+        myRows = theRows;
         myPcs = new PropertyChangeSupport(this);
         setMoveTrue();
         setMyGameOverStatus(false);
@@ -150,12 +153,11 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      */
     public void createMaze() {
 
-        myCorrectAnswers = 0;
-        myRooms = new Room[myWidth][myHeight];
+        myRooms = new Room[myRows][myColumns];
         myDoors = new ArrayList<>();
 
-        for (int i = 0; i < myWidth; i++) {
-            for (int j = 0; j < myHeight; j++) {
+        for (int i = 0; i < myRows; i++) {
+            for (int j = 0; j < myColumns; j++) {
                 myRooms[i][j] = new Room();
             }
         }
@@ -189,8 +191,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         createBottomRowDoors();
         createRightColDoors();
 
-        for (int i = 1; i < myWidth - 1; i++) {
-            for (int j = 1; j < myHeight - 1; j++) {
+        for (int i = 1; i < myRows - 1; i++) {
+            for (int j = 1; j < myColumns - 1; j++) {
                 myRooms[i][j].setDoor(RIGHT_DOOR);
                 myRooms[i][j].setDoor(LEFT_DOOR);
                 myRooms[i][j].setDoor(TOP_DOOR);
@@ -212,7 +214,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myRooms[0][ENDPOINT].setDoor(LEFT_DOOR);
         myRooms[0][ENDPOINT].setDoor(BOTTOM_DOOR);
 
-        for (int i = 1; i < myWidth - 1; i++) {
+        for (int i = 1; i < myColumns - 1; i++) {
             myRooms[0][i].setDoor(LEFT_DOOR);
             myRooms[0][i].setDoor(RIGHT_DOOR);
             myRooms[0][i].setDoor(BOTTOM_DOOR);
@@ -230,7 +232,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myRooms[ENDPOINT][0].setDoor(RIGHT_DOOR);
         myRooms[ENDPOINT][0].setDoor(TOP_DOOR);
 
-        for (int i = 1; i < myHeight - 1; i++) {
+        for (int i = 1; i < myRows - 1; i++) {
             myRooms[i][0].setDoor(TOP_DOOR);
             myRooms[i][0].setDoor(RIGHT_DOOR);
             myRooms[i][0].setDoor(BOTTOM_DOOR);
@@ -249,7 +251,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myRooms[ENDPOINT][ENDPOINT].setDoor(LEFT_DOOR);
         myRooms[ENDPOINT][ENDPOINT].setDoor(TOP_DOOR);
 
-        for (int i = 1; i < myWidth - 1; i++) {
+        for (int i = 1; i < myColumns - 1; i++) {
             myRooms[ENDPOINT][i].setDoor(TOP_DOOR);
             myRooms[ENDPOINT][i].setDoor(RIGHT_DOOR);
             myRooms[ENDPOINT][i].setDoor(LEFT_DOOR);
@@ -262,8 +264,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      */
     private void createRightColDoors() {
 
-//        myRooms[ENDPOINT][1].setDoor();
-        for (int i = 1; i < myWidth - 1; i++) {
+        for (int i = 1; i < myRows - 1; i++) {
             myRooms[i][ENDPOINT].setDoor(TOP_DOOR);
             myRooms[i][ENDPOINT].setDoor(BOTTOM_DOOR);
             myRooms[i][ENDPOINT].setDoor(LEFT_DOOR);
@@ -277,8 +278,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      */
     private void assignDoors() {
 
-        for (int i = 0; i < myWidth; i++) {
-            for (int j = 0; j < myHeight; j++) {
+        for (int i = 0; i < myRows; i++) {
+            for (int j = 0; j < myColumns; j++) {
 
                 // assigns all rooms that have both left and top doors.
                 if (j > 0 && i > 0) {
@@ -287,7 +288,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                 }
 
                 // assigns all rooms that have both right and bottom doors.
-                if (j < myHeight - 2 && i < myWidth - 2) {
+                if (j < myRows - 2 && i < myColumns - 2) {
                     myRooms[i][j].assignRightDoor(myRooms[i][j + 1].getLeftDoor());
                     myRooms[i][j].assignBottomDoor(myRooms[i + 1][j].getTopDoor());
                 }
@@ -305,18 +306,58 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                 }
 
                 // assigns right doors of last row.
-                if (i == ENDPOINT && j < myHeight - 2) {
+                if (i == ENDPOINT && j < myColumns - 2) {
                     myRooms[i][j].assignRightDoor(myRooms[i][j + 1].getLeftDoor());
                 }
 
                 // assigns bottom doors of right column.
-                if (i < myWidth - 2 && j == ENDPOINT) {
+                if (i < myRows - 2 && j == ENDPOINT) {
                     myRooms[i][j].assignBottomDoor(myRooms[i + 1][j].getTopDoor());
                 }
 
             }
         }
 
+    }
+
+    /**
+     * Method to save the current state of the game into an object file.
+     */
+    public void save(final String theFileName) throws IOException {
+
+        final FileOutputStream file = new FileOutputStream(theFileName);
+        final ObjectOutputStream out = new ObjectOutputStream(file);
+        out.writeObject(this);
+        out.close();
+        file.close();
+        System.out.println("State has been saved successfully.");
+
+    }
+
+    /**
+     * Method that can load a previous state of the game from a file.
+     * @return Maze with saved state.
+     */
+    public Maze load(final String theFileName) throws IOException, ClassNotFoundException {
+
+
+
+        final FileInputStream file = new FileInputStream(theFileName);
+        final ObjectInputStream in = new ObjectInputStream(file);
+        final Maze maze = (Maze) in.readObject();
+        in.close();
+        file.close();
+        System.out.println("State has been loaded.");
+        myPcs.firePropertyChange(PROPERTY_LOAD, null,  maze);
+        return maze;
+    }
+
+    /**
+     * Method that gets the character object of the maze.
+     * @return a character object that the maze class is referencing.
+     */
+    public Character getCharacter() {
+        return myCharacter;
     }
 
     /**
@@ -328,8 +369,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         // Adds all active doors to list of doors after maze creation.
         // This will only check for bottom and right doors in all rooms,
         // avoiding adding doubles when some doors should be using a "shared" question.
-        for (int i = 0; i < myWidth; i++) {
-            for (int j = 0; j < myHeight; j++) {
+        for (int i = 0; i < myRows; i++) {
+            for (int j = 0; j < myColumns; j++) {
                 if (myRooms[i][j].getRightDoor() != null) {
                     myDoors.add(myRooms[i][j].getRightDoor());
                 }
@@ -339,33 +380,15 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
             }
         }
 
-        // Using index, will add questions to each door given by the list of questions
-        // extracted from the database.
         for (int i = 0; i < myQuestions.size() && i < myDoors.size(); i++) {
             myDoors.get(i).setQuestion(myQuestions.get(i));
-            System.out.println(myDoors.get(i).getMyQuestion(myDoors.get(i)).getQuestionText());
+            System.out.println(myDoors.get(i).getMyQuestion().getQuestionText());
         }
 
     }
 
-    public Memento saveToMemento() {
-        System.out.println("Originator: Saving to Memento. ");
-        return new Memento(myRooms, myCurrentRoom, myCharacter, myDoors,
-                myWidth, myHeight, myGameOverStatus, myGameWonStatus);
-    }
-
-    public void restoreFromMemento(final Memento theMemento) {
-
-    }
-
-    /**
-     * Evaluates the answer given by the Character to a trivia Question.
-     */
-    public boolean answerQuestion(final String theInput) {
-
-        final boolean validity = false;
-
-        return validity;
+    public ArrayList<Door> getMyDoors() {
+        return myDoors;
     }
 
     /**
@@ -392,14 +415,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     private void setMoveFalse() {
         myCanMove = false;
 
-
-    }
-
-
-    /**
-     * Door holding current Question to be locked if answered incorrectly.
-     */
-    private void lockDoor(final Door theDoor) {
 
     }
 
@@ -434,7 +449,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      */
     private void setMyGameOverStatus(final boolean theStatus) {
         myGameOverStatus = theStatus;
-        if(theStatus) {
+        if (theStatus) {
 
             System.out.println("GameOver");
         }
@@ -442,7 +457,9 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myPcs.firePropertyChange(PROPERTY_GAME_OVER, null, myGameOverStatus);
     }
 
-
+    /**
+     * Method starts and initializes the variables needed in order for a new game to start.
+     */
     @Override
     public void newGame() {
         // Calculate the initial position for the Character to be in the middle of the screen.
@@ -457,17 +474,30 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         myCharacter = new Character(startX, startY, MazeControls.MY_SCREEN_WIDTH,
                 MazeControls.MY_SCREEN_HEIGHT);
         setMoveTrue();
-        myCorrectAnswers = 0;
         createMaze();
 
         setMyGameOverStatus(false);
         myGameWonStatus = false;
 
-
+        System.out.println(this);
         myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
         myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
 
     }
+
+    /**
+     * Is meant to be a cheat to spawn in the room [3][2].
+     */
+
+    public void cheatSpawnInRoomLeftOfBottomRight() {
+        final int row = 3;
+        final int col = 2;
+        myCurrentRoom = myRooms[row][col];
+        myCharacter.resetToSpawn();
+        myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
+        myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
+    }
+
 
     /**
      * Handles the interaction when the character is near a specific door.
@@ -504,14 +534,14 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         // Move to the new room if the move is valid
         if (isValidMove) {
             myCurrentRoom = myRooms[newRow][newCol];
+            System.out.println(this);
             //If we are at the bottom right room fire the property that the user won
             // and set the myGameWonn status to true
             if (newRow == ENDPOINT && newCol == ENDPOINT) {
                 myGameWonStatus = true;
                 myPcs.firePropertyChange(PROPERTY_GAME_WON, null, true);
             }
-            myCharacter.resetToMiddle();
-            System.out.println("row:"+ getCurrentRoomRow() + ",col:"+ getCurrentRoomCol());
+            myCharacter.resetToSpawn();
             myPcs.firePropertyChange(PROPERTY_CHARACTER_MOVE, null, myCharacter);
             myPcs.firePropertyChange(PROPERTY_ROOM_CHANGE, null, myCurrentRoom);
         }
@@ -546,15 +576,18 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                 doorX = MazeControls.MY_SCREEN_WIDTH / 2.0;
                 doorY = MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE;
             }
-            default -> throw new IllegalStateException("Unexpected value: " + theDoorType);
+            default -> throw new IllegalStateException("Unexpected value:  " + theDoorType);
         }
 
 
         // Check if the character's position is near the specified door
-        final boolean isNearDoor = myCharacter.getCurrentPosition().getX() >= doorX - MazeControls.MY_TILE_SIZE
+        final boolean isNearDoor = myCharacter.getCurrentPosition().getX()
+                >= doorX - MazeControls.MY_TILE_SIZE
                 && myCharacter.getCurrentPosition().getX() <= doorX + MazeControls.MY_TILE_SIZE
-                && myCharacter.getCurrentPosition().getY() >= doorY - MazeControls.MY_TILE_SIZE
-                && myCharacter.getCurrentPosition().getY() <= doorY + MazeControls.MY_TILE_SIZE;
+                && myCharacter.getCurrentPosition().getY()
+                >= doorY - MazeControls.MY_TILE_SIZE
+                && myCharacter.getCurrentPosition().getY()
+                <= doorY + MazeControls.MY_TILE_SIZE;
 
         // If the character is near a door, check if all doors have been incorrectly answered
         if (isNearDoor) {
@@ -569,67 +602,104 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     }
     /**
      * Checks if it is possible to reach the bottom-right room of the maze,
-     * considering the question answers in each room. Sets the gameOverStatusToTrue if we are unable to
-     * reach the bottom right room.
+     * considering the question answers in each room. Sets the gameOverStatusToTrue
+     * if we are unable to reach the bottom right room.
      */
     private void canReachBottomRight() {
-        //checkAllColumnsRightDoors();
-        //checkRoomOnTopAndLeftBottomRightRoom();
-        final int bottomRightRow = myRooms.length - 1;
-        final int bottomRightCol = myRooms[0].length - 1;
-        boolean[][] visited = new boolean[myRooms.length][myRooms[0].length];
+        final boolean[][] visited = new boolean[myRooms.length][myRooms[0].length];
 
-        if (!move(visited,myRooms,0, 0)) {
+        if (!move(visited, myRooms, 0, 0)) {
 
             setMyGameOverStatus(true);
         }
 
     }
+
+    /**
+     * Recursive algorithm to see if there is a valid path to the exit.
+     * @param theVisited array of rooms as a 2d array of boolean values,
+     *      *  true if it is already visited false otherwise.
+     * @param theRooms the 2d array of rooms to reference to
+     *      *                      see if it is already a dead end or
+     *                to check if its doors are locked.
+     * @param theRow of the current room
+     * @param theCol of the current room
+     * @return true if there is valid path, false otherwise
+     */
     private boolean move(final boolean[][] theVisited, final Room[][] theRooms,
                          final int theRow, final int theCol) {
         boolean success = false;
-        // Local variable as a copy of the 2D array of rooms.
-        final Room[][] copyOfRooms = theRooms;
-
-        // Local variable to serve as a copy of the current room.
-        final Room currentRoomCheck = copyOfRooms[theRow][theCol];
-        if (validMove(theVisited, copyOfRooms, theRow, theCol)) {
+        final Room currentRoomCheck = theRooms[theRow][theCol];
+        if (validMove(theVisited, theRooms, theRow, theCol)) {
             markVisited(theVisited, theRow, theCol);
             if (atExit(theVisited, theRow, theCol)) {
                 return true;
             }
-            if (currentRoomCheck.getBottomDoor() != null && !currentRoomCheck.getBottomDoor().isLocked()) {
-                success = move(theVisited, copyOfRooms, theRow + 1, theCol); // down
+            if (currentRoomCheck.getBottomDoor() != null
+                    && !currentRoomCheck.getBottomDoor().isLocked()) {
+                success = move(theVisited, theRooms, theRow + 1, theCol); // down
             }
-            if (!success && currentRoomCheck.getRightDoor() != null && !currentRoomCheck.getRightDoor().isLocked()) {
-                success = move(theVisited, copyOfRooms, theRow, theCol + 1); // right
+            if (!success && currentRoomCheck.getRightDoor() != null
+                    && !currentRoomCheck.getRightDoor().isLocked()) {
+                success = move(theVisited, theRooms, theRow, theCol + 1); // right
             }
-            if (!success && currentRoomCheck.getTopDoor() != null && !currentRoomCheck.getTopDoor().isLocked()) {
-                success = move(theVisited, copyOfRooms, theRow - 1, theCol); // up
+            if (!success && currentRoomCheck.getTopDoor() != null
+                    && !currentRoomCheck.getTopDoor().isLocked()) {
+                success = move(theVisited, theRooms, theRow - 1, theCol); // up
             }
-            if (!success && currentRoomCheck.getLeftDoor() != null && !currentRoomCheck.getLeftDoor().isLocked()) {
-                success = move(theVisited, copyOfRooms, theRow, theCol - 1); // left
+            if (!success && currentRoomCheck.getLeftDoor() != null
+                    && !currentRoomCheck.getLeftDoor().isLocked()) {
+                success = move(theVisited, theRooms, theRow, theCol - 1); // left
             }
             if (!success) { // Is a dead end so go to other options
-                copyOfRooms[theRow][theCol].setAsDeadEnd();
+                theRooms[theRow][theCol].setAsDeadEnd();
             }
         }
         return success;
     }
+
+    /**
+     *  Helper method to set if the  room is visited already.
+     * @param theVisited array of rooms as a 2d array of boolean values,
+     *  true if it is already visited false otherwise.
+     * @param theRow of the current room
+     * @param theCol of the current room
+     */
     private  void markVisited(final boolean[][] theVisited,
                                     final int theRow, final int theCol) {
         theVisited[theRow][theCol] = true;
     }
+
+    /**
+     * Helper method to see if it as the exit.
+     * @param theVisited array of rooms as a 2d array of boolean values,
+     *      *                   true if it is already visited false otherwise.
+     * @param theRow of the current room
+     * @param theCol of the current room.
+     * @return true if the room is at the exit, false otherwise.
+     */
     private  boolean atExit(final boolean[][] theVisited, final int theRow, final int theCol) {
 
         return theRow == theVisited.length - 1 && theCol == theVisited[theRow].length - 1;
     }
+
+    /**
+     * helper method to check if a room is valid move to within, it is valid if
+     * it isn't visited already or a dead end.
+     * @param theVisited array of rooms as a 2d array of boolean values,
+     *                   true if it is already visited false otherwise.
+     * @param theCopyOfRooms the 2d array of rooms to reference to
+     *                      see if it is already a dead end.
+     * @param theRow of the current room
+     * @param theCol of the current room.
+     * @return true if the room is valid to move into false otherwise.
+     */
     private  boolean validMove(final boolean[][] theVisited,
                                final Room[][]theCopyOfRooms,
                                final int theRow, final int theCol) {
         return theRow >= 0 && theRow < myRooms.length
-                && theCol >=0 && theCol< myRooms[theRow].length
-                //check  within bounds if the room has not been visited yet, is not a deadend.
+                && theCol >= 0 && theCol < myRooms[theRow].length
+                //check  within bounds if the room has not been visited yet, is not a dead end.
                 && !theVisited[theRow][theCol] && !theCopyOfRooms[theRow][theCol].isDeadEnd();
     }
 
@@ -644,20 +714,20 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         // Iterate through each door direction in the array of doors to check.
         for (String doorDirection : DOORS_TO_CHECK) {
             // Get the Door object for the current direction.
-            Door door = getDoorForDirection(doorDirection);
+            final Door door = getDoorForDirection(doorDirection);
 
             // Check if the door is not null (exists).
             if (door != null) {
                 // Update the boolean variable based on the conditions.
-                allDoorsIncorrectlyAnswered = allDoorsIncorrectlyAnswered &&
-                        !door.hasMyQuestionBeenNotPrompted() &&
-                        !door.hasMyQuestionBeenAnsweredCorrectly();
+                allDoorsIncorrectlyAnswered = allDoorsIncorrectlyAnswered
+                        && !door.hasMyQuestionBeenNotPrompted()
+                        && !door.hasMyQuestionBeenAnsweredCorrectly();
             }
         }
 
         // If all doors have been incorrectly answered, set game over status to true.
         if (allDoorsIncorrectlyAnswered) {
-         setMyGameOverStatus(true);
+            setMyGameOverStatus(true);
         }
     }
     /**
@@ -665,14 +735,16 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      * @return -1 if the room doesn't exist, otherwise a value >= 0
      */
     public int getCurrentRoomRow() {
+        int res = 0;
         for (int i = 0; i < myRooms.length; i++) {
             for (int j = 0; j < myRooms[i].length; j++) {
                 if (myRooms[i][j] == myCurrentRoom) {
-                    return i;
+                    res = i;
+                    break;
                 }
             }
         }
-        return -1; // Room not found, handle appropriately
+        return res;
     }
 
     /**
@@ -680,14 +752,16 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      * @return -1 if the room doesn't exist, otherwise a value >= 0
      */
     public int getCurrentRoomCol() {
+        int res = 0;
         for (int i = 0; i < myRooms.length; i++) {
             for (int j = 0; j < myRooms[i].length; j++) {
                 if (myRooms[i][j] == myCurrentRoom) {
-                    return j;
+                    res = j;
+                    break;
                 }
             }
         }
-        return -1; // Room not found, handle appropriately
+        return res;
     }
 
     /**
@@ -734,7 +808,8 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
                     handleUnpromptedDoor(door, doorDirection);
 
                     // Handle answered door
-                } else if (!door.hasMyQuestionBeenNotPrompted() && door.hasMyQuestionBeenAnsweredCorrectly()) {
+                } else if (!door.hasMyQuestionBeenNotPrompted()
+                        && door.hasMyQuestionBeenAnsweredCorrectly()) {
                     handleAnsweredDoor(doorDirection);
 
                 }
@@ -789,7 +864,7 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
      */
     private void handleUnpromptedDoor(final Door theDoor, final String theDoorDirection) {
         if (theDoor.hasMyQuestionBeenNotPrompted()) {
-            System.out.println(theDoor.getMyQuestion(theDoor).getQuestionText());
+            System.out.println(theDoor.getMyQuestion().getQuestionText());
             setMoveFalse();
             // Fire property change event to prompt the question
             myPcs.firePropertyChange(getPromptQuestionPropertyName(theDoorDirection),
@@ -821,10 +896,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
         // Check doors for interaction
         checkDoors();
     }
-
-
-
-
     /**
      * Moves the character up.
      *
@@ -879,12 +950,61 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
 
     }
 
-
-
+    /**
+     * Will be  in the format:
+     * Current Room's row and column:[][], the game is lost: ,the game is won:
+     * Top door status:
+     * Bottom door status:
+     * Right Door Status:
+     * Left Door status:
+     * .
+     * @return a String with the state of the maze.
+     */
     @Override
-    public void pauseGame() {
-
+    public String toString() {
+        final StringBuilder stats = new StringBuilder(30);
+        final String leftBracket = "[";
+        final String rightBracket = "]";
+        final String comma = ", ";
+        stats.append("Current Room's row and column:").
+                append(leftBracket).append(getCurrentRoomRow()).
+                append(rightBracket).
+                append(leftBracket).append(getCurrentRoomCol()).append(rightBracket).
+                append(comma).append("the game is lost:").append(isGameLost()).
+                append(comma).append("the game is won:").append(isMyGameWon());
+        appendDoorStatus(stats, TOP_DOOR, myCurrentRoom.getTopDoor(),
+                comma);
+        appendDoorStatus(stats, BOTTOM_DOOR, myCurrentRoom.getBottomDoor(),
+                comma);
+        appendDoorStatus(stats, RIGHT_DOOR, myCurrentRoom.getRightDoor(),
+                comma);
+        appendDoorStatus(stats, LEFT_DOOR, myCurrentRoom.getLeftDoor(),
+                comma);
+        return stats.toString();
     }
+
+    /**
+     * helper method to use within toString.
+      * @param theStats theStringBuilder Object we are referencing.
+     * @param theDoorName to add within the toString.
+     * @param theDoor to use to add for the toString.
+     * @param theComma string to add within the toString.
+     */
+    private void appendDoorStatus(final StringBuilder theStats, final String theDoorName,
+                                  final Door theDoor, final String theComma) {
+        theStats.append("\n").append(theDoorName).append(" Door Status:");
+        if (theDoor == null) {
+            theStats.append("null");
+        } else {
+            theStats.append("exists").
+                    append(theComma).append("isLocked:").append(theDoor.isLocked()).
+                    append(theComma).append("Question has not been prompted:").
+                    append(theDoor.hasMyQuestionBeenNotPrompted()).
+                    append(theComma).append("Question has been answered correctly:").
+                    append(theDoor.hasMyQuestionBeenAnsweredCorrectly());
+        }
+    }
+
     /**
      * adds an object as a listener to the propertyChangeSupport object.
      * @param theListener The PropertyChangeListener to be added
@@ -893,18 +1013,6 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     public void addPropertyChangeListener(final PropertyChangeListener theListener) {
         myPcs.addPropertyChangeListener(theListener);
     }
-
-    /**
-     * adds an object as a listener to the propertyChangeSupport object.
-     * @param thePropertyName The name of the property to listen on.
-     * @param theListener The PropertyChangeListener to be added
-     */
-    @Override
-    public void addPropertyChangeListener(final String thePropertyName,
-                                          final PropertyChangeListener theListener) {
-        myPcs.addPropertyChangeListener(thePropertyName, theListener);
-    }
-
     /**
      * removes an object as a listener to the propertyChangeSupport object.
      * @param theListener The PropertyChangeListener to be removed
@@ -912,55 +1020,5 @@ public class Maze implements PropertyChangedEnabledMazeControls, Serializable {
     @Override
     public void removePropertyChangeListener(final PropertyChangeListener theListener) {
         myPcs.removePropertyChangeListener(theListener);
-    }
-
-    /**
-     * removes an object as a listener to the propertyChangeSupport object.
-     * @param thePropertyName The name of the property that was listened on.
-     * @param theListener The PropertyChangeListener to be removed
-     */
-    @Override
-    public void removePropertyChangeListener(final String thePropertyName,
-                                             final PropertyChangeListener theListener) {
-        myPcs.removePropertyChangeListener(thePropertyName, theListener);
-    }
-
-    public class Memento {
-
-        private Room[][] myRooms;
-
-        private Room myCurrentRoom;
-
-        private Character myCharacter;
-
-        private ArrayList<Door> myDoors;
-
-        private int myWidth;
-
-        private int myHeight;
-
-        private boolean myGameOverStatus;
-
-        private boolean myGameWonStatus;
-        private Memento(final Room[][] theRooms, final Room theCurrentRoom,
-                        final Character theCharacter, final ArrayList<Door> theDoors,
-                        final int theWidth, final int theHeight,
-                        final boolean theGameOverStatus, final boolean theGameWon) {
-
-            this.myRooms = theRooms;
-            this.myCurrentRoom = theCurrentRoom;
-            this.myCharacter = theCharacter;
-            this.myDoors = theDoors;
-            this.myWidth = theWidth;
-            this.myHeight = theHeight;
-            this.myGameOverStatus = theGameOverStatus;
-            this.myGameWonStatus = theGameWon;
-
-        }
-
-        private String getSavedState() {
-            return null;
-        }
-
     }
 }

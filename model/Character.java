@@ -1,18 +1,17 @@
+/*
+ * TriviaMaze
+ * Fall 2023
+ */
 package model;
+
 import controller.MazeControls;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Objects;
-import javax.imageio.ImageIO;
 
 
 /**
  * This class will represent the controllable character
- * that the user will operate.
+ * that the user will operate through the game.
  * @author David Hoang
  * @author Faith Capito.
  * @version Fall 2023.
@@ -20,32 +19,42 @@ import javax.imageio.ImageIO;
 
 
 public class Character implements Serializable {
+
+    /**
+     * String constant flagging when character is moving down.
+     */
+    private static final String DOWN = "down";
+
+    /**
+     * String constant flagging when character is moving up.
+     */
+    private static final String UP = "up";
+
+    /**
+     * String constant flagging when character is moving left.
+     */
+    private static final String LEFT = "left";
+
+    /**
+     * String constant flagging when character is moving right.
+     */
+    private static final String RIGHT = "right";
+
     /**
      * This will be the current position of character.
      */
     private Point myCurrentPosition;
 
-    /**
-     * An arrayList serving as what items the user has collected.
-     */
-    private ArrayList<AbstractItem> myInventory;
 
     /**
-     * This field will be the bounds for which rows the user can enter.
+     * This field will be the bounds for which X coordinates the user can enter.
      */
-    private final int myMaxRows;
+    private final int myXBoundary;
     /**
-     * This field will be the bounds for which columns the user can enter.
+     * This field will be the bounds for which Y coordinates  the user can enter.
      *
      */
-    private final  int myMaxCols;
-
-
-    /**
-     * This instance field will be used to pause the player from moving, such
-     * as when answering a question.
-     */
-    private boolean myMobility;
+    private final  int myMaxYBoundary;
 
     /**
      * The starting X coordinate of where the user spawned within the room.
@@ -60,20 +69,14 @@ public class Character implements Serializable {
     private final int myStartY;
 
     /**
-     * The speed at which the character moves between each movement.
+     * The speed at which the character travels between each movement.
      */
     private final int mySpeed = 16;
 
-    /**
-     * Counter for how many steps has taken the sprite alternates.
-     */
-    private int mySpriteCounter;
 
 
-    /**
-     * Counter for which walking animation to choose.
-     */
-    private int mySpriteNumber = 1;
+
+
 
     /**
      * The direction that the character is facing.
@@ -84,120 +87,103 @@ public class Character implements Serializable {
      * This method initializes the start position.
      * @param theStartX coordinate
      * @param theStartY coordinate
-     * @param theMaxRows boundaries
-     * @param theMaxCols boundaries
+     * @param theMaxX boundaries
+     * @param theMaxY boundaries
      */
     public Character(final int theStartX, final int theStartY,
-                     final int theMaxRows, final int theMaxCols) {
-        myDirection = "down";
+                     final int theMaxX, final int theMaxY) {
+        myDirection = DOWN;
         myStartX = theStartX;
         myStartY = theStartY;
         myCurrentPosition = new Point(theStartX, theStartY);
-        myMobility = true;
-        myMaxRows = theMaxRows;
-        myMaxCols = theMaxCols;
-        myInventory = new ArrayList<>(); // Add this line to initialize myInventory
-
+        myXBoundary = theMaxX;
+        myMaxYBoundary = theMaxY;
     }
 
 
     /**
-     * The direction which the character is facing
+     * The direction which the character is facing.
      * @return a String that represents which direction the character is facing.
      */
-    public String getMyDirection(){
+    public String getMyDirection() {
         return myDirection;
     }
 
     /**
      * Resets the character's position to where they spawned.
      */
-    public void resetToMiddle() {
+    public void resetToSpawn() {
         myCurrentPosition = new Point(myStartX,  myStartY);
     }
 
     /**
-     * Moves the user up if it is within the boundaries.
+     * Moves the character up if it is within the boundaries.
      */
     public void moveUp() {
         final double newY = myCurrentPosition.getY() - mySpeed;
         // Check if the new Y-coordinate is above the top boundary
         if (newY >= 0) {
-            myDirection = "up";
+            myDirection = UP;
             myCurrentPosition.setLocation(myCurrentPosition.getX(), newY);
         } else {
             // If already at or above the top boundary, set Y-coordinate to 0
             myCurrentPosition.setLocation(myCurrentPosition.getX(), 0);
         }
-        alternateWalkingSprite();
+
     }
 
     /**
-     * Method to move the user down if it is within the boundaries.
+     * Method to move the character down if it is within the boundaries.
      */
     public void moveDown() {
         final double newY = myCurrentPosition.getY() + mySpeed;
         // Check if the new Y-coordinate is below the bottom boundary
-        if (newY < myMaxCols - MazeControls.MY_TILE_SIZE) {
-            myDirection = "down";
+        if (newY < myMaxYBoundary - MazeControls.MY_TILE_SIZE) {
+            myDirection = DOWN;
             myCurrentPosition.setLocation(myCurrentPosition.getX(), newY);
 
         } else {
             // If already at or below the bottom boundary, set Y-coordinate to bottom boundary
             myCurrentPosition.setLocation(myCurrentPosition.getX(),
-                    myMaxCols - MazeControls.MY_TILE_SIZE);
+                    myMaxYBoundary - MazeControls.MY_TILE_SIZE);
         }
-        alternateWalkingSprite();
+
     }
 
     /**
-     * Method to move the user right if it is within the boundaries.
+     * Method to move the character right if it is within the boundaries.
      */
     public void moveRight() {
         final double newX = myCurrentPosition.getX() + mySpeed;
         // Check if the new X-coordinate is beyond the right boundary
-        if (newX < myMaxRows - MazeControls.MY_TILE_SIZE) {
-            myDirection = "right";
+        if (newX < myXBoundary - MazeControls.MY_TILE_SIZE) {
+            myDirection = RIGHT;
             myCurrentPosition.setLocation(newX, myCurrentPosition.getY());
         } else {
             // If already at or beyond the right boundary, set X-coordinate to right boundary
-            myCurrentPosition.setLocation(myMaxRows - MazeControls.MY_TILE_SIZE,
+            myCurrentPosition.setLocation(myXBoundary - MazeControls.MY_TILE_SIZE,
                     myCurrentPosition.getY());
         }
-        alternateWalkingSprite();
+
     }
 
 
     /**
-     * Method to move the user left if it is within the boundaries.
+     * Method to move the character left if it is within the boundaries.
      */
     public void moveLeft() {
         final double newX = myCurrentPosition.getX() - mySpeed;
         // Check if the new X-coordinate is beyond the left boundary
         if (newX >= 0) {
-            myDirection = "left";
+            myDirection = LEFT;
             myCurrentPosition.setLocation(newX, myCurrentPosition.getY());
         } else {
             // If already at or beyond the left boundary, set X-coordinate to 0
             myCurrentPosition.setLocation(0, myCurrentPosition.getY());
         }
-        alternateWalkingSprite();
+
     }
-    /**
-     * Alternates the walking animation of the character.
-     */
-    private void alternateWalkingSprite() {
-        mySpriteCounter++;
-        //every 10 movements, change the walking animation
-        if (mySpriteCounter > 1) {
-            if (mySpriteNumber == 1) {
-                mySpriteNumber = 2;
-            } else if (mySpriteNumber == 2) {
-                mySpriteNumber = 1;
-            }
-            mySpriteCounter = 0;
-        }
-    }
+
 
 
 
@@ -211,27 +197,5 @@ public class Character implements Serializable {
         return new Point(myCurrentPosition);
     }
 
-    /**
-     * Method adds item to the inventory of the user.
-     * @param theItem to add the inventory of the user.
-     */
-    public void addToInventory(final AbstractItem theItem) {
-        myInventory.add(theItem);
-        System.out.println("Added " + theItem.getName() + " to the inventory.");
-    }
 
-    /**
-     * Method to set if the user can move or not.
-     */
-    // Setter method to directly set whether the user can move or not
-    public void setCanMove(final boolean theMobility) {
-        myMobility = theMobility;
-        System.out.println("User can");
-
-        if (theMobility) {
-            System.out.println("User can move");
-        } else {
-            System.out.println("User can not move");
-        }
-    }
 }

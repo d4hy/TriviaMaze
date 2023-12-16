@@ -11,11 +11,21 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 import model.Character;
 import model.Door;
 import model.Maze;
@@ -29,13 +39,19 @@ import model.Room;
  */
 public class MazeView extends JPanel implements PropertyChangeListener, KeyListener {
     /**
-     * The initial delay that the timer has.
-     */
-    private static final int TIMER_DELAY = 1000;
-    /**
      * The String that will be used as the cursor.
      */
     private static final String  CURSOR_TEXT = "-";
+
+    /**
+     * File name when user wants to save and load a previous game.
+     */
+    private static final String FILE_NAME = "TriviaMaze.txt";
+
+    /**
+     * String displaying when enter key has been pressed.
+     */
+    private static final String ENTER_KEY_PRESSED = "You pressed the enter key!";
 
     /**
      * This variable will represent the state when we are in a playable state.
@@ -47,25 +63,168 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      */
     private static final int PAUSED_STATE =  2;
 
+    /**
+     * X-Coordinate of volume slider.
+     */
+    private static final int VOLUME_X = 450;
+
+    /**
+     * Y-Coordinate of volume slider.
+     */
+    private static final int VOLUME_Y = 358;
+
+    /**
+     * Width of volume slider.
+     */
+    private static final int VOLUME_WIDTH = 120;
+
+    /**
+     * Height of volume slider.
+     */
+    private static final int VOLUME_HEIGHT = 20;
+
+    /**
+     * Default volume scale upon starting game.
+     */
+    private static final int DEFAULT_VOLUME_SCALE = 3;
+
+    /**
+     * First option of volume setting (lowest).
+     */
+    private static final float VOL_OPTION_1 = -80f;
+
+    /**
+     * Second option of volume setting.
+     */
+    private static final float VOL_OPTION_2 = -40f;
+
+    /**
+     * Third option of volume setting.
+     */
+    private static final float VOL_OPTION_3 = -30f;
+
+    /**
+     * Fourth option of volume setting.
+     */
+    private static final float VOL_OPTION_4 = -20f;
+
+    /**
+     * Fifth option of volume setting.
+     */
+    private static final float VOL_OPTION_5 = -10f;
+
+    /**
+     * Final option of volume setting (highest).
+     */
+    private static final float VOL_OPTION_6 = -5f;
+
+    /**
+     * Settings menu option is the save.
+     */
+    private static final int SAVE = 0;
+
+    /**
+     * Settings menu option is the play.
+     */
+    private static final int LOAD = 1;
+
+    /**
+     * Settings menu option is the new game option.
+     */
+    private static final int NEW_GAME = 2;
+
+    /**
+     * Settings menu option that plays/pauses the music.
+     */
+    private static final int PLAY_AND_PAUSE_MUSIC = 3;
+
+    /**
+     * Settings menu option that plays/pauses the music.
+     */
+    private static final int SKIP_MUSIC = 4;
+
+    /**
+     * Settings menu option that adjusts volume.
+     */
+    private static final int VOLUME = 5;
+
+    /**
+     * Settings Menu Option that is the cheat option.
+     */
+    private static final int CHEAT = 6;
+
+    /**
+     * Settings menu option that is the help.
+     */
+    private static final int HELP = 7;
+
+    /**
+     * Settings menu option that is the exit.
+     */
+    private static final int EXIT = 8;
+
+    /**
+     * Settings Menu Option title for the Exit option.
+     */
+    private static final String EXIT_TITLE = "Exit";
+
+    /**
+     * Constant to be reused for the String left.
+     */
+    private static final String LEFT = "left";
+
+    /**
+     * Constant to be reused for the String right.
+     */
+    private static final String RIGHT = "right";
 
 
 
     /**
-     * Timer that will be used for game and question functionality.
+     * List of music files that are playable in the background of game.
      */
-    private static Timer myTimer;
+    private static final List<String> MY_MUSIC_FILES = new ArrayList<>();
+
+    /**
+     * Index in music player.
+     */
+    private static int myCurrentMusicIndex;
+
+    /**
+     * LineListener that prompts different behavior when music stops.
+     */
+    private static LineListener myLineListener;
+
+    /**
+     * Used to control volume of music.
+     */
+    private static FloatControl myFC;
+
+    /**
+     * Music player clip.
+     */
+    private transient Clip myClip;
+
     /**
      * Counter for which walking animation to choose.
      */
-    private int mySpriteNumber = 1;
+    private transient int mySpriteNumber = 1;
+
+    /**
+     * Long that stores position of clip when paused.
+     */
+    private transient long myPausedPosition;
+
     /**
      *  Maze Object to be referenced.
      */
-    private final Maze myMaze;
+    private Maze myMaze;
+
     /**
      *  Character to reference.
      */
     private Character myCharacter;
+
     /**
      * The current room to reference.
      */
@@ -74,72 +233,189 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      * Counter for how many steps has taken the sprite alternates.
      */
-    private int mySpriteCounter;
+    private transient int mySpriteCounter;
+
+    /**
+     * Scale used for controlling volume of the music.
+     */
+    private transient int myVolumeScale;
 
     /**
      * This field will represent which ui to display.
      *
      */
-    private int myGameUI;
+    private transient int myGameUI;
 
     /**
      * This field will represent which option they chose during the settings menu.
      */
-    private int mySettingsMenuCommand;
+    private transient int mySettingsMenuCommand;
 
     /**
      * This field will represent which sub menu option we are at.
      *
      */
-    private int mySettingsSubMenuOption;
+    private transient int mySettingsSubMenuOption;
+
     /**
-     * A boolean representing if enter key has been pressed
+     * Boolean used when user requests to skip song.
      */
-    private boolean enterPressed;
+    private transient boolean mySkipSongRequest;
 
+    /**
+     * Boolean used when user requests to pause song.
+     */
+    private transient boolean myPauseSongRequest;
 
+    /**
+     * A boolean representing if enter key has been pressed.
+     */
+    private transient boolean myEnterPressed;
 
     /**
      * These will be sprites that we use for the character.
      */
-    @SuppressWarnings("checkstyle:MultipleVariableDeclarations")
-    private BufferedImage myUp1, myUp2, myDown1,
+    private transient BufferedImage myUp1, myUp2, myDown1,
             myDown2, myLeft1, myLeft2, myRight1, myRight2;
 
-    MazeView(final Maze theMaze) {
+    MazeView(final Maze theMaze) throws UnsupportedAudioFileException,
+            LineUnavailableException, IOException {
         myGameUI = NORMAL_STATE;
         mySettingsMenuCommand = 0;
         mySettingsSubMenuOption = 0;
-        enterPressed = false;
+        myEnterPressed = false;
         this.myMaze = theMaze;
         setUp();
         myMaze.addPropertyChangeListener(this);
         addKeyListener(this);
         setFocusable(true);
-
     }
 
-    public void setUp() {
+    public void setUp() throws UnsupportedAudioFileException, LineUnavailableException,
+            IOException {
         this.setPreferredSize(new Dimension(
                 MazeControls.MY_SCREEN_WIDTH, MazeControls.MY_SCREEN_HEIGHT));
 
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
-        setTimer();
+        addMusic();
     }
 
-    private void setTimer() {
-        myTimer = new Timer(TIMER_DELAY, e -> {
-            if (myTimer.isRunning()) {
-                // Depending on implementation, show the timer during the game
-                // or only use to calculate time limit for user to answer questions.
+    /**
+     * Adds music files to list.
+     */
+    private void addMusic() throws IOException, UnsupportedAudioFileException,
+            LineUnavailableException {
+
+        myCurrentMusicIndex = 0;
+        myPausedPosition = 0;
+        mySkipSongRequest = false;
+        myPauseSongRequest = false;
+        myVolumeScale = DEFAULT_VOLUME_SCALE;
+
+        MY_MUSIC_FILES.add("sound/beabadoobee - Cologne (Lyrics).wav");
+        MY_MUSIC_FILES.add("sound/Beabadoobee - Last Day On Earth (Official Audio).wav");
+        MY_MUSIC_FILES.add("sound/beabadoobee - the perfect pair (Official Audio).wav");
+        MY_MUSIC_FILES.add("sound/beabadoobee - the way things go.wav");
+        MY_MUSIC_FILES.add("sound/beabadoobee x Laufey - A Night To Remember "
+                + "(Official Lyric Video).wav");
+        MY_MUSIC_FILES.add("sound/You’re here that’s the thing.wav");
+
+        final File file = new File(MY_MUSIC_FILES.get(myCurrentMusicIndex));
+        final AudioInputStream audioIn = AudioSystem.getAudioInputStream(file);
+
+        myClip = AudioSystem.getClip();
+        myClip.open(audioIn);
+        myFC = (FloatControl) myClip.getControl(FloatControl.Type.MASTER_GAIN);
+        checkVolume();
+    }
+
+    private void initializeClip() throws LineUnavailableException, IOException,
+            UnsupportedAudioFileException {
+
+        final File file = new File(MY_MUSIC_FILES.get(myCurrentMusicIndex));
+        final AudioInputStream audioIn = AudioSystem.getAudioInputStream(file);
+
+        myClip = AudioSystem.getClip();
+        myClip.open(audioIn);
+
+        myFC = (FloatControl) myClip.getControl(FloatControl.Type.MASTER_GAIN);
+        checkVolume();
+
+    }
+
+    private void playNextSong() {
+
+        if (!MY_MUSIC_FILES.isEmpty()) {
+            if (myClip != null) {
+                removeLineListener();
+                myClip.stop();
             }
-        });
+
+            myCurrentMusicIndex = (myCurrentMusicIndex + 1) % MY_MUSIC_FILES.size();
+            final String nextMusicFile = MY_MUSIC_FILES.get(myCurrentMusicIndex);
+
+            try {
+                final AudioInputStream audioIn = AudioSystem.getAudioInputStream(
+                        new File(nextMusicFile));
+                myClip = AudioSystem.getClip();
+                myClip.open(audioIn);
+
+                myFC = (FloatControl) myClip.getControl(FloatControl.Type.MASTER_GAIN);
+                checkVolume();
+
+                myClip.start();
+                addLineListener();
+
+            } catch (final IOException | UnsupportedAudioFileException
+                           | LineUnavailableException exception) {
+                exception.printStackTrace();
+            }
+
+        }
     }
 
+    /**
+     * Controls the volume of the music player.
+     */
+    private void checkVolume() {
+
+        /**
+         * Volume of the music that is playing.
+         */
+        final float volume;
+        switch (myVolumeScale) {
+            case 0 -> {
+                volume = VOL_OPTION_1;
+            }
+            case 1 -> {
+                volume = VOL_OPTION_2;
+            }
+            case 2 -> {
+                volume = VOL_OPTION_3;
+            }
+            case 3 -> {
+                volume = VOL_OPTION_4;
+            }
+            case 4 -> {
+                volume = VOL_OPTION_5;
+            }
+            case 5 -> {
+                volume = VOL_OPTION_6;
+            }
+            default -> throw new IllegalStateException("Unexpected volume value"
+                    + myVolumeScale);
+        }
+        myFC.setValue(volume);
+
+    }
     public void paintComponent(final Graphics theG) {
         super.paintComponent(theG);
+
         final Graphics2D g2 = (Graphics2D) theG;
+        System.out.println("GAMEUI:" + myGameUI);
+        System.out.println("SUBMENU-OPTIONS:" + mySettingsSubMenuOption);
+
         g2.setColor(Color.WHITE);
 
         if (myRoom != null) {
@@ -151,21 +427,23 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             drawCharacter(g2);
         }
 
-        if (myGameUI == PAUSED_STATE ) {
-            drawTheSettingsMenu(g2);
+        if (myGameUI == PAUSED_STATE) {
+            try {
+                drawTheSettingsMenu(g2);
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-
-
         g2.dispose();
     }
 
     /**
      * Draws the setting menu if the myGameUi is in a paused state.
      */
-    public void drawTheSettingsMenu(final Graphics2D g2) {
+    public void drawTheSettingsMenu(final Graphics2D g2) throws IOException {
 
         g2.setColor(Color.white);
-        final float fontSize = 30F;
+        final float fontSize = 25F;
         g2.setFont(g2.getFont().deriveFont(fontSize));
 
         //SUBWINDOW
@@ -174,24 +452,20 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         final int frameWidth = MazeControls.MY_TILE_SIZE * 8;
         final int frameHeight = MazeControls.MY_TILE_SIZE * 10;
         drawSubWindow(frameX, frameY, frameWidth, frameHeight, g2);
-
-
-
-
         switch (mySettingsSubMenuOption) {
             case 0: optionsTop(frameX, frameY, g2);
-            case 1: break;
-            case 2: break;
+                    break;
+            case 1: optionsHelp(frameX, frameY, g2);
+                break;
             default:
-                throw new IllegalStateException("Unexpected value: "
-                        +
-                        mySettingsSubMenuOption);
+                throw new IllegalStateException("Unexpected mySettingsSubMenuOption Value: "
+                        + mySettingsSubMenuOption);
         }
-        enterPressed = false;
     }
 
-    private void optionsTop(final int theFrameX, final int theFrameY, final Graphics2D g2) {
-        repaint();
+    private void optionsTop(final int theFrameX, final int theFrameY,
+                            final Graphics2D g2) throws IOException {
+
         int textX;
         int textY;
         String text = "Settings menu";
@@ -202,58 +476,250 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         }
             // have to adjust the x coordinate, or else the left side of
             // this screen will be drawn from the middle all the way to the right.
-
-
         textX = getXForCenteredText(text, g2);
         textY = theFrameY + MazeControls.MY_TILE_SIZE;
         // y indicates the baseline of the text.
         g2.drawString(text, textX, textY);
+
+        text = "In Room: [" + myMaze.getCurrentRoomRow() + "]["
+                + myMaze.getCurrentRoomCol() + "]";
+        final int ySpace = 40;
+        textY += ySpace;
+        g2.drawString(text, textX, textY);
+
         //Save
         textX = theFrameX + MazeControls.MY_TILE_SIZE;
-        textY += MazeControls.MY_TILE_SIZE * 2;
+        textY += ySpace;
         g2.drawString("Save", textX, textY);
-        if (mySettingsMenuCommand == 0) {
+        if (mySettingsMenuCommand == SAVE) {
 
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
-            //TODO handle the case so you can save
-            if (enterPressed) {
-                System.out.println("You clicked the enter key!");
+            if (myEnterPressed) {
+                myGameUI = NORMAL_STATE;
+                try {
+                    myMaze.save(FILE_NAME);
+                } catch (final IOException exception) {
+                    System.out.println("Exception: State has not been saved.");
+                    exception.printStackTrace();
+                }
+                repaint();
+                System.out.println(ENTER_KEY_PRESSED);
             }
 
         }
 
         //Load
-        textY += MazeControls.MY_TILE_SIZE;
+        textY += ySpace;
         g2.drawString("Load", textX, textY);
-        if (mySettingsMenuCommand == 1) {
+        if (mySettingsMenuCommand == LOAD) {
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
-            //TODO handle the case so you can load
-            if (enterPressed) {
-                System.out.println("You clicked the enter key!");
+            if (myEnterPressed) {
+                try {
+
+                    myMaze = myMaze.load(FILE_NAME);
+                    myMaze.addPropertyChangeListener(this);
+                    myRoom = myMaze.getCurrentRoom();
+                    myCharacter = myMaze.getCharacter();
+
+                } catch (final IOException exception) {
+                    System.out.println("Exception: State has not been loaded.");
+                    exception.printStackTrace();
+                } catch (final ClassNotFoundException exception) {
+                    exception.printStackTrace();
+                }
+                System.out.println(myMaze);
+                System.out.println(ENTER_KEY_PRESSED);
+                myGameUI = NORMAL_STATE;
+            }
+        }
+        //NewGame
+        textY += ySpace;
+        g2.drawString("New Game", textX, textY);
+        if (mySettingsMenuCommand == NEW_GAME) {
+            // this is the cursor
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+            if (myEnterPressed) {
+                myMaze.newGame();
+                System.out.println(ENTER_KEY_PRESSED);
+                myGameUI = NORMAL_STATE;
+            }
+        }
+
+        // Play and pause music.
+        textY += ySpace;
+        g2.drawString("Play/Pause Music", textX, textY);
+        if (mySettingsMenuCommand == PLAY_AND_PAUSE_MUSIC) {
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+
+            if (myEnterPressed) {
+                try {
+
+                    if (myClip != null) {
+
+                        if (myClip.isRunning()) {
+                            myPausedPosition = myClip.getMicrosecondPosition();
+                            mySkipSongRequest = true;
+                            myPauseSongRequest = true;
+                            myClip.stop();
+                        } else {
+                            initializeClip();
+                            myClip.setMicrosecondPosition(myPausedPosition);
+                            myClip.start();
+                            addLineListener();
+                        }
+
+                    } else {
+                        initializeClip();
+                        myClip.start();
+                        addLineListener();
+                    }
+
+                } catch (final LineUnavailableException | IOException
+                               | UnsupportedAudioFileException exception) {
+                    exception.printStackTrace();
+                }
+
+            }
+        }
+
+        // Skip music.
+        textY += ySpace;
+        g2.drawString("Skip Music", textX, textY);
+        if (mySettingsMenuCommand == SKIP_MUSIC) {
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+
+            if (myEnterPressed) {
+                playNextSong();
+            }
+        }
+
+        // Volume adjustment
+        textY += ySpace;
+        g2.drawString("Volume", textX, textY);
+        g2.setStroke(new BasicStroke(2));
+        g2.drawRect(VOLUME_X, VOLUME_Y, VOLUME_WIDTH, VOLUME_HEIGHT);
+        final int volumeWidth = 24 * myVolumeScale;
+        g2.fillRect(VOLUME_X, VOLUME_Y, volumeWidth, VOLUME_HEIGHT);
+        if (mySettingsMenuCommand == VOLUME) {
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+        }
+
+        //Cheat
+        // Will spawn in room[3][2]
+        textY += ySpace;
+        g2.drawString("Cheat", textX, textY);
+        if (mySettingsMenuCommand ==  CHEAT) {
+            // this is the cursor
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+            if (myEnterPressed) {
+                myMaze.cheatSpawnInRoomLeftOfBottomRight();
+                myGameUI = NORMAL_STATE;
+            }
+        }
+        //Help
+        textY += ySpace;
+        g2.drawString("Help", textX, textY);
+        if (mySettingsMenuCommand ==  HELP) {
+            // this is the cursor
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+            if (myEnterPressed) {
+                mySettingsSubMenuOption = 1;
+                mySettingsMenuCommand = 0;
+                repaint();
             }
         }
         //Exit
-        textY += MazeControls.MY_TILE_SIZE;
-        g2.drawString("Exit", textX, textY);
-        if (mySettingsMenuCommand == 2) {
+        textY += ySpace;
+        g2.drawString(EXIT_TITLE, textX, textY);
+        if (mySettingsMenuCommand ==  EXIT) {
             // this is the cursor
             final int cursorX = textX - 25;
             g2.drawString(CURSOR_TEXT, cursorX, textY);
-            //TODO handle the case so you can Exit
-            if (enterPressed) {
-                //System.out.println("You clicked the enter key!");
+            if (myEnterPressed) {
                 myGameUI = NORMAL_STATE;
-
+                repaint();
             }
         }
-
-        //
+        myEnterPressed = false;
     }
 
+    /**
+     * Handles line events to ensure clip will play the next file in list
+     * when it has finished playing.
+     */
+    private void addLineListener() {
+        myLineListener = event -> {
+            if (event.getType() == LineEvent.Type.STOP) {
+                if (!mySkipSongRequest) {
+                    playNextSong();
+                } else if (myPauseSongRequest) {
+                    removeLineListener();
+                }
+            }
+            mySkipSongRequest = false;
+        };
+        myClip.addLineListener(myLineListener);
+    }
+
+    private void removeLineListener() {
+        if (myLineListener != null) {
+            myClip.removeLineListener(myLineListener);
+        }
+    }
+
+    private void optionsHelp(final int theFrameX, final int theFrameY,
+                              final Graphics2D g2) {
+        int textX;
+        int textY;
+        final int ySpace = 40;
+        //TITLE
+        final String text = "Instructions:";
+        textX = getXForCenteredText(text, g2);
+        textY = theFrameY + MazeControls.MY_TILE_SIZE;
+        // y indicates the baseline of the text.
+        g2.drawString(text, textX, textY);
+        final int buffer = 14;
+        textX = theFrameX + buffer;
+        textY += ySpace;
+        g2.drawString("Move: WASD/↑←↓→", textX, textY);
+        textY += ySpace;
+        g2.drawString("SpaceBar: Close/Open settings.", textX, textY);
+        textY += ySpace;
+        g2.drawString("Click enter to use settings.", textX, textY);
+        textY += ySpace;
+        g2.drawString("Answer questions by typing", textX, textY);
+        textY += ySpace;
+        g2.drawString("and/or clicking.", textX, textY);
+        textY += ySpace;
+        g2.drawString("If too many doors lock, you may ", textX, textY);
+        textY += ySpace;
+        g2.drawString("lose.", textX, textY);
+        //Exit
+        textX = theFrameX + MazeControls.MY_TILE_SIZE;
+        textY += ySpace;
+        g2.drawString(EXIT_TITLE, textX, textY);
+        if (mySettingsMenuCommand ==  0) {
+            // this is the cursor
+            final int cursorX = textX - 25;
+            g2.drawString(CURSOR_TEXT, cursorX, textY);
+            if (myEnterPressed) {
+                myGameUI = NORMAL_STATE;
+                mySettingsSubMenuOption = 0;
+                repaint();
+            }
+        }
+        myEnterPressed = false;
+    }
     /**
      *  Helper method to get X coordinate of the text you are trying to get to the center of.
      * @param theText of which you are getting the coordinates for
@@ -275,7 +741,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * @param theWidth of the sub window.
      * @param theHeight of the sub window.
      */
-
     private void drawSubWindow(final int theX,
                                final int theY,
                                final int theWidth, final int theHeight, final Graphics2D g2) {
@@ -302,21 +767,20 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
                 outerRectangleHeight, arcWidthHeight , arcWidthHeight);
     }
 
-
     /**
      * Method used to draw the room's doors.
      * @param g2 object used to draw.
      */
     private void drawRoomsDoors(final Graphics2D g2) {
-        drawDoorIfNotNull(g2, myRoom.getLeftDoor(), getLeftDoorImg(),
+        drawDoorIfNotNull(g2, myRoom.getLeftDoor(), getDoorImage(LEFT),
                 0, MazeControls.MY_SCREEN_HEIGHT / 2 - MazeControls.MY_TILE_SIZE / 2);
-        drawDoorIfNotNull(g2, myRoom.getRightDoor(), getRightDoorImg(),
+        drawDoorIfNotNull(g2, myRoom.getRightDoor(), getDoorImage(RIGHT),
                 MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE,
                 MazeControls.MY_SCREEN_HEIGHT / 2 - MazeControls.MY_TILE_SIZE / 2);
-        drawDoorIfNotNull(g2, myRoom.getBottomDoor(), getBottomDoorImg(),
+        drawDoorIfNotNull(g2, myRoom.getBottomDoor(), getDoorImage("bottom"),
                 MazeControls.MY_SCREEN_WIDTH / 2 - MazeControls.MY_TILE_SIZE / 2,
                 MazeControls.MY_SCREEN_HEIGHT - MazeControls.MY_TILE_SIZE);
-        drawDoorIfNotNull(g2, myRoom.getTopDoor(), getTopDoorImg(),
+        drawDoorIfNotNull(g2, myRoom.getTopDoor(), getDoorImage("top"),
                 MazeControls.MY_SCREEN_WIDTH / 2 - MazeControls.MY_TILE_SIZE / 2, 0);
     }
 
@@ -351,6 +815,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             }
         }
     }
+
     /**
      *  Draws the Door.
      * @param g2 object used to draw
@@ -369,47 +834,19 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      * @return the Image that serves as the Room's tiles.
      */
     private BufferedImage getRoomTileImage() {
-
         final String roomTilePath = "/res/room_tile_red.png";
         return loadImage(roomTilePath);
     }
 
     /**
-     *  Method that loads the Door's left image.
-     * @return the left Door's image.
+     *
+     * @param theDoorImgPath the door image path to retrieve
+     * @return the specified door's image
      */
-    private BufferedImage getLeftDoorImg() {
+    private BufferedImage getDoorImage(final String theDoorImgPath) {
 
-        final String leftDoorPath = "/res/left_door.png";
-        return loadImage(leftDoorPath);
-    }
-
-    /**
-     *  Method that loads the Door's right image.
-     * @return the right Door's image.
-     */
-    private BufferedImage getRightDoorImg() {
-
-        final String rightDoorPath = "/res/right_door.png";
-        return loadImage(rightDoorPath);
-    }
-
-    /**
-     *  Method that loads the Door's right image.
-     * @return the right Door's image.
-     */
-    private BufferedImage getBottomDoorImg() {
-
-        final String bottomDoorPath = "/res/bottom_door.png";
-        return loadImage(bottomDoorPath);
-    }
-    /**
-     *  Method that loads the Door's top image.
-     * @return the top Door's image.
-     */
-    private BufferedImage getTopDoorImg() {
-        final String topDoorPath = "/res/top_door.png";
-        return loadImage(topDoorPath);
+        final String doorPath = "/res/" + theDoorImgPath + "_door.png";
+        return loadImage(doorPath);
     }
 
     /**
@@ -427,26 +864,16 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         }
     }
 
-
     /**
      * Draw the characters, based on their current position.
      */
     private void drawCharacter(final Graphics2D g2) {
         getPlayerImage();
         //the x and y coordinates of the character.
-        int x = myCharacter.getCurrentPosition().x;
-        int y = myCharacter.getCurrentPosition().y;
-
-        // Ensure the rectangle is within the panel's boundaries
-        x = Math.max(0, Math.min(x, MazeControls.MY_SCREEN_WIDTH - MazeControls.MY_TILE_SIZE));
-        y = Math.max(0, Math.min(y,  MazeControls.MY_SCREEN_HEIGHT
-                - MazeControls.MY_TILE_SIZE));
-
-
+        final int x = myCharacter.getCurrentPosition().x;
+        final int y = myCharacter.getCurrentPosition().y;
         final BufferedImage image = getSpriteImage();
-
         g2.drawImage(image, x, y, MazeControls.MY_TILE_SIZE, MazeControls.MY_TILE_SIZE, null);
-
     }
     /**
      * Get the appropriate sprite image based on the
@@ -455,7 +882,6 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
      */
     private BufferedImage getSpriteImage() {
         BufferedImage image = null;
-
         switch (myCharacter.getMyDirection()) {
             case "up":
                 image = getSprite(myUp1, myUp2);
@@ -463,10 +889,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             case "down":
                 image = getSprite(myDown1, myDown2);
                 break;
-            case "right":
+            case RIGHT:
                 image = getSprite(myRight1, myRight2);
                 break;
-            case "left":
+            case LEFT:
                 image = getSprite(myLeft1, myLeft2);
                 break;
             default:
@@ -546,38 +972,33 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         } else if (propertyName.equals(myMaze.PROPERTY_ROOM_CHANGE)) {
             myRoom = (Room) theEvt.getNewValue();
             repaint();
-
         } else if (propertyName.equals(myMaze.PROPERTY_GAME_WON)) {
             final boolean gameWon = (Boolean) theEvt.getNewValue();
             if (gameWon) {
                 myGameUI = PAUSED_STATE;
                 repaint();
             }
-            repaint();
-
         } else if (propertyName.equals(myMaze.PROPERTY_GAME_OVER)) {
             final boolean gameOver = (Boolean) theEvt.getNewValue();
             if (gameOver) {
                 myGameUI = PAUSED_STATE;
                 repaint();
             }
-
-
+        } else if (propertyName.equals(myMaze.PROPERTY_LOAD)) {
+            repaint();
         }
-
     }
 
     // Implementing KeyListener methods
-
     @Override
     public void keyPressed(final KeyEvent theEvent) {
         //if the game isn't a paused state listen to all the other keys.
         if (myGameUI == NORMAL_STATE) {
             switch (theEvent.getKeyCode()) {
-                case KeyEvent.VK_W, KeyEvent.VK_UP -> handleUpKey();
-                case KeyEvent.VK_S, KeyEvent.VK_DOWN -> handleDownKey();
-                case KeyEvent.VK_A, KeyEvent.VK_LEFT -> handleLeftKey();
-                case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> handleRightKey();
+                case KeyEvent.VK_W, KeyEvent.VK_UP -> myMaze.moveUp();
+                case KeyEvent.VK_S, KeyEvent.VK_DOWN -> myMaze.moveDown();
+                case KeyEvent.VK_A, KeyEvent.VK_LEFT ->  myMaze.moveLeft();
+                case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> myMaze.moveRight();
 
                 default -> {
                 }
@@ -589,13 +1010,10 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             handleSpaceKey();
 
         }
-        if (myGameUI == PAUSED_STATE && mySettingsSubMenuOption == 0) {
+        if (myGameUI == PAUSED_STATE) {
             handleSettingsOptions(theEvent.getKeyCode());
-
-
         }
     }
-
     /**
      * Helper method that helps us display and update within the mainSettings menu.
      * @param theEventCode that we are calling for.
@@ -604,75 +1022,57 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         repaint();
         // in the main settings menu, after hitting pause
 
-            //3 means we are at the 1st option out of 3.
-        final int maxCommandNum = 2;
-
+            //3 means we are at the last option out of 3.
+        int maxCommandNum = 0;
+        final int maxDefaultSettings = 8;
+        switch (mySettingsSubMenuOption) {
+            case 0: maxCommandNum = maxDefaultSettings;
+                    break;
+            case 1: maxCommandNum = 0;
+                    break;
+            default:
+                throw new IllegalStateException("Unexpected value when clicking keys: "
+                        + mySettingsSubMenuOption);
+        }
         if (theEventCode == KeyEvent.VK_W || theEventCode == KeyEvent.VK_UP) {
             mySettingsMenuCommand--;
             if (mySettingsMenuCommand < 0) {
                 mySettingsMenuCommand = maxCommandNum;
             }
-
-
-
-
         } else if (theEventCode == KeyEvent.VK_S || theEventCode == KeyEvent.VK_DOWN) {
             mySettingsMenuCommand++;
             if (mySettingsMenuCommand > maxCommandNum) {
                 mySettingsMenuCommand = 0;
             }
 
+        } else if (theEventCode == KeyEvent.VK_A || theEventCode == KeyEvent.VK_LEFT) {
+
+            if (myGameUI == PAUSED_STATE) {
+                if (mySettingsMenuCommand == VOLUME && myVolumeScale > 0) {
+                    myVolumeScale--;
+                    checkVolume();
+                }
+            }
+
+        } else if (theEventCode == KeyEvent.VK_D || theEventCode == KeyEvent.VK_RIGHT) {
+
+            if (myGameUI == PAUSED_STATE) {
+                if (mySettingsMenuCommand == VOLUME && myVolumeScale < 5) {
+                    myVolumeScale++;
+                    checkVolume();
+                }
+            }
 
         } else if (theEventCode == KeyEvent.VK_ENTER) {
-            enterPressed = true;
+            myEnterPressed = true;
         }
-
-
-
-
-
     }
-
-
-
     @Override
     public void keyTyped(final KeyEvent theE) {
-
     }
-
     @Override
     public void keyReleased(final KeyEvent theE) {
         // Not needed for
-    }
-    private void handleUpKey() {
-        myMaze.moveUp();
-
-
-    }
-
-    private void handleDownKey() {
-        myMaze.moveDown();
-
-
-
-    }
-
-    private void handleLeftKey() {
-        myMaze.moveLeft();
-
-
-    }
-
-    private void handleRightKey() {
-        myMaze.moveRight();
-
-
-    }
-
-    private void handleEnterKey() {
-
-
-
     }
 
     /**
@@ -685,7 +1085,9 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
             myGameUI = PAUSED_STATE;
         } else if (myGameUI == PAUSED_STATE) {
             myGameUI = NORMAL_STATE;
+            mySettingsSubMenuOption = 0;
         }
+        mySettingsMenuCommand = 0;
         repaint();
     }
 }
