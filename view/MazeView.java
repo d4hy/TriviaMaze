@@ -321,7 +321,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         MY_MUSIC_FILES.add("sound/beabadoobee - the way things go.wav");
         MY_MUSIC_FILES.add("sound/beabadoobee x Laufey - A Night To Remember "
                 + "(Official Lyric Video).wav");
-        MY_MUSIC_FILES.add("sound/You’re here that’s the thing.wav");
+        MY_MUSIC_FILES.add("sound/Youre here thats the thing.wav");
 
         try (InputStream is = getClass().getResourceAsStream("/"
             + MY_MUSIC_FILES.get(myCurrentMusicIndex))) {
