@@ -324,13 +324,23 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
         MY_MUSIC_FILES.add("sound/You’re here that’s the thing.wav");
 
 //        final File file = new File(MY_MUSIC_FILES.get(myCurrentMusicIndex));
-        InputStream is = getClass().getResourceAsStream(MY_MUSIC_FILES.get(myCurrentMusicIndex));
-        final AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
 
-        myClip = AudioSystem.getClip();
-        myClip.open(audioIn);
-        myFC = (FloatControl) myClip.getControl(FloatControl.Type.MASTER_GAIN);
-        checkVolume();
+        try (InputStream is = getClass().getResourceAsStream("/"
+            + MY_MUSIC_FILES.get(myCurrentMusicIndex))) {
+
+            if (is != null) {
+
+                final AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
+                myClip = AudioSystem.getClip();
+                myClip.open(audioIn);
+                myFC = (FloatControl) myClip.getControl(FloatControl.Type.MASTER_GAIN);
+                checkVolume();
+
+            } else {
+                System.err.println("Failed to load audio file: " + MY_MUSIC_FILES.get(myCurrentMusicIndex));
+            }
+        }
+
     }
 
     private void initializeClip() throws LineUnavailableException, IOException,
