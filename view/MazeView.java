@@ -440,7 +440,7 @@ public class MazeView extends JPanel implements PropertyChangeListener, KeyListe
     /**
      * Draws the setting menu if the myGameUi is in a paused state.
      */
-    public void drawTheSettingsMenu(final Graphics2D g2) throws IOException {
+    private void drawTheSettingsMenu(final Graphics2D g2) throws IOException {
 
         g2.setColor(Color.white);
         final float fontSize = 25F;
